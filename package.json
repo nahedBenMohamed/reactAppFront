@@ -21,13 +21,15 @@
 		"react-i18next": "^12.0.0",
 		"react-redux": "^8.0.5",
 		"react-router-dom": "^6.4.3",
-		"react-scripts": "5.0.1",
 		"react-string-replace": "^1.1.0",
 		"redux-logger": "^3.0.6",
 		"sha1": "^1.1.1",
 		"socket.io-client": "^4.5.4",
 		"web-vitals": "^2.1.4",
 		"yup": "^0.32.11"
+	},
+	"devDependencies": {
+		"react-scripts": "5.0.1"
 	},
 	"scripts": {
 		"start": "SET REACT_APP_ENVIRONMENT=local &&   env-cmd -f ./environnement/.local.env  react-scripts start",
