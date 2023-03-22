@@ -5,43 +5,16 @@ import PdssWarningMessageComponent from '../../components/PdssWarningMessageComp
 import ExportEvaluationPage from '../../pages/EvaluationPage/ExportEvaluationPage';
 import ResultEvaluationPage from '../../pages/EvaluationPage/ResultEvaluationPage';
 
-function EvaluationBodyContainer({
-	t,
-	export_page,
-	handleSelectSession,
-	analysesList,
-	diagnosticSessions,
-	selectedChild,
-	result_page,
-	selectedSession,
-	handleShowSession,
-	activeSession,
-	diagnosticContents,
-	handleClickTab,
-	tabSelected,
-	analysesResult,
-	loader
-}) {
+function EvaluationBodyContainer({ t, export_page, analysesList, selectedChild, analysisScores, result_page, handleListChange, ids }) {
+
 	return (
 		<div className={'cell medium-8 '}>
 			{selectedChild === '' ? (
 				<PdssWarningMessageComponent message={t('call_out_no_child_selected')} />
 			) : export_page ? (
-				<ExportEvaluationPage t={t} analysesList={analysesList} selectedChild={selectedChild} />
+				<ExportEvaluationPage t={t} analysesList={analysesList} selectedChild={selectedChild} handleListChange={handleListChange} ids={ids} analysisScores={analysisScores}/>
 			) : result_page ? (
-				<ResultEvaluationPage
-					t={t}
-					diagnosticSessions={diagnosticSessions}
-					handleSelectSession={handleSelectSession}
-					selectedSession={selectedSession}
-					handleShowSession={handleShowSession}
-					activeSession={activeSession}
-					diagnosticContents={diagnosticContents}
-					handleClickTab={handleClickTab}
-					tabSelected={tabSelected}
-					analysesResult={analysesResult}
-					loader={loader}
-				/>
+				<ResultEvaluationPage t={t} />
 			) : (
 				<>
 					<p>

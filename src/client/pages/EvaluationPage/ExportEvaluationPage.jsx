@@ -4,9 +4,8 @@ import { useOutletContextHook } from '../../../shared/helpers/hooks/useOutletCon
 import PdssWarningMessageComponent from '../../components/PdssWarningMessageComponent';
 import DiagnosticCheckboxListComponent from '../../components/DiagnosticCheckboxListComponent';
 
-function ExportEvaluationPage({ t, analysesList, selectedChild }) {
+function ExportEvaluationPage({ t, analysesList, selectedChild, handleListChange, ids }) {
 	useOutletContextHook(t('evaluation'), false);
-
 	return (
 		<div>
 			<p>
@@ -19,6 +18,8 @@ function ExportEvaluationPage({ t, analysesList, selectedChild }) {
 				classDesignation={'export-select ids'}
 				analysesList={analysesList}
 				selectedChild={selectedChild}
+				handleListChange={handleListChange}
+				ids={ids}
 			/>
 		</div>
 	);

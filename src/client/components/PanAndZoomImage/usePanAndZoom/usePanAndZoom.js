@@ -1,4 +1,4 @@
-import { useRef, useReducer } from 'react'
+import { useRef, useReducer, useState } from 'react'
 import reducer from './reducer'
 import { pan, startPan, zoom } from './actions'
 
@@ -29,17 +29,10 @@ const usePanAndZoom = (position) => {
     window.addEventListener('mousemove', onMouseMoveInWindow);
   }
 
-  const onWheel = (event) => {
-    if (event.deltaY !== 0 && containerRef.current) {
-      const containerRect = containerRef.current.getBoundingClientRect();
-      dispatch(zoom(event, containerRect));
-    }
-  }
   return {
     ...state,
     containerRef,
-    onMouseDown,
-    onWheel,
+    onMouseDown
   }
 }
 

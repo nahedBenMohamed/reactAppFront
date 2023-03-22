@@ -15,7 +15,8 @@ import socketProvider, {
 	Consumer_CurrentStateToChild,
 	Provider_ChildDemandData,
 	Provider_ChildPickAnswer,
-	Provider_CurrentStateToChild
+	Provider_CurrentStateToChild,
+	Provider_TherapistDiagnosticList
 } from '../../../shared/providers/socket';
 
 export const useDiagnosticsTherapistMode = props => {
@@ -39,6 +40,7 @@ export const useDiagnosticsTherapistMode = props => {
 	const localParams = {
 		diagnosticId: mapWindowsParamsQueriesToObject('id'),
 		childId: mapWindowsParamsQueriesToObject('child'),
+		token: mapWindowsParamsQueriesToObject('token'),
 		session: mapWindowsParamsQueriesToObject('session')
 	};
 
@@ -93,7 +95,9 @@ export const useDiagnosticsTherapistMode = props => {
 	}, [GlobalChildState]);
 
 	const openTestPageViewInNewWindow = link => {
-		window.open(link, '_blank', 'toolbar=0,location=0,menubar=0');
+		const maxWidth = window.screen.availWidth;
+		const maxHeight = window.screen.availHeight;
+		window.open(link, '_blank', 'width=' + maxWidth + ',height=' + maxHeight + ',toolbar=0,location=0,menubar=0');
 	};
 
 	const generateChildDynamicLink = additionalQueries => {
@@ -157,35 +161,59 @@ export const useDiagnosticsTherapistMode = props => {
 				};
 				break;
 			case 'cancel_session':
-				if (window.confirm(item)) {
-					body = {
-						status: 'canceled'
-					};
-					Provider_CurrentStateToChild({
-						content: GlobalDiagnosisState?.diagnosticTestContent[DataPointer],
-						otherDetails: {
-							...GlobalDiagnosisState?.diagnostic,
-							session: {
-								...GlobalDiagnosisState?.diagnostic.session,
-								status: 'canceled'
-							}
+				body = {
+					status: 'canceled',
+					seconds_since_start: item
+				};
+				Provider_CurrentStateToChild({
+					content: GlobalDiagnosisState?.diagnosticTestContent[DataPointer],
+					otherDetails: {
+						...GlobalDiagnosisState?.diagnostic,
+						session: {
+							...GlobalDiagnosisState?.diagnostic.session,
+							status: 'canceled'
 						}
-					});
-				}
+					}
+				});
+				break;
+
+			case 'reset_init_session':
+				console.log('reset_init_session');
+				body = {
+					status: 'initialized'
+				};
+				Provider_CurrentStateToChild({
+					content: [],
+					otherDetails: {
+						...GlobalDiagnosisState?.diagnostic,
+						session: {
+							...GlobalDiagnosisState?.diagnostic.session,
+							status: 'initialized'
+						}
+					}
+				});
 				break;
 
 			default:
 				break;
 		}
-		if (GlobalDiagnosisState?.diagnostic?.session?.id && Object.keys(body).length > 0)
+
+		if (GlobalDiagnosisState?.diagnostic?.session?.id && Object.keys(body).length > 0) {
+			let token = CryptoProviders(encodeURI(localParams.token.value).replace(/%20/g, '+')).word();
+			if (token) token = JSON.parse(token);
+
 			action_diagnosis_updateSession({
-				id: GlobalDiagnosisState?.diagnostic?.session?.id,
-				diagnosticId: localParams?.diagnosticId.value,
-				session: localParams?.session?.value,
-				childId: localParams?.childId?.value,
-				userId: SecuritiesState?.userId,
-				body
+				diagnosticItemsToUpdate: {
+					id: GlobalDiagnosisState?.diagnostic?.session?.id,
+					diagnosticId: localParams?.diagnosticId.value,
+					session: localParams?.session?.value,
+					childId: localParams?.childId?.value,
+					userId: SecuritiesState?.userId,
+					body
+				},
+				forceRefresh: () => Provider_TherapistDiagnosticList({ otherDetails: { session: token.userId } })
 			});
+		}
 	};
 	const getCurrentDianoeticTestContentData = () => {
 		if (
@@ -196,6 +224,7 @@ export const useDiagnosticsTherapistMode = props => {
 				id: localParams?.diagnosticId?.value,
 				session: localParams?.session?.value
 			});
+
 			socketClient.current = socketProvider.connectToSocketClient;
 		}
 	};

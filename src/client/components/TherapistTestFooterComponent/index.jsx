@@ -1,4 +1,5 @@
-import { Fragment, useState } from 'react';
+import { useSelector } from "react-redux";
+import { selectSeconds } from "../../../store/reducers/diagnosis.reducer";
 
 const TherapistTestFooterComponent = ({
 	t,
@@ -6,11 +7,13 @@ const TherapistTestFooterComponent = ({
 	skipToThePreviousPage,
 	updateCurrentSession,
 	sessionPaused,
+	resetSessionInitial,
 	sessionFinished,
 	trainingSession,
 	pause,
 	start
 }) => {
+	const seconds = useSelector(selectSeconds)
 	return (
 		<>
 			<div className="controls">
@@ -38,7 +41,8 @@ const TherapistTestFooterComponent = ({
 									style={{ display: sessionPaused ? 'inline-block' : 'none' }}
 									onClick={() => {
 										updateCurrentSession({
-											status: 'played'
+											status: 'played',
+											seconds_since_start: seconds,
 										});
 										start();
 									}}
@@ -51,7 +55,8 @@ const TherapistTestFooterComponent = ({
 									className="button grey pause-test"
 									onClick={() => {
 										updateCurrentSession({
-											status: 'paused'
+											status: 'paused',
+											seconds_since_start: seconds
 										});
 										pause();
 									}}
@@ -66,8 +71,10 @@ const TherapistTestFooterComponent = ({
 								onClick={() => {
 									updateCurrentSession({
 										status: trainingSession ? 'initialized' : 'finished',
-										started: trainingSession ? 'no' : 'yes'
+										started: trainingSession ? 'no' : 'yes',
+										seconds_since_start: seconds
 									});
+									trainingSession && resetSessionInitial();
 								}}
 							>
 								<span className="entypo-flag"></span>

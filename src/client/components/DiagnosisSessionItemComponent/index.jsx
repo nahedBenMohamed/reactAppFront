@@ -56,13 +56,15 @@ function DiagnosisSessionItemComponent(props) {
 					? 'highlighted'
 					: ''
 			}
-			onClick={e => (diagnosisSession.status === 'finished' ? handleShowSession(e, diagnosisSession) : null)}
+			onClick={e => diagnosisSession.status === 'finished' && inProfile && handleShowSession(e, diagnosisSession)}
 		>
 			{inProfile ? (
 				<p
 					className="in-profile"
 					onClick={e => {
-						diagnosisSession.status === 'finished' && handleSelectSession(e, diagnosisSession.session);
+						diagnosisSession.status === 'finished' &&
+							inProfile &&
+							handleSelectSession(e, diagnosisSession.session);
 					}}
 				>
 					<span

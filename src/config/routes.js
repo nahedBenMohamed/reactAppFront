@@ -1,4 +1,4 @@
-import config from ".";
+import config from '.';
 
 export const administrationRoles = ['admin'];
 const routes = {
@@ -81,6 +81,10 @@ const routes = {
 						path: 'results',
 						name: 'results',
 						navigationPath: `/dashboard/evaluation/results`
+					},
+					export_eval_page: {
+						path: 'export',
+						navigationPath: '/dashboard/evaluation/export/pdf'
 					}
 				}
 			},
@@ -116,7 +120,12 @@ const routes = {
 			faq_page: {
 				path: 'faq',
 				name: 'Faq',
-				navigationPath: '/meta/faq'
+				navigationPath: config.API_Config.faq_url
+			},
+			
+			imprint_page: {
+				path: 'impressum',
+				navigationPath: '/meta/impressum'
 			}
 		}
 	},

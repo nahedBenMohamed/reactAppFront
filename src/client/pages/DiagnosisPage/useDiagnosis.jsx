@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
+import { Consumer_TherapistDiagnosticList } from '../../../shared/providers/socket';
 
 import { setSelectedChildDetails } from '../../../store/reducers/child.reducer';
 
@@ -74,15 +75,35 @@ export default props => {
 
 	useEffect(() => {
 		action_diagnosis_getAll();
-		// need to be reviewed after demo
+		let { closeup } = Consumer_TherapistDiagnosticList(
+			() =>
+				action_diagnosis_getSessions({
+					userId: SecuritiesState?.userId,
+					orderBy: orderSelected,
+					searchFor: searchValue,
+					childId: selectChild || ''
+				}),
+			SecuritiesState?.userId
+		);
 		if (childId)
 			dispatch(setSelectedChildDetails(userState?.childList?.data.find(element => element.id == childId)));
+
+		return () => closeup();
 	}, []);
 	useEffect(() => {
 		if (showInfo.selectedItem) action_diagnosis_getInfo(showInfo.selectedItem);
 		// to change static id after demo by selectChild
 		selectChild ? action_diagnosis_getGroups(selectChild) : action_diagnosis_getGroups();
 	}, [showInfo.selectedItem, selectChild]);
+
+	useEffect(() => {
+		if (showInfo.show) {
+			document.documentElement.classList.add('zf-has-scroll', 'is-reveal-open');
+		} else {
+			document.documentElement.removeAttribute('class');
+		}
+	}, [showInfo]);
+
 	useEffect(() => {
 		if (selectChild)
 			action_diagnosis_getSessions({

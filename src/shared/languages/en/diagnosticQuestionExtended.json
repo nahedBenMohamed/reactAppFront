@@ -40,5 +40,16 @@
       "label_reduction_on_third": "ENGLISH",
       "label_reduction_on_x": "ENGLISH",
       "label_all_removed_in_bond": "ENGLISH",
-      "subheadline_results_extended": "ENGLISH"
+      "diagnosis_session_test_title_btn_audio": "ENGLISH",
+      "subheadline_results_extended": "ENGLISH",
+      "label_classification_question_title_reset": "title_reset",
+      "label_classification_question_classes": {
+            "green": "ENGLISH",
+            "red": "ENGLISH",
+            "grey": "ENGLISH"
+      },
+      "label_classification_question_checks": {
+            "1": "ENGLISH",
+            "2": "ENGLISH"
+      }
 }

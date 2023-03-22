@@ -5,7 +5,8 @@ import {
 	action_diagnosis_getOneById,
 	action_diagnosis_getGroups,
 	action_diagnosis_getSessions,
-	action_diagnosis_getDiagnosticContent
+	action_diagnosis_getDiagnosticContent,
+	action_update_timer
 } from '../actions';
 
 const initialState = {
@@ -14,7 +15,8 @@ const initialState = {
 	diagnostic: null,
 	diagnosisInfo: null,
 	diagnosisGroups: null,
-	diagnosisSessions: null
+	diagnosisSessions: null,
+	seconds: 0
 };
 
 export const diagnosisReducersSplice = createSlice({
@@ -40,8 +42,13 @@ export const diagnosisReducersSplice = createSlice({
 			})
 			.addCase(action_diagnosis_getSessions.fulfilled, (state, action) => {
 				state.diagnosisSessions = action.payload;
+			})
+			.addCase(action_update_timer.fulfilled, (state, action) => {
+				state.seconds = action.payload;
 			});
 	}
 });
+export const selectSeconds = ({ GlobalDiagnosisState }) => GlobalDiagnosisState.seconds.payload;
+export const selectDiagnosisSession = ({ GlobalDiagnosisState }) => GlobalDiagnosisState.diagnosisSessions;
 
 export default diagnosisReducersSplice.reducer;

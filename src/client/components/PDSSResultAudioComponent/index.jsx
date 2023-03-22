@@ -1,17 +1,13 @@
 import moment from 'moment';
-import { useState, createRef  } from 'react';
+import { useState, createRef } from 'react';
 import config from '../../../config';
 
-const PDSSResultAudioComponent = ({ records, action_record_deleteOne, session ,t }) => {
+const PDSSResultAudioComponent = ({ records,  handleShowDelete }) => {
 	const [selectedAudio, setSelectedAudio] = useState({
 		played: false,
 		range: 0,
 		id: ''
 	});
-	const handleDelete = item => event => {
-		if (window.confirm(t('diagnosis_session_record_delete_alert')))
-		action_record_deleteOne({recordId:item.id, session});
-	};
 
 	const handlePlay = element => event => {
 		setSelectedAudio({
@@ -28,6 +24,10 @@ const PDSSResultAudioComponent = ({ records, action_record_deleteOne, session ,t
 	};
 
 	const handleChangeRange = element => event => {
+		if (selectedAudio.id !== element.id)
+			setSelectedAudio({
+				id: element.id
+			});
 		element.audioRef.current.currentTime = event.target.value;
 	};
 
@@ -81,7 +81,7 @@ const PDSSResultAudioComponent = ({ records, action_record_deleteOne, session ,t
 						/>
 					</div>
 					<div className="cell small-1">
-						<a className="remove" onClick={handleDelete(obj)}>
+						<a className="remove" onClick={handleShowDelete(obj)}>
 							<span className="entypo-trash"></span>
 						</a>
 					</div>

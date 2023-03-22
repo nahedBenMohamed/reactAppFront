@@ -39,7 +39,7 @@ const ChildModePage = props => {
 				</div>
 			</div>
 			<PrehistoryComponent diagnostic={otherDetails} t={t} />
-			<CancelTestPopupComponent t={t} />
+			{otherDetails?.session?.status === 'canceled' && <CancelTestPopupComponent t={t} />}
 			{!diagnosticTestContent || diagnosticTestContent?.length === 0 ? (
 				<div className="content">
 					<div className="  text-center full-h ">

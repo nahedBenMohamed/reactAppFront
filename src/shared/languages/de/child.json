@@ -25,17 +25,17 @@
 	"child_btn_saved": "Gespeichert",
 	"child_option_show_tests": " Alle Tests anzeigen",
 	"child_option_test": "Neuen Test durchführen",
+	"child_option_test_date": "Test durchführen",
 	"child_option_edit": "Kind editieren",
 	"child_option_export": "Kind exportieren",
 	"child_option_remove": "Kind entfernen",
 	"child_confirm_delete": "Sind Sie sicher, dass Sie diesen Kinderdatensatz entfernen möchten?",
-	"child_sortBy_createdAsc":"Erstelldatum aufsteigend",
-	"child_sortBy_createdDesc":"Erstelldatum absteigend",
-	"child_sortBy_lastnameAsc":"Nachname aufsteigend",
-	"child_sortBy_lastnameDesc":"Nachname absteigend",
+	"child_sortBy_createdAsc": "Erstelldatum aufsteigend",
+	"child_sortBy_createdDesc": "Erstelldatum absteigend",
+	"child_sortBy_lastnameAsc": "Nachname aufsteigend",
+	"child_sortBy_lastnameDesc": "Nachname absteigend",
 	"child_data_empty": "you have no  child yet (to change this message DE)",
 	"child_created_success": "Success!! child created with success (to change this message DE)",
 	"lang_error_msg": "This field must have at least one language (to change this message DE)",
 	"child_confirm_delete_title": "Kind entfernen"
-	
 } 

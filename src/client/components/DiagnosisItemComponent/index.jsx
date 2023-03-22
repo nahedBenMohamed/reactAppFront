@@ -10,7 +10,7 @@ function DiagnosisItemComponent({ firstItem, secondItem, setShowInfo, showPopup,
 	const handleClick = item => e => {
 		e.stopPropagation();
 		setItemOptions({
-			show: !itemOptions.show,
+			show: itemOptions.selectedItem.id === item.id ? !itemOptions.show: true,
 			selectedItem: item
 		});
 	};

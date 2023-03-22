@@ -26,14 +26,23 @@ import AccountVerify from './pages/AccountVerify';
 import MainBreadCrumb from './components/MainBreadCrumb';
 import useWindowSize from '../shared/helpers/hooks/useWindowSize';
 import useBodyClass from '../shared/helpers/hooks/useBodyClass';
+import ExportEvaluationPdfPage from './pages/ExportEvaluationPdfPage';
+import ImprintPage from './pages/ImprintPage';
 const MainPage = props => {
 	const { SecuritiesState } = props;
 	const [title, setTitle] = useState('');
 	const [hideBox, setHideBox] = useState(false);
+	const [toggleMenu, setToggleMenu] = useState(false);
 	const { width } = useWindowSize();
+	function handleChange(newValue) {
+		setToggleMenu(newValue);
+	}
 	useBodyClass(width);
 	return (
-		<div className={`page ${SecuritiesState?.hasSession ? ' login' : ''}`} data-request={window.location.pathname}>
+		<div
+			className={`page ${SecuritiesState?.hasSession ? (toggleMenu ? ' login move-left' : ' login') : ''}`}
+			data-request={window.location.pathname}
+		>
 			<Routes>
 				<Route exact path={routes.securities_pages.login.path} element={<LoginPage />} />
 				<Route exact path={routes.securities_pages.login_check.path} element={<LoginPage />} />
@@ -47,7 +56,7 @@ const MainPage = props => {
 				<Route
 					element={
 						<InjectApprovedSession {...props}>
-							<DefaultLayout>
+							<DefaultLayout value={toggleMenu} onChange={handleChange}>
 								<CompleteProfileFormContainer />
 								<Outlet />
 							</DefaultLayout>
@@ -61,6 +70,10 @@ const MainPage = props => {
 						<Route path={routes.meta_pages.children.about_page.path} element={<AboutPage />} />
 						<Route path={routes.meta_pages.children.buy_page.path} element={<BuyPage />} />
 						<Route path={routes.meta_pages.children.faq_page.path} element={<FAQPage {...props} />} />
+						<Route
+							path={routes.meta_pages.children.imprint_page.path}
+							element={<ImprintPage {...props} />}
+						/>
 					</Route>
 					<Route
 						element={
@@ -139,6 +152,7 @@ const MainPage = props => {
 										element={<EvaluationPage result_page />}
 									/>
 								</Route>
+
 								<Route
 									path={routes.account_pages.children.downloads_page.path}
 									element={<DownloadPage />}
@@ -147,7 +161,16 @@ const MainPage = props => {
 						</Route>
 					</Route>
 				</Route>
-
+				<Route
+					path={routes.account_pages.children.evaluation_page.children.export_eval_page.navigationPath}
+					element={
+						<InjectApprovedSession {...props}>
+							<GuardRoute {...props}>
+								<ExportEvaluationPdfPage export_eval_page {...props} />
+							</GuardRoute>
+						</InjectApprovedSession>
+					}
+				/>
 				<Route path={routes.test_pages.path} element={<DiagnosticTestPages {...props} />} />
 
 				<Route path="*" element={<NotFoundPage {...props} />} />

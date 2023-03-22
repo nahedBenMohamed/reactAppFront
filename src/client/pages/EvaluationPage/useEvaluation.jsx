@@ -5,158 +5,84 @@ import { mapWindowsParamsQueriesToObject, scrollToTop } from '../../../shared/he
 
 export default props => {
 	const {
-		action_evaluation_getAll,
 		action_user_getAllChild,
-		action_evaluation_update,
+		action_evaluation_getAll,
 		action_diagnosis_getSessions,
-		action_diagnosis_getDiagnosticContent,
-		action_evaluation_getResultScore,
 		SecuritiesState,
 		evaluationState,
-		userState,
-		diagnosisState
+		userState
 	} = props;
-
 	const localParams = {
 		diagnosticId: mapWindowsParamsQueriesToObject('id'),
 		childId: mapWindowsParamsQueriesToObject('child'),
 		session: mapWindowsParamsQueriesToObject('session')
 	};
-	const [selectChild, setSelectChild] = useState(localParams?.childId.exist ? localParams?.childId.value : '');
 	const [searchParams, setSearchParams] = useSearchParams();
-	const [diagnosticSessions, setDiagnosticSessions] = useState([]);
-	const [diagnosticContents, setDiagnosticContents] = useState([]);
-
-	const [selectedSession, setSelectedSession] = useState('');
-	const [selectedDiagnosis, setSelectedDiagnosis] = useState(
-		localParams?.diagnosticId ? localParams?.diagnosticId.value : ''
-	);
-	const [analysesList, setAnalysesList] = useState();
-	const [analysesResult, setAnalysesResult] = useState({
-		resultData: null,
-		error: null,
-		loader: true
+	const [LocalData, setLocalData] = useState({
+		analysesList: null,
+		childList: [],
+		selectedDiagnosis: localParams?.diagnosticId.exist ? localParams?.diagnosticId.value : '',
+		selectChild: localParams?.childId.exist ? localParams?.childId.value : '',
+		analysisScores: null
 	});
-
-	const [childList, setChildList] = useState([]);
-	const [activeSession, setActiveSession] = useState();
-
 	const HandleScrollToTop = id => {
-		setSelectedDiagnosis(id);
-
 		scrollToTop();
+		setSearchParams({ child: localParams?.childId.value, id: id });
 	};
-	const [tabSelected, setTabSelected] = useState(1);
-	const handleClickTab = (e, id, goTo = false) => {
-		e.preventDefault();
-		if (goTo) scrollToTop();
-		setTabSelected(id);
-	};
+
 	const handleChange = e => {
-		setSelectChild(e.target.value);
+		setLocalData(prev => ({
+			...prev,
+			selectChild: e.target.value
+		}));
 		if (searchParams.has('session')) {
 			searchParams.delete('session');
 		}
 		setSearchParams({ child: e.target.value });
-		if (selectedDiagnosis) setSearchParams({ child: e.target.value, id: selectedDiagnosis });
+		if (localParams?.diagnosticId.value)
+			setSearchParams({ child: e.target.value, id: localParams?.diagnosticId.value });
 	};
-
-	const handleSelectSession = (e, session) => {
-		setSelectedSession(session);
-		action_evaluation_update({
-			userId: 94 /* SecuritiesState?.userId */,
-			diagnosisId: localParams?.diagnosticId.value,
-			childId: selectChild,
-			body: {
-				session: session,
-				use_in_profile: 'yes'
-			}
-		});
-	};
-	const handleShowSession = (e, session) => {
-		setActiveSession(session);
-		searchParams.set('session', session.session);
-		setSearchParams(searchParams);
-	};
-
-	useEffect(() => {
-		setActiveSession(null);
-		if (searchParams.has('session')) {
-			searchParams.delete('session');
-		}
-		if (selectChild && localParams?.diagnosticId?.value)
-			setSearchParams({ child: selectChild, id: localParams?.diagnosticId?.value });
-	}, [localParams?.diagnosticId?.value]);
-
-	useEffect(() => {
-		setTabSelected(1);
-	}, [activeSession]);
 
 	useEffect(() => {
 		if (SecuritiesState?.userId)
 			action_user_getAllChild({
-				userId: 94 /* SecuritiesState?.userId */
+				userId: SecuritiesState?.userId
 			});
 	}, [SecuritiesState?.userId]);
-
 	useEffect(() => {
-		if (localParams?.childId.value && localParams?.diagnosticId?.value != null)
+		if (SecuritiesState?.userId && localParams?.childId.value && localParams?.diagnosticId?.value != null)
 			action_diagnosis_getSessions({
-				userId: 94 /* SecuritiesState?.userId */,
-				childId: localParams?.childId.value || '',
+				userId: SecuritiesState?.userId,
+				childId: localParams?.childId.value,
 				diagnosisId: localParams?.diagnosticId?.value
 			});
 	}, [SecuritiesState?.userId, localParams?.childId.value, localParams?.diagnosticId?.value]);
 
 	useEffect(() => {
-		selectChild ? action_evaluation_getAll(selectChild) : action_evaluation_getAll();
-	}, [selectChild]);
-
+		localParams?.childId.value ? action_evaluation_getAll(localParams?.childId.value) : action_evaluation_getAll();
+	}, [localParams?.childId.value]);
 	useEffect(() => {
-		if (localParams?.diagnosticId?.value && localParams?.session?.value)
-			action_diagnosis_getDiagnosticContent({
-				id: localParams?.diagnosticId?.value,
-				session: localParams?.session?.value
-			});
-		if (localParams?.session?.value) {
-			action_evaluation_getResultScore(localParams?.session?.value);
-		}
-	}, [localParams?.diagnosticId?.value, localParams?.session?.value]);
-	useEffect(() => {
-		if (evaluationState?.analysesList) setAnalysesList(evaluationState?.analysesList);
-		if (evaluationState?.analysisResult)
-			setAnalysesResult(prev => ({
+		if (evaluationState?.analysesList)
+			setLocalData(prev => ({
 				...prev,
-				resultData: evaluationState?.analysisResult?.scores,
-				loader: false,
-				error: null
+				analysesList: evaluationState.analysesList
 			}));
-
-		if (userState?.childList) setChildList(userState?.childList?.data);
-		if (diagnosisState?.diagnosisSessions) setDiagnosticSessions(diagnosisState?.diagnosisSessions);
-		if (diagnosisState?.diagnosticTestContent) setDiagnosticContents(diagnosisState?.diagnosticTestContent);
-	}, [
-		evaluationState?.analysesList,
-		evaluationState?.analysisResult,
-		userState?.childList,
-		diagnosisState?.diagnosisSessions,
-		diagnosisState?.diagnosticTestContent
-	]);
+		if (userState?.childList)
+			setLocalData(prev => ({
+				...prev,
+				childList: userState.childList?.data
+			}));
+	}, [evaluationState?.analysesList, userState?.childList]);
+	useEffect(()=> {
+		if (evaluationState?.analysisScores)
+			setLocalData(prev => ({
+				...prev,
+				analysisScores: evaluationState?.analysisScores
+			}));
+	}, [evaluationState?.analysisScores])
 	return {
-		analysesList,
-		childList,
-		selectChild,
 		handleChange,
-		diagnosticSessions,
-		handleSelectSession,
-		selectedSession,
-		handleShowSession,
-		activeSession,
-		selectedDiagnosis,
 		HandleScrollToTop,
-		diagnosticContents,
-		handleClickTab,
-		tabSelected,
-		...analysesResult
+		...LocalData
 	};
 };

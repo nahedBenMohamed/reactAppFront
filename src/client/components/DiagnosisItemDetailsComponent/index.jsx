@@ -90,7 +90,9 @@ function DiagnosisItemDetailsComponent({
 								t={t}
 								openTestPageViewInNewWindow={openTestPageViewInNewWindow}
 								showPopup={showPopup}
-								diagnosticSessions={diagnosticSessions.filter(session => session.diagnostic == item.id)}
+								diagnosticSessions={diagnosticSessions.filter(
+									session => session.diagnostic == item.id && session.child == selectedChild
+								)}
 							/>
 						</div>
 					</div>

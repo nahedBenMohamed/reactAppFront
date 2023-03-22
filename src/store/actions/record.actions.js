@@ -23,9 +23,9 @@ export const action_record_create = createAsyncThunk(
 
 export const action_record_getAllBySession = createAsyncThunk(
 	'record/getAllBySession',
-	async (sessionId, { dispatch, rejectWithValue }) => {
+	async (data, { dispatch, rejectWithValue }) => {
 		try {
-			const response = await instance.get(record.basePath + record.getAll(sessionId));
+			const response = await instance.get(record.basePath + record.getAll(data.session,data.diagnostic_content));
 			const results = await response.data.data;
 			return results;
 		} catch (error) {
@@ -35,11 +35,9 @@ export const action_record_getAllBySession = createAsyncThunk(
 );
 
 
-export const action_record_deleteOne = createAsyncThunk('record/deleteOne', async ({ recordId, session }, { dispatch }) => {
-	console.log(recordId);
-	console.log(session);
+export const action_record_deleteOne = createAsyncThunk('record/deleteOne', async ({ recordId, session ,diagnostic_content}, { dispatch }) => {
 	const response = await instance.delete(record.basePath + record.delete(recordId));
 	const results = await response.data.data;
-	dispatch(action_record_getAllBySession(session));
+	dispatch(action_record_getAllBySession({session,diagnostic_content}));
 	return results;
 });

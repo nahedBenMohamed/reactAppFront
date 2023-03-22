@@ -73,9 +73,21 @@ function ImageTestViewComponent({
 					)}
 				</div>
 			);
-		case 6:
-		case 7:
-		case 9:
+		case 10:
+			return (
+				<div className="cell medium-6">
+					<div className="grid-x">
+						{questionData?.image?.length > 0 &&
+							questionData?.image?.split(',')?.map(imgSrc => (
+								<div className="cell small-6 image-padding">
+									<img src={`/${imgSrc}`} alt="" />
+								</div>
+							))}
+					</div>
+				</div>
+			);
+
+		default:
 			return (
 				<div className="grid-y align-center">
 					<div className="cell small-10">
@@ -83,8 +95,6 @@ function ImageTestViewComponent({
 					</div>
 				</div>
 			);
-		default:
-			return <div />;
 	}
 }
 export default ImageTestViewComponent;

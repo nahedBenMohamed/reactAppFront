@@ -39,5 +39,15 @@
 	"label_reduction_on_second": "Reduktion auf 2. Konsonanten",
 	"label_reduction_on_third": "Reduktion auf 3. Konsonanten",
 	"label_reduction_on_x": "Reduktion auf x",
-	"label_all_removed_in_bond": "Vollständige Auslassung"
+	"label_all_removed_in_bond": "Vollständige Auslassung",
+	"label_classification_question_title_reset": "title_reset",
+	"label_classification_question_classes": {
+		"green": "Vollständig",
+		"red": "Unvollständig",
+		"grey": "Ellipse"
+	},
+	"label_classification_question_checks": {
+		"1": "Obligatorisches Satzglied fehlt",
+		"2": "Funktionales Element fehlt"
+	}
 }

@@ -2,8 +2,7 @@
 
 /* eslint-disable */
 
-import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
 import routes from '../../../config/routes';
 import { mapCurrentLocationQueriesToJSON } from '../../../shared/helpers/properties';
 import MainAccountComponent from '../../components/MainAccountComponent';
@@ -11,9 +10,16 @@ import NavItemComponent from '../../components/NavItemComponent';
 import { NavListContainer } from '../NavListContainer';
 
 const DefaultHeader = props => {
-	const { SecuritiesState } = props;
+	const { SecuritiesState, value, onChange } = props;
 	const { t } = props;
+    const [styling, setStyling] = useState({
+        active: false,
+    });
 
+	function handleChange(value) {
+        setStyling({ active: value});
+        props.onChange(value);
+    }
 	return (
 		<header>
 			<div className="bar">
@@ -29,10 +35,10 @@ const DefaultHeader = props => {
 										</a>
 									</li>
 									<li>
-										<Link to={routes.meta_pages.children.faq_page.navigationPath}>
+										<a href={routes.meta_pages.children.faq_page.navigationPath} target="_blank">
 											<span className='entypo entypo-lamp'> </span>
 											{t('faq')}
-										</Link>
+										</a>
 									</li>
 								</ul>
 							</nav>
@@ -51,17 +57,17 @@ const DefaultHeader = props => {
 							</NavItemComponent>
 						</div>
 						<div className="cell large-8 medium-4 small-4">
-							<nav className="main">
+							<nav className={'main ' + (styling?.active ? 'active' : '')}>
 								{SecuritiesState?.hasSession && (
 									<>
 										<p className="mobile-toggle">
-											<a>
+											<a onClick={() => handleChange(!value)}>
 												<span className="entypo entypo-menu"></span>
 												{t('label_menu')}
 											</a>
 										</p>
 
-										<NavListContainer
+										<NavListContainer event={onChange} handleChange={handleChange}
 											navList={[
 												{
 													title: t('dashboard'),

@@ -13,8 +13,8 @@ function DownloadFilesListComponent({ t, files }) {
 				</thead>
 				<tbody>
                     { files &&
-                        files.map(file => (
-                            <tr>
+                        files.map((file, i) => (
+                            <tr key={i}>
                                 <td>{file.name}</td>
                                 <td>
                                 <a href={`/files/downloads/all/${file.path}`}  target="_blank">

@@ -11,7 +11,7 @@ function HomeTestimonialsSliderComponent({ testimonial }) {
                                     <p>{text}</p>
                                 </div>
                                 <div className="cell medium-4 text-center">
-                                    <img src={`${window.location.origin}/ files/images/landingpage/${image}`} alt={author}/>
+                                    <img src={`${window.location.origin}/files/images/landingpage/${image}`} alt={author}/>
                                     <p>{author}</p>
                                 </div>
                             </div>

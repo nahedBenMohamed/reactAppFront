@@ -53,25 +53,30 @@ const API_Config = {
 		getSessions: userId => `/sessions/${userId}`,
 		deleteSession: sessionId => `/sessions/${sessionId}`,
 		newSession: `/sessions`,
-		updateSession: id => `/sessions/${id}`,
+		updateSession: (id, session) => `/sessions/${id}/${session}`,
 		getDiagnosticContent: (id, session) => `/sessions/content/${id}${session ? '?session=' + session : ''}`,
 		storeDiagnosticTestResultBySession: content => `/sessions/content/result/${content}`
 	},
 	record: {
 		basePath: '/records',
 		create: '',
-		getAll: id => `/${id}`,
+		getAll: (id, diagnosticId) => `/${id}/${diagnosticId}`,
 		delete: id => `/${id}`
 	},
 	evaluation: {
 		basePath: '/evaluation',
 		getAll: ``,
+		updatePhonetics: `/phonetics`,
 		update: ``,
 		getResultScore: '/result',
-		getResultScoreTable: '/result/table'
+		getResultGrammarScore: '/result/grammar/test',
+		getResultScoreTable: '/result/table',
+		getEvaluationTestsByChild: '/exportpdf',
+		getArticulations: '/articulations'
 	},
 	shop_url:
-		'https://shop.elsevier.de/patholinguistische-diagnostik-bei-sprachentwicklungsstoerungen-pdss-9783437475931.html?nosto=nosto-page-category1'
+		'https://shop.elsevier.de/patholinguistische-diagnostik-bei-sprachentwicklungsstoerungen-pdss-9783437475931.html?nosto=nosto-page-category1',
+	faq_url: 'https://de.service.elsevier.com/app/answers/detail/a_id/36503/c/10535/supporthub/els-deutschland/'
 };
 
 const config = {

@@ -1,18 +1,29 @@
 import React from 'react';
+import { useState, useEffect } from 'react';
 import PdssCheckBoxListComponent from '../../components/PdssCheckBoxListComponent';
-import { useState } from 'react';
-import { useEffect } from 'react';
 import PdssOptionCheckBoxComponent from '../../components/PdssOptionCheckBoxComponent';
+import { Link } from 'react-router-dom';
+import routes from '../../../config/routes';
 
-export default function DiagnosticCheckboxListComponent({ t, classDesignation, analysesList, selectedChild }) {
+export default function DiagnosticCheckboxListComponent({ t, classDesignation, analysesList, selectedChild, handleListChange, ids }) {
+
 	const [checked, setChecked] = useState({});
 	const handleChange = (target, value) => {
 		setChecked(prev => ({
 			...prev,
 			[target]: value
 		}));
+		if (checked) { 
+		   if (!value) {
+			handleChangeList(ids.filter(e => Number(e) !== Number(target)))
+		   } else {
+			handleChangeList([...ids, Number(target)])
+		   }
+		}
 	};
-
+    function handleChangeList(value) {
+        handleListChange(value);
+    }
 	const allUnchecked = Object.values(checked).every(value => value === true);
 	const isOnechecked = Object.values(checked).some(value => value === true);
 	let indexSubTest = analysesList ? analysesList.indexOf(analysesList[0]) + 1 : 0;
@@ -25,6 +36,11 @@ export default function DiagnosticCheckboxListComponent({ t, classDesignation, a
 		setChecked({});
 	}, [selectedChild]);
 	let exportStatus = false;
+	const [selectedOption, setSelectedOption] = useState('true');
+	function handleClick() {
+		localStorage.setItem('selected_child', selectedChild);
+		localStorage.setItem('option_export', selectedOption);
+	}
 	return (
 		<div>
 			<ul className={classDesignation}>
@@ -39,7 +55,7 @@ export default function DiagnosticCheckboxListComponent({ t, classDesignation, a
 							if (checkBoxStatus == true) {
 								countChecked++;
 							}
-							let checkBoxId = 'diagnostic_' + item.diagnostic;
+							let checkBoxId = `${item.diagnostic}`;
 							return (
 								<PdssCheckBoxListComponent
 									key={index + selectedChild}
@@ -72,14 +88,22 @@ export default function DiagnosticCheckboxListComponent({ t, classDesignation, a
 							id={'option_export_detail'}
 							label={'option_export_detail'}
 							name={t('label_export_option_detail')}
+							onChange={e => {
+								setSelectedOption(e.target.checked);
+							}}
 						/>
 					</ul>
 				</>
 			) : null}
-
-			<a href="test.pdf" disabled={exportStatus} className="button export-pdf" target="_blank">
+			<Link
+				disabled={exportStatus}
+				className="button export-pdf"
+				target="_blank"
+				to={routes.account_pages.children.evaluation_page.children.export_eval_page.navigationPath}
+				onClick={handleClick()}
+			>
 				{t('btn_export')}{' '}
-			</a>
+			</Link>
 		</div>
 	);
 }

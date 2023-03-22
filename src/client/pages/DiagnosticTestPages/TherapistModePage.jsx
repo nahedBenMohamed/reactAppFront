@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import FullScreenLoaderContainer from '../../containers/FullScreenLoaderContainer';
 import TestModeBodyContainer from '../../containers/TestModeBodyContainer';
@@ -6,14 +6,17 @@ import { useDiagnosticsTherapistMode } from './useDiagnosticsTest';
 import TherapistTestComponent from '../../components/TherapistTestComponent';
 import TherapistTestHeaderComponent from '../../components/TherapistTestHeader';
 import PauseScreenComponent from '../../components/PauseScreenComponent';
-import { useTimer } from '../../../shared/helpers/hooks/Timer';
 import PrehistoryComponent from '../../components/PrehistoryComponent';
 import CancelTestPopupComponent from '../../components/CancelTestPopupComponent';
 import TherapistInitializedTestComponent from '../../components/TherapistInitializedTestComponent';
+import { useTimerV2 } from '../../../shared/helpers/hooks/TimerV2';
+import PdssConfirmPopup from '../../components/PdssConfirmPopupComponent';
+import { useSelector } from 'react-redux';
+import { selectSeconds } from '../../../store/reducers/diagnosis.reducer';
 
 export const TherapistModePage = props => {
 	const { t } = props;
-	const { seconds, start, pause } = useTimer();
+
 	const {
 		child,
 		diagnostic,
@@ -26,12 +29,36 @@ export const TherapistModePage = props => {
 		generateChildDynamicLink,
 		socketClient,
 		DataPointer,
-
 		socketTriggerEffect,
 		setDataPointer,
 		MainDivContentReference,
 		diagnosticTestContent
 	} = useDiagnosticsTherapistMode(props);
+
+	const { start, pause, initialize } = useTimerV2();
+
+	const seconds = useSelector(selectSeconds);
+	const handleShowAbort = () => {
+		pause();
+		setShowPopUp({ first: true, second: false });
+	};
+	const handleConfirmPopup = () => {
+		updateSession('cancel_session', seconds);
+		setShowPopUp({ first: false, second: true });
+	};
+	const handleCancelPopup = () => {
+		start()
+		setShowPopUp({ first: false, second: false });
+	};
+
+	useEffect(() => {
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		if (diagnostic?.session?.status === 'played') start();
+	}, [diagnostic?.session?.status]);
+	useEffect(() => {
+		initialize(diagnostic?.session?.seconds_since_start);
+	}, [diagnostic?.session?.seconds_since_start]);
+	const [showPopUp, setShowPopUp] = useState({ first: false, second: false });
 
 	if (loader && (!child || !diagnostic)) return <FullScreenLoaderContainer />;
 	return (
@@ -54,17 +81,26 @@ export const TherapistModePage = props => {
 		>
 			<PrehistoryComponent diagnostic={diagnostic} openIntroductionPopUp={openIntroductionPopUp} t={t} />
 
-			<CancelTestPopupComponent t={t} />
+			{showPopUp.second && <CancelTestPopupComponent t={t} />}
+			<PdssConfirmPopup
+				ConfirmPopup={handleConfirmPopup}
+				closePopup={handleCancelPopup}
+				title={t('child_confirm_delete_title')}
+				description={t('child_confirm_delete')}
+				show={showPopUp.first}
+			/>
 			<TherapistTestHeaderComponent
 				{...props}
 				child={child}
-				seconds={seconds}
 				diagnostic={diagnostic}
 				data={diagnosticTestContent}
 				updateSession={updateSession}
 				generateChildDynamicLink={generateChildDynamicLink}
 				openTestPageViewInNewWindow={openTestPageViewInNewWindow}
 				sessionStated={['yes', 'training'].includes(diagnostic?.session.started)}
+				handleShowAbort={handleShowAbort}
+				setShowPopUp={setShowPopUp}
+				showPopUp={showPopUp}
 			/>
 
 			{diagnostic?.session?.status === 'paused' && (
@@ -97,6 +133,7 @@ export const TherapistModePage = props => {
 						setDataPointer={setDataPointer}
 						socketTriggerEffect={socketTriggerEffect}
 						MainDivContentReference={MainDivContentReference}
+						resetSessionInitial={() => updateSession('reset_init_session')}
 						getCurrentDianoeticTestContentData={getCurrentDianoeticTestContentData}
 						TeleportToTheTargetContentReference={TeleportToTheTargetContentReference}
 					/>

@@ -41,7 +41,7 @@ function ContentItemComponent(props) {
 									diagnosticId={content?.diagnostic}
 									DataPointer={index}
 									data={data}
-									session={diagnosisSession?.session}
+									session={diagnosisSession}
 									GlobalDiagnosisState={diagnosisState}
 									diagnosisSession={diagnosisSession}
 									selectedImage={content.target_item}

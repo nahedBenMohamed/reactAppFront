@@ -32,6 +32,7 @@
     "diagnostic_test_mode_therapist_pause_screen_child": "ENGLISH",
     "diagnosis_session_test_label_answer": "ENGLISH",
     "diagnosis_session_test_label_assistance": "ENGLISH",
+    "diagnosis_session_test_subheadline_results": "ENGLISH",
     "diagnosis_session_test_description_results": "ENGLISH",
     "diagnostic_test_mode_therapist_btn_correct": "ENGLISH",
     "diagnostic_test_mode_therapist_btn_incorrect": "ENGLISH",
@@ -40,5 +41,7 @@
     "diagnostic_test_mode_child_splash_screen": "ENGLISH",
     "diagnostic_test_description_canceled_popup": "ENGLISH",
     "diagnostic_test_label_close_window_btn": "ENGLISH",
-    "diagnostic_test_label_close_confirm_msg": "ENGLISH"
+    "diagnostic_test_label_close_confirm_msg": "ENGLISH",
+    "false_button" : "Keyboard: F",
+    "true_button" : "Keyboard: R"
 }

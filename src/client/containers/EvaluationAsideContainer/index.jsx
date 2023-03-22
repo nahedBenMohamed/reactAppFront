@@ -1,10 +1,12 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import routes from '../../../config/routes';
 import {
 	getAge,
 	linkIsActive,
 	mapCurrentLocationQueriesToJSON,
+	mapWindowsParamsQueriesToObject,
 	progressRing
 } from '../../../shared/helpers/properties';
 import AnalysesProfileComponent from '../../components/AnalysesProfileComponent';
@@ -12,7 +14,7 @@ import NavItemComponent from '../../components/NavItemComponent';
 import PdssSelectComponent from '../../components/PdssSelectComponent';
 
 function EvaluationAsideContainer(props) {
-	const { t, data, analysesList, selectedChild, handleChange, selectedDiagnosis, HandleScrollToTop } = props;
+	const { t, data, analysesList, handleChange, HandleScrollToTop } = props;
 
 	let selectOption = [];
 	if (data?.length > 0) {
@@ -24,6 +26,7 @@ function EvaluationAsideContainer(props) {
 		});
 	}
 	selectOption.unshift({ value: '', label: t('evaluation_placeholder_please_select_child') });
+	const selectedChild = mapWindowsParamsQueriesToObject('child');
 
 	return (
 		<aside>
@@ -33,12 +36,12 @@ function EvaluationAsideContainer(props) {
 			<div className="grid-x">
 				<div className="cell">
 					<PdssSelectComponent
-						selectedValue={selectedChild}
+						selectedValue={selectedChild.value}
 						selectOption={selectOption}
 						clickToAction={handleChange}
 					/>
 					<div className="grid-x">
-						{selectedChild && (
+						{selectedChild.exist && (
 							<>
 								<div className="cell group">
 									<p>{t('label_profile')}</p>
@@ -88,24 +91,24 @@ function EvaluationAsideContainer(props) {
 											<div className={`cell ${label}`} key={index}>
 												{diagnostic.type === 'label' ? (
 													<p>
-														<NavItemComponent
-															path={
+														<Link
+															to={
 																routes.account_pages.children.evaluation_page.children
 																	.result_page.navigationPath +
 																mapCurrentLocationQueriesToJSON({
 																	id: diagnostic.diagnostic
 																})
 															}
-															textIcons
 															className={
-																selectedDiagnosis === diagnostic.diagnostic &&
+																mapWindowsParamsQueriesToObject('id').value ==
+																	diagnostic.diagnostic &&
 																window.location.pathname ===
 																	routes.account_pages.children.evaluation_page
 																		.children.result_page.navigationPath
 																	? 'active'
 																	: ''
 															}
-															action={() => HandleScrollToTop(diagnostic.diagnostic)}
+															onClick={() => HandleScrollToTop(diagnostic.diagnostic)}
 														>
 															<span className="progress-ring" data-percent={percent}>
 																<svg>
@@ -122,7 +125,7 @@ function EvaluationAsideContainer(props) {
 																{diagnostic.name}
 																<span className="label">{diagnostic.label}</span>
 															</span>
-														</NavItemComponent>
+														</Link>
 													</p>
 												) : (
 													<p>

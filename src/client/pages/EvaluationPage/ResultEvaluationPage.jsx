@@ -1,44 +1,40 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
+import WithReduxConnector from '../../../shared/helpers/hooks/WithReduxConnector';
 import DiagnosisSessionListComponent from '../../components/DiagnosisSessionListComponent';
 import PdssWarningMessageComponent from '../../components/PdssWarningMessageComponent';
+import useResultEvaluation from './useResultEvaluation';
+import { selectDiagnosisSession } from '../../../store/reducers/diagnosis.reducer';
+import { useSelector } from 'react-redux';
 
-function ResultEvaluationPage({
-	diagnosticSessions,
-	t,
-	handleSelectSession,
-	selectedSession,
-	handleShowSession,
-	activeSession,
-	diagnosticContents,
-	handleClickTab,
-	tabSelected,
-	analysesResult,
-	loader
-}) {
-	if (diagnosticSessions && diagnosticSessions.length > 0)
+function ResultEvaluationPage(props) {
+	const { handleSelectSession, selectedSession } = useResultEvaluation(props);
+	const diagnosticSessions = useSelector(selectDiagnosisSession);
+
+	if (diagnosticSessions && diagnosticSessions.length)
 		return (
-			<div className="tests">
-				<h3>{t('label_test_session')}</h3>
-				<div className="scroll">
-					<DiagnosisSessionListComponent
-						t={t}
-						diagnosticSessions={diagnosticSessions}
-						hideOption={true}
-						inProfile={true}
-						handleSelectSession={handleSelectSession}
-						selectedSession={selectedSession}
-						handleShowSession={handleShowSession}
-						activeSession={activeSession}
-						diagnosticContents={diagnosticContents}
-						handleClickTab={handleClickTab}
-						tabSelected={tabSelected}
-						analysesResult={analysesResult}
-						loader={loader}
-					/>
-				</div>
-			</div>
+				<DiagnosisSessionListComponent
+					t={props.t}
+					diagnosticSessions={diagnosticSessions}
+					hideOption={true}
+					inProfile={true}
+					handleSelectSession={handleSelectSession}
+					selectedSession={selectedSession}
+				/>
 		);
-	else return <PdssWarningMessageComponent message={t('evaluation_callout_no_results')} />;
+	else return <PdssWarningMessageComponent message={props.t('evaluation_callout_no_results')} />;
 }
 
-export default ResultEvaluationPage;
+ResultEvaluationPage.prototype = {
+	action_evaluation_update: PropTypes.func.isRequired,
+	action_diagnosis_getDiagnosticContent: PropTypes.func.isRequired,
+	action_evaluation_getResultScore: PropTypes.func.isRequired,
+	GlobalEvaluationState: PropTypes.object.isRequired,
+	diagnosisState: PropTypes.object,
+	SecuritiesState: PropTypes.object
+};
+export default WithReduxConnector(ResultEvaluationPage, state => ({
+	evaluationState: state.GlobalEvaluationState,
+	SecuritiesState: state.GlobalSecuritiesSate
+}));

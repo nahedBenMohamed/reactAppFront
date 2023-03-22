@@ -1,9 +1,11 @@
 import moment from 'moment';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import routes from '../../../config/routes';
 import { mapCurrentLocationQueriesToJSON } from '../../../shared/helpers/properties';
-
+import { selectSeconds } from '../../../store/reducers/diagnosis.reducer';
 const TherapistTestHeaderComponent = props => {
 	const {
 		t,
@@ -14,9 +16,10 @@ const TherapistTestHeaderComponent = props => {
 		diagnostic,
 		openTestPageViewInNewWindow,
 		generateChildDynamicLink,
-		seconds
+		handleShowAbort
 	} = props;
 
+	const seconds = useSelector(selectSeconds);
 	return (
 		<div className="header">
 			<div className="grid-container">
@@ -88,6 +91,16 @@ const TherapistTestHeaderComponent = props => {
 														session: diagnostic?.session.session
 													})
 											);
+											e.target.childNodes[0].textContent = ' ';
+											e.target.childNodes[0].textContent = t(
+												'diagnostic_test_mode_therapist_header_dropdown_btn_copy_child_mode_link_done'
+											);
+
+											setTimeout(() => {
+												e.target.childNodes[0].textContent = t(
+													'diagnostic_test_mode_therapist_header_dropdown_btn_copy_child_mode_link'
+												);
+											}, 1000);
 										}}
 										className="link-copy"
 									>
@@ -100,21 +113,13 @@ const TherapistTestHeaderComponent = props => {
 									</a>
 								</li>
 								<li>
-									<Link
-										className="cancel-test"
-										onClick={() =>
-											updateSession(
-												'cancel_session',
-												t('diagnostic_test_label_close_confirm_msg')
-											)
-										}
-									>
+									<a className="cancel-test" onClick={handleShowAbort}>
 										<span className="entypo-cancel-squared"></span>
 										<span className="text">
 											{t('diagnostic_test_mode_therapist_header_dropdown_btn_test_cancel')}
 										</span>
-									</Link>
-									<Link className="close-test" href="javascript:close();">
+									</a>
+									<Link className="close-test">
 										<span className="entypo-cancel-squared"></span>
 										<span className="text">
 											{t('diagnostic_test_mode_therapist_header_dropdown_btn_label_close_window')}
@@ -142,13 +147,7 @@ const TherapistTestHeaderComponent = props => {
 								<div className="overview">
 									<ul>
 										{data?.map(({ name, instruction, selected_answer }, indexDiag) => (
-											<li
-												key={indexDiag}
-												onClick={() => {
-													console.log('indexDiag', indexDiag);
-													updateSession('jump_slide', indexDiag);
-												}}
-											>
+											<li key={indexDiag} onClick={() => updateSession('jump_slide', indexDiag)}>
 												<a className="go-to-slide clearfix">
 													<span className="num">{indexDiag + 1}</span>
 													<span className="name">{name || instruction}</span>
@@ -176,7 +175,9 @@ const TherapistTestHeaderComponent = props => {
 							<li className="time">
 								<p>
 									<span className="entypo-clock"></span>
-									<span className="value"> {moment.utc(seconds * 1000).format('HH:mm:ss')}</span>
+									<span className="value">
+										{moment.utc(seconds ? seconds * 1000 : 0).format('HH:mm:ss')}
+									</span>
 								</p>
 							</li>
 						</ul>

@@ -8,6 +8,8 @@ function DiagnosisInfoGalleryComponent(props) {
 	const [ imageSize, setImageSize ] = useState({width: 0, height: '80%'});
 	const [ position, setPosition ] = useState({x: 0, y: 0});
 	const [ zoomIn, setZoomIn ] = useState(false)
+	const [ showToolbar, setShowToolbar ] = useState(true)
+	const [ oneMouseMove, setOneMouseMove ] = useState(false)
 	const [ nextDisabled, setNextDisabled ] = useState(false)
 	const [ prevDisabled, setPrevDisabled ] = useState(false)
 	const bodyWidth = document.body.clientWidth;
@@ -28,9 +30,7 @@ function DiagnosisInfoGalleryComponent(props) {
 
 	const zoomInImage = (e) => {
 		setPosition({x: e.clientX, y: e.clientY})
-		if (!zoomIn) { 
-			setZoomIn(true)
-		}
+		setZoomIn(!zoomIn)
 	}
 	
 	useEffect(() => {
@@ -39,6 +39,11 @@ function DiagnosisInfoGalleryComponent(props) {
 		setPrevDisabled((current === 0) ? true : false);
 	}, [current, length]);
 
+	setTimeout(() => {
+        setShowToolbar(false)
+		setOneMouseMove(false)
+	}, 6000);
+  
 	const onFullScreen = () => {
 		if (document.fullscreenElement) {
 			document.exitFullscreen()
@@ -50,10 +55,24 @@ function DiagnosisInfoGalleryComponent(props) {
 		if (!zoomIn) {setImageSize({width: document.getElementById('wrap').clientWidth})}
 	 },[bodyWidth,bodyHeight, zoomIn]);
 	 
+	const onMouseMoveInWindow = (event) => {
+		event.preventDefault();
+		setShowToolbar(true)
+	};
+
+	useEffect(() => {
+		if(!oneMouseMove){
+		window.addEventListener('mousemove', onMouseMoveInWindow);
+		setOneMouseMove(true)
+		} else {
+		window.removeEventListener('mousemove', onMouseMoveInWindow);
+		}
+	},[]);
+
 	return (
 		<OnKeyPressComponent next={nextSlide} previous={prevSlide}>
 			<div
-				className="fancybox-container fancybox-is-open fancybox-is-zoomable fancybox-can-zoomIn"
+				className={`fancybox-container fancybox-is-open fancybox-is-zoomable fancybox-can-zoomIn ${(showToolbar ? ' fancybox-show-toolbar fancybox-show-nav'  : '')}`}
 				id="fancybox-container-1"
 			>
 				<div className="fancybox-bg"></div>

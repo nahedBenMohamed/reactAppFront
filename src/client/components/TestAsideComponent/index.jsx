@@ -1,10 +1,16 @@
-import { createRef } from 'react';
+import { createRef, useState } from 'react';
 import useTestAsideComponent from './useTestAsideComponent';
 
 const TestAsideComponent = props => {
 	const { questionData, t, hideInEvaluation } = props;
 	const { target_item, instruction, instruction_audio } = questionData;
 	const { TargetItem } = useTestAsideComponent(props);
+
+	const [tooltip, setToolTip] = useState(false);
+
+	const handleHover = () => {
+		setToolTip(!tooltip);
+	};
 
 	const slideUp = e => {
 		if (e.target.parentNode.classList.value.includes('full')) {
@@ -35,7 +41,7 @@ const TestAsideComponent = props => {
 					<span
 						onClick={() => audioRef?.current?.play()}
 						className="entypo-sound audio-output"
-						title="{{ attribute(langs, cookie.lang).test.title_btn_audio }}"
+						title={t('diagnosis_session_test_title_btn_audio')}
 					></span>
 				)}
 			</label>
@@ -43,9 +49,29 @@ const TestAsideComponent = props => {
 
 			<p dangerouslySetInnerHTML={{ __html: instruction }} />
 			{hideInEvaluation && <br />}
-			<label>{t('diagnosis_session_test_label_answer')}</label>
+			{questionData.target_item && <label>{t('diagnosis_session_test_label_answer')}</label>}
 
 			<TargetItem questionData={questionData} />
+			{questionData.assistance && (
+				<label>
+					<span
+						class="test-tooltip has-tip"
+						onMouseEnter={handleHover}
+						style={{ top: 'calc(100% + -5.3505rem)' }}
+						onMouseLeave={handleHover}
+					>
+						{t('diagnosis_session_test_label_assistance')}
+						{tooltip && (
+							<div
+								className="tooltip top  align-left"
+								style={{ width: '21rem', maxWidth: '20rem', fontWeight: '700' }}
+							>
+								{questionData.assistance.replace({ '%" %': '"' })}
+							</div>
+						)}
+					</span>
+				</label>
+			)}
 		</>
 	);
 };

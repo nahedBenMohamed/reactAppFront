@@ -36,11 +36,6 @@ function ChildItemComponent(props) {
 			icon: 'pencil'
 		},
 		{
-			className: 'export',
-			title: t('child_option_export'),
-			icon: 'export'
-		},
-		{
 			className: 'remove',
 			title: t('child_option_remove'),
 			icon: 'cancel-circled',

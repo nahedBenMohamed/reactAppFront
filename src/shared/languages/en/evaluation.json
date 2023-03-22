@@ -74,11 +74,9 @@
     "table_head_label_medial": "ENGLISH",
     "table_head_label_final": "ENGLISH",
     "table_body_no_matching": "ENGLISH",
-    "questions_analysis": {
-        "label_dysgrammar_symptoms": "ENGLISH",
-        "label_verbflexion": "ENGLISH",
-        "label_verbends": "ENGLISH"
-    },
+    "questions_analysis_label_dysgrammar_symptoms": "ENGLISH",
+    "questions_analysis_label_verbflexion": "ENGLISH",
+    "questions_analysis_label_verbends": "ENGLISH",
     "session_tabs_details": "ENGLISH",
     "tab_answer": "ENGLISH",
     "tab_result": "ENGLISH",
@@ -126,5 +124,13 @@
     "questions_extended_label_reduction_on_second": "ENGLISH",
     "questions_extended_label_reduction_on_third": "ENGLISH",
     "questions_extended_label_reduction_on_x": "ENGLISH",
-    "questions_extended_label_all_removed_in_bond": "ENGLISH"
+    "questions_extended_label_all_removed_in_bond": "ENGLISH",
+    "title_reset": "ENGLISH",
+    "classes_green": "ENGLISH",
+    "classes_red": "ENGLISH",
+    "classes_grey": "ENGLISH",
+    "checks_1": "ENGLISH",
+    "checks_2": "ENGLISH",
+    "tooltip_description_phonetic": "ENGLISH",
+    "phonetic_title": "ENGLISH"
 }

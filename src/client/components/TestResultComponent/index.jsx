@@ -2,24 +2,39 @@ import { createRef, useEffect, useState } from 'react';
 import PDSSAudioComponent from '../PdssAudioComponent';
 import useExtendedDIagnostic from './useExtendedDIagnostic';
 
-const TestResultComponent = ({ questionData, t, storeCurrentSlideNote, selectAnswer, diagnosticId, session }) => {
+const TestResultComponent = ({
+	questionData,
+	t,
+	storeCurrentSlideNote,
+	diagnosticId,
+	session,
+	hideInEvaluation,
+	selectExtendedAnswer,
+	selectClassificationAdditionalOptionAnswer,
+	selectExtrasQuestionsAnswer,
+	selectAnswer
+}) => {
 	const { selected_answer, currentSlide_note } = questionData;
 	const noteRef = createRef();
-	const { ShowExtendedQuestions, MapDataToExtendedQuestionView } = useExtendedDIagnostic({
-		questionData,
-		diagnosticId,
-		t
-	});
+	const { ShowExtendedQuestions, MapDataToExtendedQuestionView, MapTheExtraQuestionWithNeededViewPortal } =
+		useExtendedDIagnostic({
+			questionData,
+			diagnosticId,
+			t,
+			session,
+			hideInEvaluation,
+			selectClassificationAdditionalOptionAnswer,
+			selectExtrasQuestionsAnswer,
+			selectExtendedAnswer
+		});
 	const [tooltip, setToolTip] = useState(false);
 
 	const handleHover = () => {
 		setToolTip(!tooltip);
 	};
-
 	useEffect(() => {
 		if (questionData.hide_notes == 'no') noteRef.current.value = currentSlide_note;
 	}, [questionData, currentSlide_note]);
-
 	return (
 		<div className="results">
 			<div className="container">
@@ -32,7 +47,7 @@ const TestResultComponent = ({ questionData, t, storeCurrentSlideNote, selectAns
 								onMouseEnter={handleHover}
 								onMouseLeave={handleHover}
 							>
-								{t('diagnosis_session_test_label_assistance')}
+								{t('diagnosis_session_test_subheadline_results')}
 								{tooltip && (
 									<div
 										className="tooltip bottom align-left"
@@ -51,7 +66,7 @@ const TestResultComponent = ({ questionData, t, storeCurrentSlideNote, selectAns
 								<a
 									onClick={() => selectAnswer('correct')}
 									className={`button correct ${selected_answer === 'correct' && 'selected'}`}
-									title="{{ attribute(langs, cookie.lang).test.title_btn_correct }}"
+									title={t('true_button')}
 								>
 									<span className="entypo-check"></span>
 									{t('diagnostic_test_mode_therapist_btn_correct')}
@@ -62,7 +77,7 @@ const TestResultComponent = ({ questionData, t, storeCurrentSlideNote, selectAns
 								<a
 									onClick={() => selectAnswer('incorrect')}
 									className={`button incorrect ${selected_answer === 'incorrect' && 'selected'}`}
-									title="{{ attribute(langs, cookie.lang).test.title_btn_incorrect }}"
+									title={t('false_button')}
 								>
 									<span className="entypo-cancel"></span>
 									{t('diagnostic_test_mode_therapist_btn_incorrect')}
@@ -88,16 +103,48 @@ const TestResultComponent = ({ questionData, t, storeCurrentSlideNote, selectAns
 						</div>
 					)}
 
-					{questionData.hide_audio == 'no' && <PDSSAudioComponent session={session.session} />}
+					{questionData.hide_audio == 'no' && (
+						<PDSSAudioComponent
+							session={session}
+							selectAnswer={selectAnswer}
+							slideAlreadyAnswered={diagnosticId == 2 || selected_answer === 'incorrect'}
+							questionData={questionData}
+							hideInEvaluation={hideInEvaluation}
+						/>
+					)}
 				</div>
-				<ShowExtendedQuestions hide={selected_answer === 'correct'}>
+
+				<ShowExtendedQuestions
+					hide={
+						selected_answer === 'correct' ||
+						(!hideInEvaluation && questionData?.hide_in_tests?.includes('yes'))
+					}
+				>
 					{questionData?.question_ids?.split(',').map((QID, QID_index) => (
 						<MapDataToExtendedQuestionView
 							data={QID}
+							defaultAnswers={
+								typeof questionData.extendedResult === 'string'
+									? JSON.parse(questionData.extendedResult)
+									: questionData.extendedResult
+							}
+							answer_id={questionData?.answer_ids.split(',')?.[QID_index]}
 							dataType={questionData?.question_types.split(',')[QID_index]}
 							content={questionData}
+							session={session}
+							display={
+								hideInEvaluation ? true : questionData?.hide_in_tests?.split(',')[QID_index] === 'no'
+							}
 						/>
 					))}
+
+					<MapTheExtraQuestionWithNeededViewPortal
+						extraContent={
+							diagnosticId == 5
+								? questionData?.extraContent.slice().sort((a, b) => a.question_id - b.question_id)
+								: []
+						}
+					/>
 				</ShowExtendedQuestions>
 			</div>
 		</div>

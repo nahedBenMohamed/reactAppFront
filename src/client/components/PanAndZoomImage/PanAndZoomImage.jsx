@@ -1,21 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import usePanAndZoom from './usePanAndZoom/usePanAndZoom';
 
 const PanAndZoomImage = ({ src, position }) => {
   const {
     containerRef,
     onMouseDown,
-    onWheel,
     translateX,
     translateY,
-    scale,
+    scale
   } = usePanAndZoom(position);
+
   return (
     <div
       className="Image-container"
       ref={containerRef}
       onMouseDown={onMouseDown}
-      onWheel={onWheel}
     >
       <div
         style={{

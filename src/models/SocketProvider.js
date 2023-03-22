@@ -14,8 +14,6 @@ export default class SocketProvider {
 	constructor() {}
 	on(event, action, selector, session) {
 		socketConnection.instance.on(event, data => {
-			console.log('event', event);
-
 			return session
 				? session?.includes(data?.data?.otherDetails?.session?.session || data?.data?.otherDetails?.session)
 					? action && data

@@ -11,6 +11,7 @@ const MainAccountComponent = ({ currentUser, hasSession }) => {
 	const logout = () => {
 		AuthServices.logout();
 	};
+
 	return (
 		<div className="cell medium-6">
 			{hasSession ? (

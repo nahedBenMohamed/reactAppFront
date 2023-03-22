@@ -1,6 +1,5 @@
 import { useLocation } from 'react-router-dom';
 import moment from 'moment';
-import sha1 from 'sha1';
 
 import CryptoJS from 'crypto-js';
 import config from '../../../config';
@@ -108,8 +107,6 @@ export const mapWindowsParamsQueriesToObject = key => {
 	};
 };
 
-export const textToCryptoSH1 = text => sha1(text);
-
 export const mapCurrentLocationQueriesToJSON = (additionalQueries = {}) => {
 	var search = window.location.search.substring(1);
 	let queries = Object.fromEntries(new URLSearchParams(search));
@@ -122,6 +119,25 @@ export const mapCurrentLocationQueriesToJSON = (additionalQueries = {}) => {
 			}
 		)
 	);
+};
+export const waitForElm = selector => {
+	return new Promise(resolve => {
+		if (document.querySelectorAll(selector)) {
+			return resolve(document.querySelectorAll(selector));
+		}
+
+		const observer = new MutationObserver(mutations => {
+			if (document.querySelectorAll(selector)) {
+				resolve(document.querySelectorAll(selector));
+				observer.disconnect();
+			}
+		});
+
+		observer.observe(document.body, {
+			childList: true,
+			subtree: true
+		});
+	});
 };
 
 export const CryptoProviders = data => ({
