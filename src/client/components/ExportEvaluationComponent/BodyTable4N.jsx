@@ -1,5 +1,6 @@
 import { View, Text } from '@react-pdf/renderer';
 import styles from './styleExportPdf';
+import { replaceLine } from '../../../shared/helpers/properties';
 
 const BodyTable4NSection = ({ val }) => {
 	return (
@@ -15,8 +16,7 @@ const BodyTable4NSection = ({ val }) => {
 							if (index == 0) {
 								result.push(
 									<Text style={styles.tableCellContent}>
-										{value
-											?.replace(/(?:<[^>]+>)/g, '')
+										{replaceLine(value)
 											.split('')
 											.join('\n\n')}
 									</Text>
@@ -24,10 +24,9 @@ const BodyTable4NSection = ({ val }) => {
 							} else {
 								result.push(
 									<Text style={styles.tableCellContent}>
-										{value
+										{replaceLine(value
 											?.split('</p>')
-											.join('\n\n')
-											.replace(/(?:<[^>]+>)/g, '')}
+											.join('\n\n'))}
 									</Text>
 								);
 							}

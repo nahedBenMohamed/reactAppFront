@@ -2,11 +2,15 @@ import { View, Text } from '@react-pdf/renderer';
 import styles from './styleExportPdf';
 
 const BodyTable3NSection = ({ t, val }) => {
+	const replaceLine = (line) => {
+		const regex = /<[^>]+?>/g;
+		return line?.replace(regex, '');
+	};
 	const replaceContent = (content) => {
 		if (content && content.length >= 0) {
 			const whiteSpacesRemoved = content.replace(/\s/g, '');
 			const newLineAdded = whiteSpacesRemoved.replaceAll('</p>', '\n');
-			return newLineAdded.replace(/<[^>]+?>/g, '');
+			return replaceLine(newLineAdded);
 		}
 	}
 	return (

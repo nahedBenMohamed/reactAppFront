@@ -187,3 +187,8 @@ export const textSpeechProvider = text => {
 	utterance.voiceURI = 'de-DE-Standard-A';
 	speechSynthesis.speak(utterance);
 };
+
+export const replaceLine = (line) => {
+    const regex = /(?:<[^>]+>)/g;
+    return line?.replace(regex, '');
+};
