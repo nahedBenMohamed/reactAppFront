@@ -189,6 +189,6 @@ export const textSpeechProvider = text => {
 };
 
 export const replaceLine = (line) => {
-	const regex = /<[^>]+>/g;
-	return line.replace(regex, '');
+	const result = new DOMParser().parseFromString(line, 'text/html');
+	return result.body.textContent || '';
 };
