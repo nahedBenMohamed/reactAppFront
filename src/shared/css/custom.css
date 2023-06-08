@@ -417,9 +417,11 @@ section {
 		z-index: -1;
 	}
 	header nav.main ul {
+		display: none;
 		z-index: -1;
 	}
 	header nav.main.active ul {
+		display: block;
 		z-index: 2;
 	}
 	header:after {
@@ -429,4 +431,13 @@ section {
         z-index: 1;
     }
 
+}
+.tooltip-6{
+	top: -65px
+}
+.tooltip-8{
+	top: -90px
+}
+.tooltip-2, .tooltip-7{
+	top: -115px
 }

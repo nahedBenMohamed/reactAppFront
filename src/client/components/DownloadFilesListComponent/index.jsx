@@ -1,31 +1,34 @@
 import React from 'react';
 
-
 function DownloadFilesListComponent({ t, files }) {
+	// Function to render table rows for each file
+	const renderTableRows = () => {
+		return files.map((file, i) => (
+			<tr key={i}>
+				<td>{file.name}</td>
+				<td>
+					{/* Download link for the file */}
+					<a href={`/files/downloads/all/${file.path}`} target="_blank" rel="noopener noreferrer">
+						{t('download_btn')}
+					</a>
+				</td>
+			</tr>
+		));
+	};
+
 	return (
 		<div className="grid-x grid-margin-x">
-			<table className='striped bordered'>
+			{/* Table for displaying files */}
+			<table className="striped bordered">
 				<thead>
 					<tr>
-					<th>{t('folder_cell')}</th>
-					<th>{t('option_cell')}</th>
+						<th>{t('folder_cell')}</th>
+						<th>{t('option_cell')}</th>
 					</tr>
 				</thead>
-				<tbody>
-                    { files &&
-                        files.map((file, i) => (
-                            <tr key={i}>
-                                <td>{file.name}</td>
-                                <td>
-                                <a href={`/files/downloads/all/${file.path}`}  target="_blank">
-                                    {t('download_btn')}
-                                </a>
-                                </td>
-                            </tr>
-                        ))
-                    }
-				</tbody>
-			</table> 
+				{/* Table body containing file rows */}
+				<tbody>{files && renderTableRows()}</tbody>
+			</table>
 		</div>
 	);
 }

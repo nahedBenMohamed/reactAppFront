@@ -1,18 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import WithReduxConnector from '../../../shared/helpers/hooks/WithReduxConnector';
 import ContentItemComponent from '../../components/ContentItemComponent';
 
 function ContentListContainer(props) {
-	const { diagnosticContents, diagnosisSession, t } = props;
-	const [extendContent, setExtendContent] = useState({ show: false, id: '' });
-	const handleExtendAccordionContent = (e, id) => {
-		setExtendContent({
-			show: extendContent.id === id ? !extendContent.show : true,
-			id: id
-		});
-	};
+	const { diagnosisSession, t } = props;
 	return (
 		<div className="tabs-panel is-active" id="data">
 			<div className="legend clearfix">
@@ -23,22 +16,7 @@ function ContentListContainer(props) {
 				)}
 			</div>
 			<ul className="accordion" data-accordion data-allow-all-closed="true">
-				{diagnosticContents &&
-					diagnosticContents.map((content, index) => {
-						return (
-							<ContentItemComponent
-								{...props}
-								content={content}
-								data={diagnosticContents}
-								diagnosisSession={diagnosisSession}
-								key={index}
-								index={index}
-								handleExtendAccordionContent={handleExtendAccordionContent}
-								extendContent={extendContent}
-								t={t}
-							/>
-						);
-					})}
+				<ContentItemComponent {...props} diagnosisSession={diagnosisSession} t={t} />
 			</ul>
 		</div>
 	);

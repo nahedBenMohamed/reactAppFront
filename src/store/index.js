@@ -7,6 +7,8 @@ import GlobalSecuritiesSate from './reducers/securities.reducers';
 import diagnosisReducer from './reducers/diagnosis.reducer';
 import evaluationReducers from './reducers/evaluation.reducers';
 import recordReducer from './reducers/record.reducer';
+import settingsReducer from './reducers/settings.reducer';
+import diagnosisExtraReducer from './reducers/diagnosisExtra.reducer';
 
 const middlewares = [];
 
@@ -24,8 +26,10 @@ export const store = configureStore({
 		GlobalSharedState: sharedReducer,
 		GlobalSecuritiesSate: GlobalSecuritiesSate,
 		GlobalDiagnosisState: diagnosisReducer,
+		GlobalDiagnosisExtraState: diagnosisExtraReducer,
 		GlobalEvaluationState: evaluationReducers,
-		GlobalRecordsState: recordReducer
+		GlobalRecordsState: recordReducer,
+		GlobalSettingsState: settingsReducer
 	},
 	middleware: getDefaultMiddleware =>
 		getDefaultMiddleware({

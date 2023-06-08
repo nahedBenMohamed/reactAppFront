@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text } from '@react-pdf/renderer';
 import styles from './styleExportPdf';
-const ScoreSection = ({ t, test }) => {
+const ScoreSection = ({ t, test, id }) => {
 	const testDetails = test?.values;
 	const interpretation = test?.interpretation;
 	const color = interpretation < 0 ? '#b13633' : '#5fb157';
@@ -47,7 +47,7 @@ const ScoreSection = ({ t, test }) => {
 										}}
 									>
 										<Text style={styles.tableCellScoreAnswer}>
-											{item.title == t('score_label_raw_value')
+											{item.title == t('score_label_raw_value') && id != 5
 												? Math.trunc(item.value)
 												: item.value}
 										</Text>

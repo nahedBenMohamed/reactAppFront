@@ -139,5 +139,6 @@
 	"checks_1": "Obligatorisches Satzglied fehlt",
 	"checks_2": "Funktionales Element fehlt",
 	"Detail_evaluation": "Detailauswertung",
-	"phonetic":"Phonetik"
+	"phonetic":"Phonetik",
+	"no_occurence":"Kein Vorkommen"
 }

@@ -1,29 +1,37 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-
 import routes from '../../../config/routes';
 import {
 	getAge,
 	linkIsActive,
 	mapCurrentLocationQueriesToJSON,
+	mapCurrentLocationQueriesToJSONAside,
 	mapWindowsParamsQueriesToObject,
 	progressRing
 } from '../../../shared/helpers/properties';
+import { selectAnalysesList, setCurrentTab } from '../../../store/reducers/evaluation.reducers';
+import { selectChildList } from '../../../store/reducers/user.reducer';
 import AnalysesProfileComponent from '../../components/AnalysesProfileComponent';
 import NavItemComponent from '../../components/NavItemComponent';
 import PdssSelectComponent from '../../components/PdssSelectComponent';
 
 function EvaluationAsideContainer(props) {
-	const { t, data, analysesList, handleChange, HandleScrollToTop } = props;
-
+	const { t, handleChange, HandleScrollToTop } = props;
+	const analysesList = useSelector(selectAnalysesList);
+	const childList = useSelector(selectChildList);
+	const dispatch = useDispatch();
 	let selectOption = [];
-	if (data?.length > 0) {
-		selectOption = data.map(child => {
+	if (childList.data?.length > 0) {
+		selectOption = childList.data.map(child => {
 			return {
 				value: child.id,
 				label: child.lastName + ',' + child.firstName + ' (' + getAge(child.birthdate) + ')'
 			};
 		});
+	}
+	const HandleLabelClick = () => {
+		dispatch(setCurrentTab(1))
 	}
 	selectOption.unshift({ value: '', label: t('evaluation_placeholder_please_select_child') });
 	const selectedChild = mapWindowsParamsQueriesToObject('child');
@@ -84,25 +92,25 @@ function EvaluationAsideContainer(props) {
 										let percent = diagnostic.tvalue
 											? 100
 											: diagnostic.has_sublabel === 'yes' && analysesList[index + 1].tvalue
-											? 100
-											: 0;
+												? 100
+												: 0;
 										const { strokeDasharray, strokeDashoffset } = progressRing(percent, 5);
 										return (
-											<div className={`cell ${label}`} key={index}>
+											<div className={`cell ${label}`} key={index} onClick={HandleLabelClick}>
 												{diagnostic.type === 'label' ? (
 													<p>
 														<Link
 															to={
 																routes.account_pages.children.evaluation_page.children
 																	.result_page.navigationPath +
-																mapCurrentLocationQueriesToJSON({
+																	mapCurrentLocationQueriesToJSONAside({
 																	id: diagnostic.diagnostic
 																})
 															}
 															className={
 																mapWindowsParamsQueriesToObject('id').value ==
 																	diagnostic.diagnostic &&
-																window.location.pathname ===
+																	window.location.pathname ===
 																	routes.account_pages.children.evaluation_page
 																		.children.result_page.navigationPath
 																	? 'active'

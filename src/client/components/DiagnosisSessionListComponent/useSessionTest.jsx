@@ -2,6 +2,8 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { mapWindowsParamsQueriesToObject, scrollToTop } from '../../../shared/helpers/properties';
+import { setCurrentTab } from '../../../store/reducers/evaluation.reducers';
+import { useDispatch } from 'react-redux';
 
 export default props => {
 	const {
@@ -21,12 +23,12 @@ export default props => {
 	const [LocalData, setLocalData] = useState({
 		analysesResult: null,
 		diagnosticContents: [],
-		activeSession: { session: localParams.session.value ? localParams.session.value : '' },
+		activeSession: { session: localParams.session.value ? localParams.session.value : ''},
 		tabSelected: 1,
 		error: null,
 		loader: true
 	});
-
+    const dispatch = useDispatch()
 	const handleClickTab = (e, id, goTo = false) => {
 		e.preventDefault();
 		if (goTo) scrollToTop();
@@ -34,6 +36,7 @@ export default props => {
 			...prev,
 			tabSelected: id
 		}));
+		dispatch(setCurrentTab(id))
 	};
 	useEffect(() => {
 		if(!window.location.search.includes('session')){
@@ -53,7 +56,7 @@ export default props => {
 	};
 
 	useEffect(() => {
-		if (localParams?.childId.value && localParams?.diagnosticId?.value)
+		if (localParams?.childId.value && localParams?.diagnosticId?.value&& localParams.session.value)
 			setSearchParams({
 				child: localParams.childId.value,
 				id: localParams.diagnosticId.value,

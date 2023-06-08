@@ -333,7 +333,7 @@ export default props => {
 		let originalSyllable = [];
 
 		// get each char position
-		elements.map((item, key) => {
+		elements.forEach((item, key) => {
 			item.letters.map((letter, index) => {
 				let obj = { key, index, char: letter.letter, hasClass: letter.hasClass };
 				modifiedSyllable.push(obj);
@@ -341,15 +341,15 @@ export default props => {
 		});
 
 		// get each char position and eliminate added chars
-		prevElements.map((item, key) => {
-			item.letters.map((letter, index) => {
+		prevElements.forEach((item, key) => {
+			item.letters.forEach((letter, index) => {
 				if (!letter.hasClass.includes('added')) {
 					let obj = { key, index, char: letter.letter, hasClass: letter.hasClass };
 					originalSyllable.push(obj);
 				}
 			});
 		});
-		modifiedSyllable.map((element, key) => {
+		modifiedSyllable.forEach((element, key) => {
 			// add missing data to original data
 			if (element.hasClass.includes('added')) {
 				originalSyllable.splice(key, 0, element);

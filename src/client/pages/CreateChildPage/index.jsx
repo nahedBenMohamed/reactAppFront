@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import WithRouter from '../../../shared/helpers/hooks/HOC';
-import { useOutletContextHook } from '../../../shared/helpers/hooks/useOutletContextHook';
+import { setTemplateHideBox, setTemplateTitle } from '../../../store/reducers/settings.reducer';
 import PdssFormComponent from '../../components/PdssFormComponent';
 
 function CreateChildPage(props) {
-	useOutletContextHook(props.t('child_headline'), false);
+	const dispatch = useDispatch();
+	useEffect(() => {
+		dispatch(setTemplateTitle(props.t('child_headline')));
+		dispatch(setTemplateHideBox(false));
+	}, []);
 
 	return (
 		<div className="padding">

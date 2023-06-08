@@ -6,10 +6,8 @@ import { mapWindowsParamsQueriesToObject, scrollToTop } from '../../../shared/he
 export default props => {
 	const {
 		action_user_getAllChild,
-		action_evaluation_getAll,
 		action_diagnosis_getSessions,
 		SecuritiesState,
-		evaluationState,
 		userState
 	} = props;
 	const localParams = {
@@ -19,11 +17,9 @@ export default props => {
 	};
 	const [searchParams, setSearchParams] = useSearchParams();
 	const [LocalData, setLocalData] = useState({
-		analysesList: null,
 		childList: [],
 		selectedDiagnosis: localParams?.diagnosticId.exist ? localParams?.diagnosticId.value : '',
-		selectChild: localParams?.childId.exist ? localParams?.childId.value : '',
-		analysisScores: null
+		selectChild: localParams?.childId.exist ? localParams?.childId.value : ''
 	});
 	const HandleScrollToTop = id => {
 		scrollToTop();
@@ -59,27 +55,12 @@ export default props => {
 	}, [SecuritiesState?.userId, localParams?.childId.value, localParams?.diagnosticId?.value]);
 
 	useEffect(() => {
-		localParams?.childId.value ? action_evaluation_getAll(localParams?.childId.value) : action_evaluation_getAll();
-	}, [localParams?.childId.value]);
-	useEffect(() => {
-		if (evaluationState?.analysesList)
-			setLocalData(prev => ({
-				...prev,
-				analysesList: evaluationState.analysesList
-			}));
 		if (userState?.childList)
 			setLocalData(prev => ({
 				...prev,
 				childList: userState.childList?.data
 			}));
-	}, [evaluationState?.analysesList, userState?.childList]);
-	useEffect(()=> {
-		if (evaluationState?.analysisScores)
-			setLocalData(prev => ({
-				...prev,
-				analysisScores: evaluationState?.analysisScores
-			}));
-	}, [evaluationState?.analysisScores])
+	}, [userState?.childList]);
 	return {
 		handleChange,
 		HandleScrollToTop,

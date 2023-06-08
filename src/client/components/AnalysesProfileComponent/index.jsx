@@ -1,8 +1,17 @@
 import moment from 'moment';
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { selectAnalysesList, setCurrentTab } from '../../../store/reducers/evaluation.reducers';
+import routes from '../../../config/routes';
+import { mapCurrentLocationQueriesToJSON } from '../../../shared/helpers/properties';
 
-function AnalysesProfileComponent({ t, analysesList, format }) {
+function AnalysesProfileComponent({ format }) {
+	const analysesList = useSelector(selectAnalysesList);
+	const dispatch = useDispatch();
+	const openSelectedSession = () => {
+		dispatch(setCurrentTab(2))
+	};
 	return (
 		<>
 			<ul className={'profile clearfix ' + (format === 'full' ? format : '')}>
@@ -30,7 +39,17 @@ function AnalysesProfileComponent({ t, analysesList, format }) {
 										{value ? (
 											<div className={`indicator ${color}`} style={{ bottom: value + '%' }}>
 												<p className="value">
-													<Link>{value}</Link>
+													<Link to={
+														routes.account_pages.children.evaluation_page.children
+															.result_page.navigationPath +
+														mapCurrentLocationQueriesToJSON({
+															id: diagnostic.diagnostic,
+															session: diagnostic.session
+														})
+													}
+													onClick={openSelectedSession}
+													>
+														{value}</Link>
 												</p>
 												<p className="overflow">
 													{moment(diagnostic.date_finished).format('DD.MM.YYYY HH:mm')}:{' '}

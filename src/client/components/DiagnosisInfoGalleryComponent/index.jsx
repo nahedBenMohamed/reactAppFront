@@ -1,49 +1,77 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react';
 import OnKeyPressComponent from '../KeyPressComponent';
-import PanAndZoomImage from '../PanAndZoomImage/PanAndZoomImage';
 function DiagnosisInfoGalleryComponent(props) {
 	const { handleShowGallery, showGallery, images } = props;
-	const [ current, setCurrent ] = useState(images.indexOf(showGallery.image));
-	const [ imageSize, setImageSize ] = useState({width: 0, height: '80%'});
-	const [ position, setPosition ] = useState({x: 0, y: 0});
-	const [ zoomIn, setZoomIn ] = useState(false)
-	const [ showToolbar, setShowToolbar ] = useState(true)
-	const [ oneMouseMove, setOneMouseMove ] = useState(false)
-	const [ nextDisabled, setNextDisabled ] = useState(false)
-	const [ prevDisabled, setPrevDisabled ] = useState(false)
-	const bodyWidth = document.body.clientWidth;
-	const bodyHeight = document.body.clientHeight;
-    const length = images.length;
+	const [current, setCurrent] = useState(images.indexOf(showGallery.image));
+	const [showToolbar, setShowToolbar] = useState(true)
+	const [oneMouseMove, setOneMouseMove] = useState(false)
+	const [nextDisabled, setNextDisabled] = useState(false)
+	const [prevDisabled, setPrevDisabled] = useState(false)
+	const length = images.length;
+	const [scale, setScale] = useState(1);
+	const [position, setPosition] = useState({ x: 0, y: 0 });
+	const [isDragging, setIsDragging] = useState(false);
+	const handleImageClick = (event) => {
+		const { offsetX, offsetY } = event.nativeEvent;
+		if (scale === 1) {
+			setScale(3);
+			setPosition({
+				x: -(offsetX * 2),
+				y: -(offsetY * 2),
+			});
+		} else {
+			setScale(1);
+			setPosition({ x: 0, y: 0 });
+		}
+	};
+	const handleDoubleClick = () => {
+		setScale(1);
+		setPosition({ x: 0, y: 0 });
+	  };
+	const handleMouseDown = (event) => {
+		setIsDragging(true);
+		const { clientX, clientY } = event;
+		const startX = clientX - position.x;
+		const startY = clientY - position.y;
+		const handleMouseMove = (event) => {
+			let newX = event.clientX - startX;
+			let newY = event.clientY - startY;
+			setPosition({
+				x: newX,
+				y: newY,
+			});
+		};
+		document.addEventListener('mousemove', handleMouseMove);
+		document.addEventListener('mouseup', () => {
+			document.removeEventListener('mousemove', handleMouseMove);
+			setIsDragging(false);
+		});
+	};
 
 	const nextSlide = () => {
-		if (!nextDisabled){
-		   setCurrent(current === length - 1 ? 0 : current + 1)
+		if (!nextDisabled) {
+			setCurrent(current === length - 1 ? 0 : current + 1)
 		}
 	};
 
 	const prevSlide = () => {
-		if (!prevDisabled){
-		   setCurrent(current === 0 ? length - 1 : current - 1);
+		if (!prevDisabled) {
+			setCurrent(current === 0 ? length - 1 : current - 1);
 		}
 	};
-
-	const zoomInImage = (e) => {
-		setPosition({x: e.clientX, y: e.clientY})
-		setZoomIn(!zoomIn)
-	}
-	
 	useEffect(() => {
-		setZoomIn(false);
+		setScale(1)
+		setPosition({ x: 0, y: 0 });
 		setNextDisabled((current === length - 1) ? true : false);
 		setPrevDisabled((current === 0) ? true : false);
 	}, [current, length]);
 
 	setTimeout(() => {
-        setShowToolbar(false)
+		setShowToolbar(false)
 		setOneMouseMove(false)
 	}, 6000);
-  
+
 	const onFullScreen = () => {
 		if (document.fullscreenElement) {
 			document.exitFullscreen()
@@ -51,28 +79,25 @@ function DiagnosisInfoGalleryComponent(props) {
 			document.getElementById('fancybox-container-1')?.requestFullscreen()
 		}
 	}
-	useEffect(() => {
-		if (!zoomIn) {setImageSize({width: document.getElementById('wrap').clientWidth})}
-	 },[bodyWidth,bodyHeight, zoomIn]);
-	 
+
 	const onMouseMoveInWindow = (event) => {
 		event.preventDefault();
 		setShowToolbar(true)
 	};
 
 	useEffect(() => {
-		if(!oneMouseMove){
-		window.addEventListener('mousemove', onMouseMoveInWindow);
-		setOneMouseMove(true)
+		if (!oneMouseMove) {
+			window.addEventListener('mousemove', onMouseMoveInWindow);
+			setOneMouseMove(true)
 		} else {
-		window.removeEventListener('mousemove', onMouseMoveInWindow);
+			window.removeEventListener('mousemove', onMouseMoveInWindow);
 		}
-	},[]);
-
+	}, []);
+	
 	return (
 		<OnKeyPressComponent next={nextSlide} previous={prevSlide}>
 			<div
-				className={`fancybox-container fancybox-is-open fancybox-is-zoomable fancybox-can-zoomIn ${(showToolbar ? ' fancybox-show-toolbar fancybox-show-nav'  : '')}`}
+				className={`fancybox-container fancybox-is-open fancybox-is-zoomable fancybox-can-zoomIn ${(showToolbar ? ' fancybox-show-toolbar fancybox-show-nav' : '')}`}
 				id="fancybox-container-1"
 			>
 				<div className="fancybox-bg"></div>
@@ -85,34 +110,54 @@ function DiagnosisInfoGalleryComponent(props) {
 							onClick={handleShowGallery}
 						></button>
 					</div>
-					{ length && length > 1 &&
+					{length && length > 1 &&
 						<div className="fancybox-navigation"
 						>
 							<button title="Previous" className="fancybox-arrow fancybox-arrow--left" onClick={prevSlide} disabled={prevDisabled} />
-							<button title="Next" className="fancybox-arrow fancybox-arrow--right" onClick={nextSlide} disabled={nextDisabled}/>
+							<button title="Next" className="fancybox-arrow fancybox-arrow--right" onClick={nextSlide} disabled={nextDisabled} />
 						</div>
 					}
 					<div className="fancybox-stage">
-						<div className="fancybox-slide fancybox-slide--image fancybox-slide--current fancybox-slide--complete">
-						{current > -1 && !zoomIn &&
+						<div className="fancybox-slide fancybox-slide--image fancybox-slide--current fancybox-slide--complete"
+							style={{
+								display: "flex",
+								justifyContent: "center",
+								alignItems: "center",
+							}}
+						>
 							<div
-							    id="wrap"
 								className="fancybox-image-wrap"
-								onClick={zoomInImage}
-								style={{ width: 'auto', 
-										 height: `80%`, 
-									     transition:'0.1s',
-										 aspectRatio: '1.42/1',
-										 transform: `translate(${Math.round((bodyWidth-imageSize.width)/2)}px,${(100- 80)/2}vh)`, 
-										 display: 'flex', 
-										 justifyContent: 'center', 
-										 alignItems: 'center',
-										 cursor : 'zoom-in'
-										}}
+								style={{
+									position: "relative",
+									width: 'auto',
+									height: `80%`,
+									aspectRatio: '1.42/1',
+									transition: '.1s',
+								}}
 							>
-								   <img className="fancybox-image" src={`${window.location.origin}/${images[current]}`} alt="" />
-							</div>}
-							{zoomIn && <PanAndZoomImage src={`${window.location.origin}/${images[current]}`} position={position}></PanAndZoomImage>}
+								<img
+									src={`${window.location.origin}/${images[current]}`}
+									alt="Zoomable"
+									className="fancybox-image"
+									style={{
+										position: 'absolute',
+										top: `${position.y}px`,
+										left: `${position.x}px`,
+										transform: `scale(${scale})`,
+										transformOrigin: 'top left',
+										cursor: scale === 1 ? 'zoom-in' : 'grab',
+										objectFit: 'contain',
+										transition: "transform .1s",
+									}}
+									onClick={(event) => {
+										if (!isDragging && scale === 1) {
+											handleImageClick(event);
+										}
+									}}
+									onDoubleClick={handleDoubleClick}
+									onMouseDown={handleMouseDown}
+								/>
+							</div>
 						</div>
 					</div>
 				</div>

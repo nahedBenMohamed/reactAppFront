@@ -1,17 +1,21 @@
 /* eslint-disable */
 import { useState } from 'react';
 
+// Custom hook for handling gallery display and tab clicks
 export default props => {
 	const [showGallery, setShowGallery] = useState({
 		show: false,
 		image: ''
 	});
 
+	// Toggle the showGallery state and set the selected image
 	const handleShowGallery = image =>
 		setShowGallery(prev => ({
 			show: !prev.show,
 			image: image
 		}));
+
+	// Handle tab click events
 	const handleClick = event => {
 		var children = document.getElementById('tabs').childNodes;
 		for (var i = 0; i < children.length; i++) {
@@ -29,6 +33,7 @@ export default props => {
 		div.classList.add('is-active');
 	};
 
+	// Return the custom hook's state and methods
 	return {
 		showGallery: showGallery,
 		handleShowGallery: handleShowGallery,

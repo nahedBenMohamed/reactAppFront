@@ -1,23 +1,56 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import routes from '../../../config/routes';
 import WithRouter from '../../../shared/helpers/hooks/HOC';
+import {
+	selectOrderSort,
+	selectSearchStatus,
+	setCurrentPage,
+	setOrderSort,
+	setSearchStatus,
+	setSearchText
+} from '../../../store/reducers/user.reducer';
 import PdssButtonComponent from '../../components/PdssButtonComponent';
 import PdssInputComponent from '../../components/PdssInputComponent';
 import PdssSelectComponent from '../../components/PdssSelectComponent';
-
+import _ from 'lodash';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSearchParams } from '../../../store/reducers/diagnosis.reducer';
 function ChildHeaderListContainer(props) {
 	const {
 		t,
-		currentRouter: { navigate },
-		handleChange,
-		orderSelected,
-		handleSearch,
-		searchValue
+		currentRouter: { navigate }
 	} = props;
-	const [query, setQuery] = useState(searchValue);
-	const handleChangeSearch = e => {
-		setQuery(e.target.value);
+
+	const dispatch = useDispatch();
+	const [query, setQuery] = useState('');
+	const searchStatus = useSelector(selectSearchStatus);
+	const orderSelected = useSelector(selectOrderSort);
+	const handleChangeSearch = event => {
+		setQuery(event.target.value);
 	};
+	//update store with new search text
+	const handleUpdateSearch = _.debounce(searchText => {
+		//reset search status to false after click on search button
+		if (searchStatus) {
+			dispatch(setSearchStatus(false));
+			dispatch(setSearchText(searchText));
+		} else dispatch(setSearchText(searchText));
+	}, 500);
+	useEffect(() => {
+		handleUpdateSearch(query);
+		return () => handleUpdateSearch.cancel();
+	}, [query]);
+	const handleSearchAction = event => {
+		event.preventDefault();
+		if (!searchStatus) {
+			dispatch(setSearchStatus(true));
+		}
+	};
+	const handleChangeOrder = event => {
+		event.preventDefault();
+		dispatch(setOrderSort(event.target.value));
+	};
+
 	return (
 		<div className="grid-x grid-margin-x item-filter">
 			<PdssSelectComponent
@@ -41,17 +74,19 @@ function ChildHeaderListContainer(props) {
 						label: t('child_sortBy_lastnameAsc')
 					}
 				]}
-				clickToAction={handleChange}
+				clickToAction={handleChangeOrder}
 			/>
-			<PdssInputComponent
-				label={t('child_label_search_by')}
-				display="true"
-				changeAction={handleChangeSearch}
-				clickToAction={handleSearch}
-				value={query}
-				iconClassName="search"
-				type="text"
-			/>
+			<form onSubmit={handleSearchAction} className="cell medium-4">
+				<PdssInputComponent
+					label={t('child_label_search_by')}
+					display="true"
+					changeAction={handleChangeSearch}
+					clickToAction={handleSearchAction}
+					value={query}
+					iconClassName="search"
+					type="text"
+				/>
+			</form>
 			<PdssButtonComponent
 				title={t('child_headline_new')}
 				display="true"

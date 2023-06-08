@@ -190,9 +190,10 @@ const styles = StyleSheet.create({
 	},
 	diagnosticTableTitle: {
 		fontSize: 10,
-		width: '65%',
+		width: '85%',
 		paddingLeft: 60,
-		marginTop: 25,
+		marginTop: 5,
+		marginBottom: 5,
 		color: '#4d4d4d',
 		fontFamily: 'NexusPro'
 	},
@@ -200,7 +201,8 @@ const styles = StyleSheet.create({
 		fontSize: 10,
 		width: '65%',
 		paddingLeft: 60,
-		marginTop: 25,
+		marginTop: 15,
+		marginBottom: 20,
 		color: '#4d4d4d',
 		fontFamily: 'NexusProBold'
 	},
@@ -277,7 +279,7 @@ const styles = StyleSheet.create({
 
 	table: {
 		display: 'table',
-		marginTop: '20',
+		marginTop: '5',
 		width: 'auto',
 		borderWidth: 1,
 		borderRightWidth: 0,
@@ -327,8 +329,7 @@ const styles = StyleSheet.create({
 		display: 'table',
 		width: 'auto',
 		marginLeft: 50,
-		marginRight: 60,
-		marginTop: 20
+		marginRight: 60
 	},
 	tableScore: {
 		display: 'table',
@@ -338,7 +339,7 @@ const styles = StyleSheet.create({
 		borderBottomWidth: 0,
 		marginLeft: 60,
 		marginRight: 65,
-		marginTop: 15,
+		marginTop: 0,
 		borderColor: '#4d4d4d'
 	},
 	tableRow: {
@@ -363,7 +364,7 @@ const styles = StyleSheet.create({
 	},
 	tableNote: {
 		display: 'table',
-		marginTop: '20',
+		marginTop: '5',
 		width: 'auto',
 		borderWidth: 0.3,
 		borderRightWidth: 0,
@@ -379,6 +380,7 @@ const styles = StyleSheet.create({
 	},
 	tableNoteContent: {
 		width: '100%',
+		paddingBottom: 25,
 		borderWidth: 0.3,
 		borderLeftWidth: 0,
 		borderTopWidth: 0,
@@ -469,20 +471,20 @@ const styles = StyleSheet.create({
 	},
 
 	colAccordionSegment1: {
-		width: '16.66%',
+		width: '16%',
 		borderWidth: 1,
 		borderLeftWidth: 0,
 		borderTopWidth: 0,
 		color: '#4d4d4d'
 	},
 	colAccordionSegment2: {
-		width: '25%',
+		width: '26%',
 		borderWidth: 1,
 		borderLeftWidth: 0,
 		borderTopWidth: 0
 	},
 	colAccordionSegment3: {
-		width: '33,33%',
+		width: '34%',
 		borderWidth: 1,
 		borderLeftWidth: 0,
 		borderTopWidth: 0,
@@ -512,14 +514,14 @@ const styles = StyleSheet.create({
 	},
 
 	colAccordionDictionary1: {
-		width: '60%',
+		width: '57%',
 		borderWidth: 1,
 		borderLeftWidth: 0,
 		borderTopWidth: 0,
 		color: '#4d4d4d'
 	},
 	colAccordionPronunciation1: {
-		width: '60%',
+		width: '75%',
 		borderWidth: 1,
 		borderLeftWidth: 0,
 		borderTopWidth: 0,
@@ -540,7 +542,7 @@ const styles = StyleSheet.create({
 		color: '#4d4d4d'
 	},
 	colAccordionPronunciation2: {
-		width: '40%',
+		width: '25%',
 		borderWidth: 1,
 		borderLeftWidth: 0,
 		borderTopWidth: 0,
@@ -548,7 +550,7 @@ const styles = StyleSheet.create({
 	},
 
 	colAccordionDictionary2: {
-		width: '20%',
+		width: '23%',
 		borderWidth: 1,
 		borderLeftWidth: 0,
 		borderTopWidth: 0,
@@ -651,7 +653,17 @@ const styles = StyleSheet.create({
 		color: '#4d4d4d',
 		fontFamily: 'DejaVuSans'
 	},
-
+    tableCellContent3: {
+		marginTop: 10,
+		marginBottom: 10,
+		textAlign: 'right',
+		marginLeft: 7,
+		marginRight: 8,
+		fontSize: 9,
+		lineHeight: 2,
+		color: '#4d4d4d',
+		fontFamily: 'DejaVuSans'
+	},
 	tableCellDetailsContent: {
 		marginTop: 10,
 		marginBottom: 10,
@@ -661,6 +673,22 @@ const styles = StyleSheet.create({
 		fontSize: 9,
 		color: '#4d4d4d',
 		fontFamily: 'NexusPro'
-	}
+	},
+	oneCell: {
+		width: '100%',
+		borderWidth: 1,
+		borderLeftWidth: 0,
+		borderTopWidth: 0,
+	},
+	oneCellContent: {
+		marginTop: 10,
+		marginBottom: 10,
+		textAlign: 'left',
+		marginLeft: 7,
+		marginRight: 8,
+		fontSize: 9,
+		color: '#4d4d4d',
+		fontFamily: 'DejaVuSans'
+	},
 });
 export default styles;

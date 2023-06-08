@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
-import { useOutletContextHook } from '../../../shared/helpers/hooks/useOutletContextHook';
+import { setTemplateHideBox, setTemplateTitle } from '../../../store/reducers/settings.reducer';
 import DashboardCardListContainer from '../../containers/DashboardCardListContainer';
 
 export default function DashboardPage(props) {
-	useOutletContextHook(props.t('dashboard'), true);
-
+	const dispatch = useDispatch();
+	useEffect(() => {
+		dispatch(setTemplateTitle(props.t('dashboard')));
+		dispatch(setTemplateHideBox(true));
+	}, []);
 	return (
 		<div className="content" id="dashboard">
 			<div className="grid-container">

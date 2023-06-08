@@ -1,15 +1,66 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import WithRouter from '../../../shared/helpers/hooks/HOC';
+import { action_child_deleteOne } from '../../../store/actions';
 import ChildItemComponent from '../../components/ChildItemComponent';
+import PdssConfirmPopup from '../../components/PdssConfirmPopupComponent';
 
-function ChildListContainer(props) {
-	const { children } = props;
+import { selectCurrentUserId } from '../../../store/reducers/securities.reducers';
+import { selectChildList } from '../../../store/reducers/user.reducer';
+import { t } from 'i18next';
+function ChildListContainer() {
+	const dispatch = useDispatch();
+	const [deleteChild, setDeleteChild] = useState({
+		show: false,
+		selectedChild: null
+	});
+	const currentUserId = useSelector(selectCurrentUserId);
+	const childList = useSelector(selectChildList);
+
+	const showPopup = data => {
+		setDeleteChild({
+			show: true,
+			selectedChild: data
+		});
+	};
+
+	const closePopup = () => {
+		setDeleteChild({
+			show: false,
+			selectedChild: null
+		});
+	};
+
+	const ConfirmPopup = () => {
+		dispatch(
+			action_child_deleteOne({
+				userId: currentUserId,
+				childId: deleteChild.selectedChild
+			})
+		);
+		setDeleteChild({ show: false, selectedChild: null });
+	};
+
 	return (
-		<ul className="items">
-			{children.map((child, childIndex) => {
-				return <ChildItemComponent key={childIndex} child={child} {...props} />;
-			})}
-		</ul>
+		<>
+			{childList.data?.length === 0 ? (
+				<div className="padding">{t('child_data_empty')} </div>
+			) : (
+				<ul className="items">
+					<PdssConfirmPopup
+						ConfirmPopup={ConfirmPopup}
+						closePopup={closePopup}
+						title={t('child_confirm_delete_title')}
+						description={t('child_confirm_delete')}
+						show={deleteChild.show}
+					/>
+
+					{childList.data?.map((child, childIndex) => {
+						return <ChildItemComponent key={childIndex} child={child} showPopup={showPopup} t={t} />;
+					})}
+				</ul>
+			)}
+		</>
 	);
 }
 

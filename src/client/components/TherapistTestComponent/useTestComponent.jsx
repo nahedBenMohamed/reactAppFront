@@ -1,5 +1,7 @@
+/* eslint-disable no-use-before-define */
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { mapWindowsParamsQueriesToObject } from '../../../shared/helpers/properties';
 import {
 	Consumer_ChildDemandData,
@@ -7,9 +9,10 @@ import {
 	Provider_CurrentStateToChild,
 	Provider_TherapistDiagnosticList
 } from '../../../shared/providers/socket';
-import { selectSeconds } from '../../../store/reducers/diagnosis.reducer';
+import PdssConfirmPopup from '../PdssConfirmPopupComponent';
 
-export default props => {
+const useTestComponent = props => {
+	// Extract props
 	const {
 		data,
 		GlobalDiagnosisState,
@@ -22,59 +25,32 @@ export default props => {
 		hideInEvaluation,
 		diagnosticId,
 		diagnosisSession,
+		getCurrentTime,
 		action_diagnosis_timer_on_close
 	} = props;
 
+	// Refs and state
 	const childSelectedImage = useRef();
-	const childId = mapWindowsParamsQueriesToObject('child');
-	const seconds = useSelector(selectSeconds);
-	const [close, setClose] = useState(false);
 	const dispatch = useDispatch();
+	const [childId, setChildId] = useState(null);
 
+	// Get child id once on mount
 	useEffect(() => {
-		if (!hideInEvaluation) getCurrentDianoeticTestContentData();
+		const id = mapWindowsParamsQueriesToObject('child');
+		setChildId(id);
+	}, []);
+
+	// Fetch test data on mount and when diagnostic session status changes
+	useEffect(() => {
+		if (!hideInEvaluation) {
+			getCurrentDianoeticTestContentData();
+		}
 	}, [GlobalDiagnosisState?.diagnostic?.session?.status]);
 
-	//***************************** Child Socket providers ****************************************** */
-
-	const sendBackCurrentStateData = () => {
-		data[DataPointer] &&
-			Provider_CurrentStateToChild({
-				content: data[DataPointer],
-				otherDetails: GlobalDiagnosisState?.diagnostic
-			});
-	};
-
-	useEffect(() => {
-		if (socketTriggerEffect?.current) sendBackCurrentStateData();
-	}, [data, DataPointer]);
-
-	useEffect(() => {
-		if (socketTriggerEffect?.current) {
-			let { closeup } = Consumer_ChildDemandData(
-				sendBackCurrentStateData,
-				GlobalDiagnosisState?.diagnostic?.session.session
-			);
-			return () => closeup();
-		}
-	}, [socketTriggerEffect?.current]);
-
-	useEffect(() => {
-		if (socketTriggerEffect?.current) {
-			//* Child Question response trigger ... *//
-			let { closeup } = Consumer_ChildPickAnswer(data => {
-				compareToGetAnswerStatus(data?.item);
-				childSelectedImage.current = data?.item;
-			}, GlobalDiagnosisState?.diagnostic?.session.session);
-			return () => closeup();
-		}
-	}, [socketTriggerEffect?.current, DataPointer]);
-
-	//***************************** Action Providers ****************************************** */
-
+	// Store final result answer and notes
 	const storeFinalResultAnswerAndNotes = body => {
-		let diagnosisId = hideInEvaluation ? diagnosticId : GlobalDiagnosisState?.diagnostic?.id;
-		let session = hideInEvaluation ? diagnosisSession.session : GlobalDiagnosisState?.diagnostic?.session.session;
+		const diagnosisId = hideInEvaluation ? diagnosticId : GlobalDiagnosisState?.diagnostic?.id;
+		const session = hideInEvaluation ? diagnosisSession.session : GlobalDiagnosisState?.diagnostic?.session.session;
 		action_diagnosis_storeDiagnosticTestResultBySession({
 			contentId: data[DataPointer]?.id,
 			diagnosticId: diagnosisId,
@@ -87,49 +63,8 @@ export default props => {
 		});
 	};
 
-	const updateCurrentSession = body => {
-		if (GlobalDiagnosisState?.diagnostic?.session?.id && !hideInEvaluation)
-			action_diagnosis_updateSession({
-				diagnosticItemsToUpdate: {
-					id: GlobalDiagnosisState?.diagnostic?.session?.id,
-					diagnosticId: GlobalDiagnosisState?.diagnostic?.id,
-					session: GlobalDiagnosisState?.diagnostic?.session.session,
-					childId: childId?.value,
-					userId: SecuritiesState?.userId,
-					body
-				},
-				forceRefresh: () =>
-					Provider_TherapistDiagnosticList({ otherDetails: { session: SecuritiesState?.userId } })
-			});
-	};
-
-	// **************************************** Diagnostic Pagination ************************** /
-
-	const userCanSkipToTheNextOrPreviousSlide = target =>
-		GlobalDiagnosisState?.diagnostic?.session?.status !== 'paused'
-			? target === 'next' && DataPointer < data.length - 1
-				? true
-				: target === 'previous' && DataPointer > 0
-				? true
-				: false
-			: false;
-
-	const skipToThePreviousPage = () =>
-		userCanSkipToTheNextOrPreviousSlide('previous') &&
-		updateCurrentSession({
-			current_slide: DataPointer - 1,
-			seconds_since_start: seconds
-		});
-
-	const skipToTheNextPage = () =>
-		userCanSkipToTheNextOrPreviousSlide('next') &&
-		updateCurrentSession({
-			current_slide: DataPointer + 1,
-			seconds_since_start: seconds
-		});
-
-	// ***************************************************************************************** //
-
+	//***************************** Child Socket providers ****************************************** */
+	// Get answer status
 	const compareToGetAnswerStatus = pickedItem => {
 		let response;
 		switch (GlobalDiagnosisState?.diagnostic?.id) {
@@ -145,13 +80,112 @@ export default props => {
 			default:
 				break;
 		}
-
 		storeFinalResultAnswerAndNotes({ result: { answer: response } });
 	};
+	// Send current state data to child
+	const sendBackCurrentStateData = useCallback(() => {
+		data[DataPointer] &&
+			Provider_CurrentStateToChild({
+				content: data[DataPointer],
+				otherDetails: GlobalDiagnosisState?.diagnostic
+			});
+	}, [data, DataPointer, GlobalDiagnosisState?.diagnostic]);
 
-	// dispatch update session duration on close window
 	useEffect(() => {
-		if (close)
+		if (socketTriggerEffect?.current) sendBackCurrentStateData();
+	}, [data, DataPointer]);
+
+	// Subscribe to child demand data
+	useEffect(() => {
+		if (socketTriggerEffect?.current && !hideInEvaluation) {
+			const { closeup } = Consumer_ChildDemandData(sendBackCurrentStateData);
+			return () => closeup();
+		}
+	}, [socketTriggerEffect?.current, sendBackCurrentStateData]);
+
+	// Subscribe to child pick answer data
+	useEffect(() => {
+		if (socketTriggerEffect?.current && !hideInEvaluation) {
+			const { closeup } = Consumer_ChildPickAnswer(data => {
+				compareToGetAnswerStatus(data?.item);
+				childSelectedImage.current = data?.item;
+			}, GlobalDiagnosisState?.diagnostic?.session.session);
+			return () => closeup();
+		}
+	}, [
+		socketTriggerEffect?.current,
+		GlobalDiagnosisState,
+		DataPointer,
+		data,
+		compareToGetAnswerStatus,
+		storeFinalResultAnswerAndNotes
+	]);
+
+	//***************************** Action Providers ****************************************** */
+
+	// Update current session
+	const updateCurrentSession = useCallback(
+		body => {
+			if (GlobalDiagnosisState?.diagnostic?.session?.id && !hideInEvaluation) {
+				action_diagnosis_updateSession({
+					diagnosticItemsToUpdate: {
+						id: GlobalDiagnosisState?.diagnostic?.session?.id,
+						diagnosticId: GlobalDiagnosisState?.diagnostic?.id,
+						session: GlobalDiagnosisState?.diagnostic?.session.session,
+						childId: childId?.value,
+						userId: SecuritiesState?.userId,
+						body
+					},
+					forceRefresh: () =>
+						Provider_TherapistDiagnosticList({ otherDetails: { session: SecuritiesState?.userId } })
+				});
+			}
+		},
+		[
+			action_diagnosis_updateSession,
+			childId?.value,
+			GlobalDiagnosisState?.diagnostic?.id,
+			GlobalDiagnosisState?.diagnostic?.session?.id,
+			GlobalDiagnosisState?.diagnostic?.session.session,
+			hideInEvaluation,
+			SecuritiesState?.userId
+		]
+	);
+
+	// **************************************** Diagnostic Pagination ************************** /
+
+	// Check if user can skip to the next or previous slide
+	const userCanSkipToTheNextOrPreviousSlide = useCallback(
+		target =>
+			GlobalDiagnosisState?.diagnostic?.session?.status !== 'paused' &&
+			((target === 'next' && DataPointer < data.length - 1) || (target === 'previous' && DataPointer > 0)),
+		[DataPointer, GlobalDiagnosisState?.diagnostic?.session?.status, data.length]
+	);
+
+	// Skip to the previous slide
+	const skipToThePreviousPage = useCallback(() => {
+		if (userCanSkipToTheNextOrPreviousSlide('previous')) {
+			updateCurrentSession({
+				current_slide: DataPointer - 1,
+				seconds_since_start: getCurrentTime()
+			});
+		}
+	}, [DataPointer, updateCurrentSession, userCanSkipToTheNextOrPreviousSlide]);
+
+	// Skip to the next slide
+	const skipToTheNextPage = useCallback(() => {
+		if (userCanSkipToTheNextOrPreviousSlide('next')) {
+			updateCurrentSession({
+				current_slide: DataPointer + 1,
+				seconds_since_start: getCurrentTime()
+			});
+		}
+	}, [DataPointer, updateCurrentSession, userCanSkipToTheNextOrPreviousSlide]);
+
+	// ***************************************************************************************** //
+
+	const handleCloseWindow = useCallback(
+		event => {
 			dispatch(
 				action_diagnosis_timer_on_close({
 					id: GlobalDiagnosisState?.diagnostic?.session?.id,
@@ -159,32 +193,34 @@ export default props => {
 					session: GlobalDiagnosisState?.diagnostic?.session.session,
 					childId: childId?.value,
 					userId: SecuritiesState?.userId,
-					body: { seconds_since_start: seconds }
+					body: { seconds_since_start: getCurrentTime() }
 				})
 			);
-	}, [close]);
+			return;
+		},
+		[dispatch]
+	);
 
-	// add event listener on close window
-	// remove event listener on evaluation component
-	if (!hideInEvaluation) {
-		useEffect(() => {
-			const handleCloseWindow = () => {
-				setClose(true);
-			};
+	useEffect(() => {
+		if (!hideInEvaluation) {
 			window.addEventListener('beforeunload', handleCloseWindow);
 			return () => {
 				window.removeEventListener('beforeunload', handleCloseWindow);
 			};
-		}, []);
-	}
+		}
+	}, [hideInEvaluation, handleCloseWindow]);
+
+	// Return necessary functions and data
 	return {
 		DataPointer,
 		skipToTheNextPage,
 		updateCurrentSession,
 		skipToThePreviousPage,
 		childSelectedImage,
-		compareToGetAnswerStatus,
 		storeFinalResultAnswerAndNotes,
-		diagnostic: GlobalDiagnosisState?.diagnostic
+		diagnostic: GlobalDiagnosisState?.diagnostic,
+		compareToGetAnswerStatus
 	};
 };
+
+export default useTestComponent;

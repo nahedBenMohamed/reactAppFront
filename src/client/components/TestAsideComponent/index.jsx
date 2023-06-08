@@ -1,11 +1,12 @@
-import { createRef, useState } from 'react';
+import { createRef, useEffect, useState } from 'react';
+import { textSpeechProvider } from '../../../shared/helpers/properties';
 import useTestAsideComponent from './useTestAsideComponent';
 
 const TestAsideComponent = props => {
 	const { questionData, t, hideInEvaluation } = props;
-	const { target_item, instruction, instruction_audio } = questionData;
+	const { instruction, instruction_audio } = questionData;
 	const { TargetItem } = useTestAsideComponent(props);
-
+	const [height, setHeight] = useState(document.body.clientHeight);
 	const [tooltip, setToolTip] = useState(false);
 
 	const handleHover = () => {
@@ -22,6 +23,12 @@ const TestAsideComponent = props => {
 		}
 	};
 	const audioRef = createRef();
+	const breakpoint = 1000;
+	useEffect(() => {
+		const handleWindowResize = () => setHeight(document.body.clientHeight)
+		window.addEventListener("resize", handleWindowResize);
+		return () => window.removeEventListener("resize", handleWindowResize);
+	}, []);
 	return (
 		<>
 			{!hideInEvaluation && (
@@ -39,7 +46,10 @@ const TestAsideComponent = props => {
 				{t('diagnostic_test_mode_therapist_label_instruction')}
 				{!hideInEvaluation && (
 					<span
-						onClick={() => audioRef?.current?.play()}
+						onClick={() => {
+							if (instruction_audio) audioRef?.current?.play();
+							else textSpeechProvider(instruction);
+						}}
 						className="entypo-sound audio-output"
 						title={t('diagnosis_session_test_title_btn_audio')}
 					></span>
@@ -54,17 +64,19 @@ const TestAsideComponent = props => {
 			<TargetItem questionData={questionData} />
 			{questionData.assistance && (
 				<label>
-					<span
-						class="test-tooltip has-tip"
-						onMouseEnter={handleHover}
-						style={{ top: 'calc(100% + -5.3505rem)' }}
-						onMouseLeave={handleHover}
-					>
+					<span class="test-tooltip has-tip" onMouseEnter={handleHover} onMouseLeave={handleHover}>
 						{t('diagnosis_session_test_label_assistance')}
 						{tooltip && (
 							<div
-								className="tooltip top  align-left"
-								style={{ width: '21rem', maxWidth: '20rem', fontWeight: '700' }}
+								className={`tooltip ${height < breakpoint ? `tooltip-${questionData.diagnostic} top` : 'bottom'} align-left`}
+								style={{
+									width: '21rem',
+									maxWidth: '21rem',
+									fontWeight: '300',
+									fontSize: '14px',
+									textTransform: 'capitalize',
+									top: 'none'
+								}}
 							>
 								{questionData.assistance.replace({ '%" %': '"' })}
 							</div>

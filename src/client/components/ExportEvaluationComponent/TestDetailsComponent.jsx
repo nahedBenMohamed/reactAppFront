@@ -9,7 +9,7 @@ import AccordionDictionarySection from './AccordionDictionarySection';
 import CompactValuesSection from './CompactValuesSection';
 import TableGrammaticTest from './TableGrammaticTest';
 
-const TestDetailsComponent = ({ t, testDetails, child, props }) => {
+const TestDetailsComponent = ({ t, testDetails, child }) => {
 	let hideFromExport = [
 		'Detaillierte Auswertung',
 		'Fragen',
@@ -21,7 +21,7 @@ const TestDetailsComponent = ({ t, testDetails, child, props }) => {
 	let hideFromDetail = ['Detailauswertung', 'Ergebnisübersicht'];
 	return (
 		<>
-			<Text break x="60" y="40" style={styles.diagnosticSection}>
+			<Text x="60" y="40" style={styles.diagnosticSection}>
 				{testDetails.diagnosticDetails[0].title}
 			</Text>
 			<view style={styles.sectionTest}>
@@ -47,14 +47,14 @@ const TestDetailsComponent = ({ t, testDetails, child, props }) => {
 							hideFromExport.includes(test.score_name) == false) ||
 						(localStorage?.getItem('option_export') == 'false' &&
 							hideFromExport.concat(hideFromDetail).includes(test.score_name) == false) ? (
-							<View>
+							<View break={test.type == 'accordion'}>
 								{test.score_name != t('note_age_child') ? (
-									<Text style={styles.testTitle}>{test.score_name}</Text>
+									<Text style={styles.testTitle} >{test.score_name}</Text>
 								) : (
 									''
 								)}
 								{test.type == 'values' ? (
-									<ScoreSection t={t} test={test.data} />
+									<ScoreSection t={t} test={test.data} id={test.diagnostic} />
 								) : test.type == 'compact_values' ? (
 									<CompactValuesSection t={t} test={test.data} />
 								) : test.type == 'accordion' ? (
@@ -79,7 +79,7 @@ const TestDetailsComponent = ({ t, testDetails, child, props }) => {
 						)}
 					</React.Fragment>
 				))}
-			{testDetails.diagnostic == '5' ? <TableGrammaticTest props={props} /> : ''}
+			{testDetails.diagnostic == '5' ? <TableGrammaticTest analysisGrammarScores={testDetails.grammars} /> : ''}
 			{testDetails.diagnostic == '10' && (
 				<>
 					<Text style={styles.diagnosticSectionTitle}>{t('note_age_child')}</Text>

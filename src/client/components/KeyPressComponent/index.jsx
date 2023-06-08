@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 
 export default function OnKeyPressComponent({ next, previous, children }) {
+	function handleKeyDown(e) {
+		if (e.code.includes('ArrowLeft')) previous();
+		if (e.code.includes('ArrowRight')) next();
+	}
 	useEffect(() => {
-		function handleKeyDown(e) {
-			if (e.code.includes('ArrowLeft')) previous();
-			if (e.code.includes('ArrowRight')) next();
-		}
-		document.addEventListener('keydown', handleKeyDown);
+		document.addEventListener('keyup', handleKeyDown);
 		return function cleanup() {
-			document.removeEventListener('keydown', handleKeyDown);
+			document.removeEventListener('keyup', handleKeyDown);
 		};
 	});
 	return children;

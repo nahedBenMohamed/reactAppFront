@@ -3,7 +3,7 @@ function PdssSelectComponent({ label, selectOption, selectedValue, clickToAction
 	return (
 		<div className={additionalClass ? additionalClass : 'cell medium-4'}>
 			{label && <p className="label">{label}</p>}
-			<select id={idToAdd ? idToAdd : 'child_sort'} value={selectedValue} onChange={clickToAction}>
+			<select id={idToAdd ? idToAdd : 'child_sort'} value={selectedValue ? selectedValue : ''} onChange={clickToAction}>
 				{selectOption.map((item, index) => {
 					return (
 						<option key={index} value={item?.value}>

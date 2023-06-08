@@ -1,16 +1,28 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useSearchParams } from 'react-router-dom';
 import routes from '../../../config/routes';
 import WithRouter from '../../../shared/helpers/hooks/HOC';
 import { getAge, linkIsActive, mapCurrentLocationQueriesToJSON } from '../../../shared/helpers/properties';
+import { selectChildDetails, setSelectedChildDetails } from '../../../store/reducers/child.reducer';
+import { selectChildList } from '../../../store/reducers/user.reducer';
 import NavItemComponent from '../../components/NavItemComponent';
 import PdssSelectComponent from '../../components/PdssSelectComponent';
 import DiagnosisStatisticContainer from '../DiagnosisStatisticContainer';
 
 function DiagnosisAsideContainer(props) {
-	const { data, t, selectedChild, handleChange, diagnosisGroups } = props;
+	const { t } = props;
+	const selectedChild = useSelector(selectChildDetails);
+	const childList = useSelector(selectChildList);
+	const [searchParams, setSearchParams] = useSearchParams();
+	const dispatch = useDispatch()
+	const handleChangeSelect = e => {
+		setSearchParams({ child: e.target.value });
+		dispatch(setSelectedChildDetails(childList.data.find(element => element.id == e.target.value)));
+	};
 	let selectOption = [];
-	if (data?.length > 0) {
-		selectOption = data.map(child => {
+	if (childList.data?.length > 0) {
+		selectOption = childList.data.map(child => {
 			return {
 				value: child.id,
 				label: child.lastName + ',' + child.firstName + ' (' + getAge(child.birthdate) + ')'
@@ -26,9 +38,9 @@ function DiagnosisAsideContainer(props) {
 			<div className="grid-x">
 				<div className="cell">
 					<PdssSelectComponent
-						selectedValue={selectedChild}
+						selectedValue={selectedChild?.id ? selectedChild?.id : ''}
 						selectOption={selectOption}
-						clickToAction={handleChange}
+						clickToAction={handleChangeSelect}
 					/>
 					<div className="grid-x">
 						<div className="cell nav">
@@ -53,7 +65,7 @@ function DiagnosisAsideContainer(props) {
 							/>
 						</div>
 					</div>
-					<DiagnosisStatisticContainer diagnosisGroups={diagnosisGroups} />
+					<DiagnosisStatisticContainer />
 				</div>
 			</div>
 		</aside>

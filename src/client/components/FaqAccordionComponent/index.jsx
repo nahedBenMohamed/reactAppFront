@@ -1,33 +1,29 @@
-import { useEffect, useState } from "react";
-import AccordionItem from "./AccordionItem";
+import { useState } from 'react';
+import AccordionItem from './AccordionItem';
 
-const Accordion = (props) => {
-  const { faqs } = props
-  const [clicked, setClicked] = useState("0");
+// Component that renders a list of accordion items
+const Accordion = ({ faqs }) => {
+	// Set the initial active index to -1 (no active items)
+	const [activeIndex, setActiveIndex] = useState(-1);
 
-  useEffect(() => {
-		setClicked(0)
-	}, []);
+	// Toggle the active index on click
+	const handleToggle = index => {
+		setActiveIndex(prevIndex => (prevIndex === index ? -1 : index));
+	};
 
-  const handleToggle = (index) => {
-    if (clicked === index) {
-      return setClicked("0");
-    }
-    setClicked(index);
-  };
-
-  return (
-    <ul className="accordion">
-      {faqs.map((faq, index) => (
-        <AccordionItem
-          onToggle={() => handleToggle(index)}
-          active={clicked === index}
-          key={index}
-          faq={faq}
-        />
-      ))}
-    </ul>
-  );
+	return (
+		<ul className="accordion">
+			{/* Loop through the faqs and render an AccordionItem for each */}
+			{faqs.map((faq, index) => (
+				<AccordionItem
+					key={index}
+					faq={faq}
+					active={activeIndex === index}
+					onToggle={() => handleToggle(index)}
+				/>
+			))}
+		</ul>
+	);
 };
 
 export default Accordion;

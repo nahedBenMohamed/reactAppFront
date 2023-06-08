@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import moment from 'moment';
 import { useEffect, useRef, useState } from 'react';
 import { useTimer } from '../../../shared/helpers/hooks/Timer';
@@ -29,7 +30,8 @@ const PDSSAudioComponent = props => {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		 action_record_getAllBySession({ session:session.session, diagnostic_content: questionData.id });
+		action_record_getAllBySession({ session: session.session, diagnostic_content: questionData.id });
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [questionData.id]);
 
 	const getAudio = async () => {
@@ -83,7 +85,11 @@ const PDSSAudioComponent = props => {
 
 	const handleConfirmPopup = () => {
 		dispatch(
-			action_record_deleteOne({ recordId: showPopup.selected, session:session.session, diagnostic_content: questionData.id })
+			action_record_deleteOne({
+				recordId: showPopup.selected,
+				session: session.session,
+				diagnostic_content: questionData.id
+			})
 		)
 			.then(() => {
 				setShowPopUp({ status: false, selected: 0 });
@@ -103,7 +109,11 @@ const PDSSAudioComponent = props => {
 					</div>
 					<div className="cell small-5 text-right">
 						{hideInEvaluation ? (
-							<p className="duration">{ records?.length>0&&hideInEvaluation ? `${records.length} ${t('diagnosis_session_record_audio_records_available')}`  : t('diagnosis_session_record_audio_no_data_label') } </p>
+							<p className="duration">
+								{records?.length > 0 && hideInEvaluation
+									? `${records.length} ${t('diagnosis_session_record_audio_records_available')}`
+									: t('diagnosis_session_record_audio_no_data_label')}{' '}
+							</p>
 						) : (
 							<>
 								<p className="duration">{moment.utc(seconds * 1000).format('HH:mm:ss')}</p>
@@ -161,3 +171,4 @@ const mapStateToProps = state => ({
 	recordState: state.GlobalRecordsState
 });
 export default connect(mapStateToProps, mapDispatchToProps)(WithRouter(PDSSAudioComponent));
+	

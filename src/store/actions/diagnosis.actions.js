@@ -49,7 +49,7 @@ export const action_diagnosis_deleteSession = createAsyncThunk(
 	async ({ sessionId, userId, childId }, { dispatch }) => {
 		const response = await instance.delete(diagnosis.basePath + diagnosis.deleteSession(sessionId));
 		const results = await response.data.data;
-		dispatch(action_diagnosis_getSessions({ userId: userId, childId: childId }));
+		dispatch(action_diagnosis_getSessions({ userId: userId, childId: childId.value }));
 		return results;
 	}
 );
@@ -62,8 +62,7 @@ export const action_diagnosis_newSession = createAsyncThunk('diagnosis/newSessio
 		if (response) {
 			setTimeout(() => {
 				window.open(
-					`${routes.test_pages.navigationPath}?id=${body.diagnosticId}&child=${
-						body.childId
+					`${routes.test_pages.navigationPath}?id=${body.diagnosticId}&child=${body.childId
 					}&token=${CryptoProviders(
 						JSON.stringify({
 							child: body.childId,
@@ -74,7 +73,8 @@ export const action_diagnosis_newSession = createAsyncThunk('diagnosis/newSessio
 						})
 					).hashIt()}&session=${response.data.data?.session}`,
 					'_blank',
-					'toolbar=0,location=0,menubar=0'
+					`toolbar=0,location=0,menubar=0,width=1025,height=751,left=${(window.screen.width - 1025) / 2
+					},top=${(window.screen.height - 751) / 2}`
 				);
 			});
 			dispatch(action_diagnosis_getSessions({ userId: body.userId, childId: body.childId }));
@@ -151,6 +151,46 @@ export const action_diagnosis_storeDiagnosticTestResultBySession = createAsyncTh
 	}
 );
 
+export const action_diagnosis_getDiagnosticContentByIdContentForEvaluation = createAsyncThunk(
+	'diagnosis/getDiagnosticContentByIdContentForEvaluation',
+	async ({ id, session, contentId }) => {
+		try {
+			const response = await instance.get(diagnosis.basePath + diagnosis.getDiagnosticContentByIdContentForEvaluation(id, session, contentId));
+			return response.data.data;
+		} catch (error) {
+			return false;
+		}
+	}
+);
+
+
+export const action_diagnosis_getDiagnosticContentEvaluation = createAsyncThunk(
+	'diagnosis/getDiagnosticContentEvaluation',
+	async ({ id, session, contentId }) => {
+		try {
+			const response = await instance.get(diagnosis.basePath + diagnosis.getDiagnosticContentEvaluation(id, session));
+			return response.data.data;
+		} catch (error) {
+			return false;
+		}
+	}
+);
+
+
+export const action_diagnosis_storeDiagnosticTestResultBySessionForEvaluation = createAsyncThunk(
+	'diagnosis/storeDiagnosticTestResultBySessionForEvaluation',
+	async ({ contentId, body }, { dispatch }) => {
+		try {
+			const response = await instance.post(
+				diagnosis.basePath + diagnosis.storeDiagnosticTestResultBySession(contentId),
+				body
+			);
+			return response.data.data;
+		} catch (error) {
+			return false;
+		}
+	}
+);
 export const action_update_timer = createAsyncThunk('diagnosis/updateTimer', async seconds => ({
 	payload: seconds
 }));

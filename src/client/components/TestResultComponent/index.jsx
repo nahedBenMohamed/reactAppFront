@@ -1,3 +1,4 @@
+/* eslint-disable  */
 import { createRef, useEffect, useState } from 'react';
 import PDSSAudioComponent from '../PdssAudioComponent';
 import useExtendedDIagnostic from './useExtendedDIagnostic';
@@ -34,6 +35,7 @@ const TestResultComponent = ({
 	};
 	useEffect(() => {
 		if (questionData.hide_notes == 'no') noteRef.current.value = currentSlide_note;
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [questionData, currentSlide_note]);
 	return (
 		<div className="results">
@@ -117,7 +119,11 @@ const TestResultComponent = ({
 				<ShowExtendedQuestions
 					hide={
 						selected_answer === 'correct' ||
-						(!hideInEvaluation && questionData?.hide_in_tests?.includes('yes'))
+						(questionData?.hide_in_tests
+							? !hideInEvaluation && !questionData?.hide_in_tests?.includes('no')
+							: !hideInEvaluation && questionData?.hide_in_tests === null
+							? true
+							: false)
 					}
 				>
 					{questionData?.question_ids?.split(',').map((QID, QID_index) => (
@@ -140,8 +146,8 @@ const TestResultComponent = ({
 
 					<MapTheExtraQuestionWithNeededViewPortal
 						extraContent={
-							diagnosticId == 5
-								? questionData?.extraContent.slice().sort((a, b) => a.question_id - b.question_id)
+							questionData.diagnostic == 5 || questionData.diagnostic === 10 || questionData.diagnostic === 9
+								? questionData?.extraContent?.slice().sort((a, b) => a.question_id - b.question_id)
 								: []
 						}
 					/>

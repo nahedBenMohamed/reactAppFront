@@ -118,7 +118,7 @@ const PdssSyllableComponent = props => {
 		<>
 			{elements?.map((element, key) => {
 				return (
-					<span className={element.hasClass} key={key} data-json={btoa(encodeURIComponent(JSON.stringify(element?.dataJson)))}>
+					<span className={element.hasClass} key={key} data-json={element.dataJson && btoa(encodeURIComponent(JSON.stringify(element?.dataJson)))}>
 						{element.letters.map((char, index) => {
 							return (
 								<span

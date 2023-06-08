@@ -1,27 +1,67 @@
-import React, { useState } from 'react';
+/* eslint-disable */
+
+import React, { useEffect, useState } from 'react';
 import EvaluationCardComponent from '../EvaluationCardComponent';
 import EvaluationExtendedAnswerComponent from '../EvaluationExtendedAnswerComponent';
 import EvaluationTableComponent from '../EvaluationTableComponent';
 import PdssWarningMessageComponent from '../PdssWarningMessageComponent';
+import { useDispatch } from 'react-redux';
+import { action_evaluation_setQuestions5 } from '../../../store/actions';
 
-function EvaluationItemComponent({ score, t, index, handleClickTab }) {
+function EvaluationItemComponent({ score, t, index, handleClickTab, session }) {
 	const [accordionContent, setAccordionContent] = useState([',']);
-	const ShowAccordionContent = (e, id) => {
+	const dispatch = useDispatch();
+	const [fragen, setFragen] = useState([]);
+	// Toggle accordion content
+	const showAccordionContent = id => e => {
 		e.preventDefault();
 		if (accordionContent && accordionContent.includes(id)) {
 			return setAccordionContent(accordionContent.filter(item => item !== id));
-		}else {
+		} else {
 			setAccordionContent([...accordionContent, id]);
-
 		}
 	};
+	const handleQuestion = async (value, answer) => {
+		var question = { ...value };
+		question.answer = answer;
+
+		setFragen(prevFragen => {
+			// find the index of the question in the array
+			const index = prevFragen.findIndex(q => q.id === question.id);
+
+			if (index !== -1) {
+				// make a copy of the array
+				const newFragen = [...prevFragen];
+				// replace the question in the array
+				newFragen[index] = question;
+				// update the questions in the database
+				updateQuestions(session, JSON.stringify({ values: newFragen }));
+				// return the new state
+				return newFragen;
+			}
+			// if the question was not found in the array, just return the previous state
+			return prevFragen;
+		});
+	};
+
+	const updateQuestions = (session, newData) => {
+		dispatch(action_evaluation_setQuestions5({ session, newData }));
+	};
+	useEffect(() => {
+		if (score.type === 'questions') setFragen(score?.values);
+	}, [score]);
+
+	// Render evaluation item component
 	return (
 		<div key={index} className={'grid-x grid-margin-x grid-margin-y ' + (score.visible === 'no' ? 'hide' : '')}>
+			{/* Headline */}
 			<div className="cell headline">
 				<p>
-					<strong>{score.scoreName} </strong>
+					<strong>{score.scoreName}</strong>
 				</p>
 			</div>
+
+			{/* Score type: values */}
 			{score.type === 'values' ? (
 				<>
 					{score.values &&
@@ -42,6 +82,7 @@ function EvaluationItemComponent({ score, t, index, handleClickTab }) {
 								/>
 							);
 						})}
+					{/* Warning message */}
 					<div className="cell">
 						<PdssWarningMessageComponent
 							message={
@@ -55,7 +96,11 @@ function EvaluationItemComponent({ score, t, index, handleClickTab }) {
 					</div>
 				</>
 			) : null}
+
+			{/* Score type: table */}
 			{score.type === 'table' ? <EvaluationTableComponent t={t} score={score} /> : null}
+
+			{/* Score type: message */}
 			{score.type === 'message' ? (
 				<div className="cell">
 					<div className={'callout ' + (score.class !== undefined ? score.class : 'warning')}>
@@ -77,14 +122,16 @@ function EvaluationItemComponent({ score, t, index, handleClickTab }) {
 					</div>
 				</div>
 			) : null}
-			{score.type == 'compact_values' ? (
+
+			{/* Score type: compact_values */}
+			{score.type === 'compact_values' ? (
 				<>
 					{score.values.map(value => {
 						let raw_value;
 						let decimals;
-						if (value.decimals != undefined) {
+						if (value.decimals !== undefined) {
 							decimals = value.decimals ? value.decimals : 0;
-							raw_value = value.tvalue; //|number_format(decimals,",")
+							raw_value = value.raw_value || '0,0';
 						} else raw_value = value.raw_value;
 						return (
 							<div className={'cell ' + (value.width ? value.width : 'auto')} data-title={value.name}>
@@ -107,53 +154,60 @@ function EvaluationItemComponent({ score, t, index, handleClickTab }) {
 					})}
 				</>
 			) : null}
+
+			{/* Score type: questions */}
 			{score.type === 'questions' ? (
 				<div className="cell questions">
-					{score.values.map(value => {
-						return (
-							<div className={`grid-x enum ${value.answer ? ' answered' : ''}`}>
-								<div className="cell small-10">
-									<p className="question">{t(`questions_analysis_${value.label}`)}</p>
-								</div>
-								<div className="cell small-2" data-question-id={value.id}>
-									<div className="grid-x">
-										<div className="cell small-6">
-											<a
-												className={`button correct ${
-													value.answer == 'correct' ? ' selected' : ''
-												} `}
-											>
-												<span className="entypo-check"></span>
-											</a>
-										</div>
-										<div className="cell small-6">
-											<a
-												className={`button incorrect ${
-													value.answer == 'incorrect' ? ' selected' : ''
-												} `}
-											>
-												<span className="entypo-cancel"></span>
-											</a>
+					{fragen &&
+						fragen?.map(value => {
+							return (
+								<div className={`grid-x enum ${value.answer ? ' answered' : ''}`}>
+									<div className="cell small-10">
+										<p className="question">{t(`questions_analysis_${value.label}`)}</p>
+									</div>
+									<div className="cell small-2" data-question-id={value.id}>
+										<div className="grid-x">
+											<div className="cell small-6">
+												<a
+													onClick={() => handleQuestion(value, 'correct')}
+													className={`button correct ${
+														value.answer === 'correct' ? ' selected' : ''
+													} `}
+												>
+													<span className="entypo-check"></span>
+												</a>
+											</div>
+											<div className="cell small-6">
+												<a
+													onClick={() => handleQuestion(value, 'incorrect')}
+													className={`button incorrect ${
+														value.answer === 'incorrect' ? ' selected' : ''
+													} `}
+												>
+													<span className="entypo-cancel"></span>
+												</a>
+											</div>
 										</div>
 									</div>
 								</div>
-							</div>
-						);
-					})}
+							);
+						})}
 				</div>
 			) : null}
+
+			{/* Score type: answers */}
 			{score.type === 'answers' ? (
 				<div className="cell classification">
 					<label>Liste aller Antworten</label>
 					<div className="legend">
 						<p>
-							<span className="green"></span>Vollständig
+							<span className="green"></span>Vollständig{' '}
 						</p>
 						<p>
-							<span className="red"></span>Unvollständig
+							<span className="red"></span>Unvollständig{' '}
 						</p>
 						<p>
-							<span className="grey"></span>Elipse
+							<span className="grey"></span>Elipse{' '}
 						</p>
 					</div>
 					<div className="answers">
@@ -163,12 +217,16 @@ function EvaluationItemComponent({ score, t, index, handleClickTab }) {
 					</div>
 				</div>
 			) : null}
-			{score.type == 'text' ? (
+
+			{/* Score type: text */}
+			{score.type === 'text' ? (
 				<div className="cell">
 					<p>{t(`${score.label}`)}</p>
 				</div>
 			) : null}
-			{score.type == 'accordion' ? (
+
+			{/* Score type: accordion */}
+			{score.type === 'accordion' ? (
 				<div className="cell">
 					<ul
 						className="accordion values"
@@ -178,14 +236,21 @@ function EvaluationItemComponent({ score, t, index, handleClickTab }) {
 					>
 						{Object.entries(score.accordion).map(([key, value]) => {
 							return (
-								<li
-									className={accordionContent && accordionContent.includes(key)  ? 'is-active accordion-item' : ' accordion-item'}
-									onClick={e => ShowAccordionContent(e, key)}
-									data-accordion-item
-								>
-									<a href="#" className="accordion-title">
-										{key}
-									</a>
+								<>
+									<li
+										className={
+											accordionContent && accordionContent.includes(key)
+												? 'is-active accordion-item'
+												: ' accordion-item'
+										}
+										onClick={showAccordionContent(key)}
+										data-accordion-item
+										key={key}
+									>
+										<a href="#" className="accordion-title">
+											{key}
+										</a>
+									</li>
 									{accordionContent && accordionContent.includes(key) && (
 										<div
 											className="accordion-content"
@@ -199,7 +264,7 @@ function EvaluationItemComponent({ score, t, index, handleClickTab }) {
 											)}
 										</div>
 									)}
-								</li>
+								</>
 							);
 						})}
 					</ul>

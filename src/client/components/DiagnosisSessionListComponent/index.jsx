@@ -6,6 +6,7 @@ import DiagnosisSessionTabsComponent from '../DiagnosisSessionTabsComponent';
 import useSessionTest from './useSessionTest';
 import WithReduxConnector from '../../../shared/helpers/hooks/WithReduxConnector';
 
+// DiagnosisSessionListComponent displays a list of diagnosis sessions and their details.
 function DiagnosisSessionListComponent(props) {
 	const {
 		t,
@@ -23,17 +24,19 @@ function DiagnosisSessionListComponent(props) {
 		handleClickTab,
 		activeSession,
 		diagnosticContents,
-		tabSelected,
 		analysesResult,
 		loader
 	} = useSessionTest(props);
+
 	return (
 		<>
-            <div className="tests">
-                {hideOption && <h3>{props.t('label_test_session')}</h3> }
-                <div className={`${!hideOption ? '' : 'scroll'}`}>
+			<div className="tests">
+				{/* Display test session label if hideOption is true */}
+				{hideOption && <h3>{props.t('label_test_session')}</h3>}
+				<div className={`${!hideOption ? '' : 'scroll'}`}>
 					<ul>
-						<li className="headline ">
+						{/* Render the headline with appropriate fields */}
+						<li className="headline">
 							{inProfile ? (
 								<p className="in-profile">{t('label_in_profile')}</p>
 							) : (
@@ -46,9 +49,11 @@ function DiagnosisSessionListComponent(props) {
 							{!hideOption ? <p className="options text-right">{t('diagnosis_details_option')}</p> : null}
 						</li>
 
+						{/* Render a list of diagnosis sessions */}
 						{diagnosticSessions && diagnosticSessions.length ? (
 							diagnosticSessions.map((diagnosisSession, index) => {
-								let useInProfile = diagnosisSession.use_in_profile === 'yes' ? diagnosisSession.session : null;
+								let useInProfile =
+									diagnosisSession.use_in_profile === 'yes' ? diagnosisSession.session : null;
 								return (
 									<DiagnosisSessionItemComponent
 										openTestPageViewInNewWindow={openTestPageViewInNewWindow}
@@ -67,20 +72,24 @@ function DiagnosisSessionListComponent(props) {
 								);
 							})
 						) : (
-							<li>
-								<p>{t('diagnosis_Expand_label_no_tests')}</p>
-							</li>
+							// Wrap this li tag inside curly braces
+							<>
+								{/* Display a message when there are no tests */}
+								<li>
+									<p>{t('diagnosis_Expand_label_no_tests')}</p>
+								</li>
+							</>
 						)}
 					</ul>
 				</div>
 			</div>
+			{/* Render diagnosis session tabs if there is an active session */}
 			{activeSession?.session && (
 				<DiagnosisSessionTabsComponent
 					diagnosticContents={diagnosticContents}
 					diagnosisSession={activeSession}
 					t={t}
 					handleClickTab={handleClickTab}
-					tabSelected={tabSelected}
 					analysesResult={analysesResult}
 					loader={loader}
 				/>
@@ -89,13 +98,16 @@ function DiagnosisSessionListComponent(props) {
 	);
 }
 
-DiagnosisSessionListComponent.prototype = {
+// Define propTypes for the component
+DiagnosisSessionListComponent.propTypes = {
 	action_diagnosis_getDiagnosticContent: PropTypes.func.isRequired,
 	action_evaluation_getResultScore: PropTypes.func.isRequired,
-	GlobalEvaluationState: PropTypes.object.isRequired,
+	GlobalEvaluationState: PropTypes.object,
 	diagnosisState: PropTypes.object,
 	SecuritiesState: PropTypes.object
 };
+
+// Connect the component to Redux store
 export default WithReduxConnector(DiagnosisSessionListComponent, state => ({
 	evaluationState: state.GlobalEvaluationState,
 	SecuritiesState: state.GlobalSecuritiesSate,

@@ -1,5 +1,5 @@
-import { useSelector } from "react-redux";
-import { selectSeconds } from "../../../store/reducers/diagnosis.reducer";
+import { useSelector } from 'react-redux';
+import { selectSeconds } from '../../../store/reducers/diagnosisExtra.reducer';
 
 const TherapistTestFooterComponent = ({
 	t,
@@ -11,9 +11,12 @@ const TherapistTestFooterComponent = ({
 	sessionFinished,
 	trainingSession,
 	pause,
+	stop,
+	contentIds,
 	start
 }) => {
-	const seconds = useSelector(selectSeconds)
+	const seconds = useSelector(selectSeconds);
+
 	return (
 		<>
 			<div className="controls">
@@ -42,7 +45,7 @@ const TherapistTestFooterComponent = ({
 									onClick={() => {
 										updateCurrentSession({
 											status: 'played',
-											seconds_since_start: seconds,
+											seconds_since_start: seconds
 										});
 										start();
 									}}
@@ -69,11 +72,15 @@ const TherapistTestFooterComponent = ({
 							<a
 								className="button finish-test"
 								onClick={() => {
-									updateCurrentSession({
+									let bodyToUpdate = {
 										status: trainingSession ? 'initialized' : 'finished',
 										started: trainingSession ? 'no' : 'yes',
-										seconds_since_start: seconds
-									});
+										seconds_since_start: trainingSession ? 0 : seconds
+									};
+									stop();
+									if (trainingSession) Object.assign(bodyToUpdate, { contentIds, current_slide: 0 });
+
+									updateCurrentSession(bodyToUpdate);
 									trainingSession && resetSessionInitial();
 								}}
 							>

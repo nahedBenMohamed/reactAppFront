@@ -38,7 +38,9 @@ function DiagnosisSessionItemComponent(props) {
 				})
 			).hashIt()}&session=${diagnosisSession.session}`,
 			'_blank',
-			'toolbar=0,location=0,menubar=0'
+			`toolbar=0,location=0,menubar=0,width=1025,height=751,left=${(window.screen.width - 1025) / 2},top=${
+				(window.screen.height - 751) / 2
+			}`
 		);
 	};
 

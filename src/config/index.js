@@ -55,7 +55,12 @@ const API_Config = {
 		newSession: `/sessions`,
 		updateSession: (id, session) => `/sessions/${id}/${session}`,
 		getDiagnosticContent: (id, session) => `/sessions/content/${id}${session ? '?session=' + session : ''}`,
-		storeDiagnosticTestResultBySession: content => `/sessions/content/result/${content}`
+		storeDiagnosticTestResultBySession: content => `/sessions/content/result/${content}`,
+		getDiagnosticContentByIdContentForEvaluation: (id, session, contentId) =>
+			`/diagnostic-content/${id}${session ? '?session=' + session : ''}${
+				contentId ? '&contentId=' + contentId : ''
+			}`,
+		getDiagnosticContentEvaluation: (id, session) => `/diagnostic/${id}${session ? '?session=' + session : ''}`
 	},
 	record: {
 		basePath: '/records',
@@ -72,7 +77,9 @@ const API_Config = {
 		getResultGrammarScore: '/result/grammar/test',
 		getResultScoreTable: '/result/table',
 		getEvaluationTestsByChild: '/exportpdf',
-		getArticulations: '/articulations'
+		getArticulations: '/articulations',
+		setGrammar: '/grammar/update',
+		setQuestions: '/extraQuestions'
 	},
 	shop_url:
 		'https://shop.elsevier.de/patholinguistische-diagnostik-bei-sprachentwicklungsstoerungen-pdss-9783437475931.html?nosto=nosto-page-category1',

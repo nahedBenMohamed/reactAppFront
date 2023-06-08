@@ -11,8 +11,6 @@ import CancelTestPopupComponent from '../../components/CancelTestPopupComponent'
 import TherapistInitializedTestComponent from '../../components/TherapistInitializedTestComponent';
 import { useTimerV2 } from '../../../shared/helpers/hooks/TimerV2';
 import PdssConfirmPopup from '../../components/PdssConfirmPopupComponent';
-import { useSelector } from 'react-redux';
-import { selectSeconds } from '../../../store/reducers/diagnosis.reducer';
 
 export const TherapistModePage = props => {
 	const { t } = props;
@@ -35,19 +33,18 @@ export const TherapistModePage = props => {
 		diagnosticTestContent
 	} = useDiagnosticsTherapistMode(props);
 
-	const { start, pause, initialize } = useTimerV2();
+	const { start, pause, initialize, stop, getCurrentTime } = useTimerV2();
 
-	const seconds = useSelector(selectSeconds);
 	const handleShowAbort = () => {
 		pause();
 		setShowPopUp({ first: true, second: false });
 	};
 	const handleConfirmPopup = () => {
-		updateSession('cancel_session', seconds);
+		updateSession('cancel_session', 0);
 		setShowPopUp({ first: false, second: true });
 	};
 	const handleCancelPopup = () => {
-		start()
+		start();
 		setShowPopUp({ first: false, second: false });
 	};
 
@@ -114,7 +111,7 @@ export const TherapistModePage = props => {
 				{diagnostic?.session?.status === 'initialized' ? (
 					<TherapistInitializedTestComponent
 						t={t}
-						start={start}
+						//start={start}
 						title={diagnostic?.title}
 						updateSession={updateSession}
 						prehistory={diagnostic?.prehistory}
@@ -125,6 +122,8 @@ export const TherapistModePage = props => {
 						{...props}
 						pause={pause}
 						start={start}
+						stop={stop}
+						getCurrentTime={getCurrentTime}
 						diagnosticId={diagnostic?.id}
 						DataPointer={DataPointer}
 						socketClient={socketClient}

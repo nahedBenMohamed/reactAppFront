@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-constructor */
 import client from 'socket.io-client';
 import config from '../config';
 

@@ -10,24 +10,9 @@ export const useCompareCurrentLocation = currentLocation => {
 };
 export const mapBodyToQueries = body => {
 	let queries = '?';
-	body && Object.keys(body).map(query => body[query] && (queries += `${query}=${body[query]}&`));
+	body && Object.keys(body).map(query => body[query] && (queries += `${query}=${encodeURIComponent(body[query])}&`));
 	queries = queries.substring(0, queries.length - 1);
-
 	return queries;
-};
-
-export const AppendMultipleData = ({ file, fileName }, body) => {
-	const fl = new FormData();
-	file && fl.append(fileName, file);
-	delete body.file;
-	return Promise.all(
-		// eslint-disable-next-line array-callback-return
-		Object.keys(body).map(dataKeyName => {
-			fl.append(dataKeyName, body[dataKeyName]);
-		})
-	).then(() => {
-		return fl;
-	});
 };
 
 export const obj2FormData = (obj, formData = new FormData()) => {
@@ -120,6 +105,20 @@ export const mapCurrentLocationQueriesToJSON = (additionalQueries = {}) => {
 		)
 	);
 };
+export const mapCurrentLocationQueriesToJSONAside = (newQueries = {}) => {
+	var search = window.location.search.substring(1);
+	let queries = Object.fromEntries(new URLSearchParams(search));
+	if (queries['session']) queries['session'] = '';
+	return mapBodyToQueries(
+		Object.assign(
+			{},
+			{
+				...queries,
+				...newQueries
+			}
+		)
+	);
+};
 export const waitForElm = selector => {
 	return new Promise(resolve => {
 		if (document.querySelectorAll(selector)) {
@@ -181,3 +180,10 @@ export const scrollToTop = () =>
 		left: 0,
 		behavior: 'smooth'
 	});
+
+export const textSpeechProvider = text => {
+	const utterance = new SpeechSynthesisUtterance(text);
+	utterance.lang = 'de-DE';
+	utterance.voiceURI = 'de-DE-Standard-A';
+	speechSynthesis.speak(utterance);
+};

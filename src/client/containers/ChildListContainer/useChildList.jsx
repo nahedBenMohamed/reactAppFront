@@ -1,79 +1,61 @@
 /* eslint-disable */
-import { useCallback, useRef } from 'react';
+import { useRef } from 'react';
 import { useEffect, useState } from 'react';
-import routes from '../../../config/routes';
+import { useDispatch, useSelector } from 'react-redux';
+import { action_user_getAllChild } from '../../../store/actions';
+import { selectCurrentUserId } from '../../../store/reducers/securities.reducers';
+import {
+	selectChildList,
+	selectCurrentPage,
+	selectOrderSort,
+	selectSearchStatus,
+	selectSearchText
+} from '../../../store/reducers/user.reducer';
 
 export default props => {
-	const { action_user_getAllChild, action_child_deleteOne, userState, SecuritiesState } = props;
-	const ChildPageReferences = useRef();
+	const dispatch = useDispatch();
+	const searchValue = useSelector(selectSearchText);
+	const searchStatus = useSelector(selectSearchStatus);
+	const orderSelected = useSelector(selectOrderSort);
+	const childList = useSelector(selectChildList);
+	const userId = useSelector(selectCurrentUserId);
+	const currentPage = useSelector(selectCurrentPage);
 	const [LocalData, setLocalData] = useState({
 		data: null,
 		loader: true,
 		error: null
 	});
-
-	const [currentPage, setCurrentPage] = useState(1);
-	const [itemsPerPage, setItemsPerPage] = useState(5);
-	const [orderSelected, setOrderSelected] = useState('child.created desc');
-	const [searchValue, setSearchValue] = useState('');
-	const [show, setShow] = useState(false);
-	const [childId, setChildId] = useState();
-
-	const showPopup = childId => {
-		setShow(true);
-		setChildId(childId);
-	};
-
-	const closePopup = () => {
-		setShow(false);
-	};
-
-	const ConfirmPopup = () => {
-		action_child_deleteOne({
-			userId: SecuritiesState?.userId,
-			childId: childId
-		});
-		setShow(false);
-	};
-
-	const handleChange = e => {
-		setOrderSelected(e.target.value);
-	};
-	const handleSearch = (e, query) => {
-		setSearchValue(query);
-	};
-
-	const fetchingChildList = useCallback(() => {
-		SecuritiesState?.userId &&
-			action_user_getAllChild({
-				userId: SecuritiesState?.userId,
-				order_by: orderSelected,
-				search_for: searchValue,
-				page: currentPage,
-				items_per_page: itemsPerPage
+	useEffect(() => {
+		userId &&
+			dispatch(
+				action_user_getAllChild({
+					userId: userId,
+					order_by: orderSelected,
+					search_for: searchValue,
+					page: currentPage,
+					items_per_page: 5
+				})
+			).then(() => {
+				setLocalData({ data: childList, loader: false, error: null });
 			});
-	}, [SecuritiesState, orderSelected, searchValue, currentPage]);
+	}, [userId, orderSelected, currentPage]);
 
 	useEffect(() => {
-		fetchingChildList();
-	}, [fetchingChildList]);
-
-	useEffect(() => {
-		if (userState?.childList) setLocalData({ data: userState?.childList, loader: false, error: null });
-	}, [userState?.childList]);
+		searchStatus &&
+			dispatch(
+				action_user_getAllChild({
+					userId: userId,
+					order_by: orderSelected,
+					search_for: searchValue,
+					page: 1,
+					items_per_page: 5
+				})
+			).then(() => {
+				setLocalData({ data: childList, loader: false, error: null });
+			});
+	}, [searchStatus]);
 
 	return {
-		...LocalData,
-		currentPage,
-		setCurrentPage,
-		orderSelected,
-		handleChange,
-		searchValue,
-		handleSearch,
-		show,
-		showPopup,
-		ConfirmPopup,
-		ChildPageReferences,
-		closePopup
+		...LocalData
 	};
 };

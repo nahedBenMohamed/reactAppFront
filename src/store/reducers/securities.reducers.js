@@ -154,6 +154,8 @@ export const securitiesSlice = createSlice({
 			});
 	}
 });
+export const selectCurrentUserId = ({GlobalSecuritiesSate}) => GlobalSecuritiesSate.userId
+export const selectCurrentUserSecurities = ({GlobalSecuritiesSate}) => GlobalSecuritiesSate
 export const {
 	setCurrentUser,
 	clearCurrentSession,

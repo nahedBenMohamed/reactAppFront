@@ -1,11 +1,13 @@
 import React, { useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import { progressRing } from '../../../shared/helpers/properties';
+import { selectDiagnosisInfo } from '../../../store/reducers/diagnosis.reducer';
 
 import DiagnosisInfoGalleryComponent from '../DiagnosisInfoGalleryComponent';
 import useDiagnosisInfo from './useDiagnosisInfo';
 
 function DiagnosisInfoComponent(props) {
-	const { info, setShowInfo } = props;
+	const { handleCloseInformation,info } = props;
 	const images = info?.images.split(',');
 	const ref = useRef(null);
 	const { handleShowGallery, showGallery, handleClick } = useDiagnosisInfo();
@@ -45,7 +47,8 @@ function DiagnosisInfoComponent(props) {
 						</div>
 						<div className="cell small-8">
 							<ul className="images clearfix">
-								{info && images &&
+								{info &&
+									images &&
 									images.map((image, index) => {
 										return (
 											<li key={index}>
@@ -70,12 +73,7 @@ function DiagnosisInfoComponent(props) {
 					</div>
 					<button
 						className="close-button"
-						onClick={() => {
-							setShowInfo({
-								show: false,
-								selectedItem: ''
-							});
-						}}
+						onClick={handleCloseInformation}
 						aria-label="Popup schließen"
 						type="button"
 					>
@@ -84,7 +82,11 @@ function DiagnosisInfoComponent(props) {
 				</dialog>
 			</div>
 			{showGallery.show && (
-				<DiagnosisInfoGalleryComponent showGallery={showGallery} handleShowGallery={handleShowGallery} images={images}/>
+				<DiagnosisInfoGalleryComponent
+					showGallery={showGallery}
+					handleShowGallery={handleShowGallery}
+					images={images}
+				/>
 			)}
 		</>
 	);

@@ -95,9 +95,13 @@ export const useDiagnosticsTherapistMode = props => {
 	}, [GlobalChildState]);
 
 	const openTestPageViewInNewWindow = link => {
-		const maxWidth = window.screen.availWidth;
-		const maxHeight = window.screen.availHeight;
-		window.open(link, '_blank', 'width=' + maxWidth + ',height=' + maxHeight + ',toolbar=0,location=0,menubar=0');
+		window.open(
+			link,
+			'_blank',
+			`toolbar=0,location=0,menubar=0,width=1025,height=751,left=${(window.screen.width - 1025) / 2},top=${
+				(window.screen.height - 751) / 2
+			}`
+		);
 	};
 
 	const generateChildDynamicLink = additionalQueries => {
@@ -247,7 +251,6 @@ export const useDiagnosticsTherapistMode = props => {
 };
 
 export const useDiagnosticsChildMode = props => {
-	const {} = props;
 	const diagnosticTitle = useRef('');
 	const [LocalData, setLocalData] = useState({
 		diagnosticTestContent: null,

@@ -1,12 +1,14 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import moment from 'moment';
-import { useState } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-
 import routes from '../../../config/routes';
 import { mapCurrentLocationQueriesToJSON } from '../../../shared/helpers/properties';
-import { selectSeconds } from '../../../store/reducers/diagnosis.reducer';
-const TherapistTestHeaderComponent = props => {
+import { selectSeconds } from '../../../store/reducers/diagnosisExtra.reducer';
+
+const TherapistTestHeaderComponent = React.memo(props => {
+	// Extracting props
 	const {
 		t,
 		data,
@@ -19,7 +21,70 @@ const TherapistTestHeaderComponent = props => {
 		handleShowAbort
 	} = props;
 
+	// Extracting seconds from Redux store using useSelector hook
 	const seconds = useSelector(selectSeconds);
+
+	// Using useMemo to memoize values for better performance
+	const diagnosticContentLength = useMemo(() => diagnostic?.diagnostic_content_length, [diagnostic]);
+	const currentSlide = useMemo(
+		() => diagnostic?.session?.current_slide + (sessionStated ? 1 : 0),
+		[diagnostic, sessionStated]
+	);
+	const processPercent = useMemo(() => Math.trunc(diagnostic?.session?.process_percent), [diagnostic]);
+
+	// Using useCallback to memoize functions for better performance
+	const handleSendEmail = useCallback(
+		e => {
+			e.preventDefault();
+			window.location.href = `mailto:?subject=PDSS%20Kindermodus-Link&body=${generateChildDynamicLink({
+				session: diagnostic?.session.session
+			})}`;
+		},
+		[diagnostic, generateChildDynamicLink]
+	);
+
+	const handleCopyLink = useCallback(
+		e => {
+			e.preventDefault();
+			navigator.clipboard.writeText(
+				window.location.origin +
+					generateChildDynamicLink({
+						session: diagnostic?.session.session
+					})
+			);
+			e.target.childNodes[0].textContent = ' ';
+			e.target.childNodes[0].textContent = t(
+				'diagnostic_test_mode_therapist_header_dropdown_btn_copy_child_mode_link_done'
+			);
+
+			setTimeout(() => {
+				e.target.childNodes[0].textContent = t(
+					'diagnostic_test_mode_therapist_header_dropdown_btn_copy_child_mode_link'
+				);
+			}, 1000);
+		},
+		[diagnostic, generateChildDynamicLink, t]
+	);
+
+	// Using useMemo to memoize slides array for better performance
+	const slides = useMemo(
+		() =>
+			data?.map(({ name, instruction, selected_answer }, indexDiag) => (
+				<li key={indexDiag} onClick={() => updateSession('jump_slide', indexDiag)}>
+					<a className="go-to-slide clearfix">
+						<span className="num">{indexDiag + 1}</span>
+						<span className="name">{name || instruction}</span>
+						<span className={`status ${selected_answer || ' '}`}>
+							<span className="entypo-check"></span>
+							<span className="entypo-cancel"></span>
+						</span>
+					</a>
+				</li>
+			)),
+		[data, updateSession]
+	);
+
+	// Rendering the component
 	return (
 		<div className="header">
 			<div className="grid-container">
@@ -34,21 +99,14 @@ const TherapistTestHeaderComponent = props => {
 								<li>
 									<Link
 										target="_blank"
-										to={`${routes.test_pages.navigationPath}${mapCurrentLocationQueriesToJSON()}`}
-									>
-										<span className="entypo-forward"></span>
-										<span className="text">
-											{t('diagnostic_test_mode_therapist_header_dropdown_btn_new_tab')}
-										</span>
-									</Link>
+										to={`${routes.test_pages.navigationPath}${mapCurrentLocationQueriesToJSON}`}
+									></Link>
 								</li>
 								<li>
 									<a
 										onClick={() =>
 											openTestPageViewInNewWindow(
-												generateChildDynamicLink({
-													session: diagnostic?.session.session
-												})
+												generateChildDynamicLink({ session: diagnostic?.session.session })
 											)
 										}
 										className="child-link"
@@ -60,18 +118,7 @@ const TherapistTestHeaderComponent = props => {
 									</a>
 								</li>
 								<li>
-									<a
-										className="send-via-mail"
-										to="#"
-										onClick={e => {
-											e.preventDefault();
-											window.location.href = `mailto:?subject=PDSS%20Kindermodus-Link&body=${generateChildDynamicLink(
-												{
-													session: diagnostic?.session.session
-												}
-											)}`;
-										}}
-									>
+									<a className="send-via-mail" href="#" onClick={handleSendEmail}>
 										<span className="entypo-paper-plane"></span>
 										<span className="text">
 											{t(
@@ -81,29 +128,7 @@ const TherapistTestHeaderComponent = props => {
 									</a>
 								</li>
 								<li>
-									<a
-										onClick={e => {
-											e.preventDefault();
-
-											navigator.clipboard.writeText(
-												window.location.origin +
-													generateChildDynamicLink({
-														session: diagnostic?.session.session
-													})
-											);
-											e.target.childNodes[0].textContent = ' ';
-											e.target.childNodes[0].textContent = t(
-												'diagnostic_test_mode_therapist_header_dropdown_btn_copy_child_mode_link_done'
-											);
-
-											setTimeout(() => {
-												e.target.childNodes[0].textContent = t(
-													'diagnostic_test_mode_therapist_header_dropdown_btn_copy_child_mode_link'
-												);
-											}, 1000);
-										}}
-										className="link-copy"
-									>
+									<a onClick={handleCopyLink} className="link-copy">
 										<span className="entypo-clipboard"></span>
 										<span className="text">
 											{t(
@@ -137,33 +162,17 @@ const TherapistTestHeaderComponent = props => {
 							<li className="slides">
 								<p className="clearfix">
 									<span className="entypo-archive"></span>
-
-									<span className="current">
-										{diagnostic?.session?.current_slide + (sessionStated ? 1 : 0)}
-									</span>
+									<span className="current">{currentSlide}</span>
 									<span className="separator">/</span>
-									<span className="total">{diagnostic?.diagnostic_content_length}</span>
+									<span className="total">{diagnosticContentLength}</span>
 								</p>
 								<div className="overview">
-									<ul>
-										{data?.map(({ name, instruction, selected_answer }, indexDiag) => (
-											<li key={indexDiag} onClick={() => updateSession('jump_slide', indexDiag)}>
-												<a className="go-to-slide clearfix">
-													<span className="num">{indexDiag + 1}</span>
-													<span className="name">{name || instruction}</span>
-													<span className={`status ${selected_answer || ' '}`}>
-														<span className="entypo-check"></span>
-														<span className="entypo-cancel"></span>
-													</span>
-												</a>
-											</li>
-										))}
-									</ul>
+									<ul>{slides}</ul>
 								</div>
 							</li>
 							{diagnostic?.session && (
 								<li className="process">
-									<p className="percent">{Math.trunc(diagnostic?.session?.process_percent)}%</p>
+									<p className="percent">{processPercent}%</p>
 									<div className="bg">
 										<span
 											className="bar"
@@ -193,6 +202,6 @@ const TherapistTestHeaderComponent = props => {
 			</div>
 		</div>
 	);
-};
+});
 
 export default TherapistTestHeaderComponent;

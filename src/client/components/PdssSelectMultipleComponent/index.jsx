@@ -2,7 +2,8 @@ import React from 'react';
 import { Controller } from 'react-hook-form';
 import useSelectMulti from './useSelectMulti';
 
-function PdssSelectMultiComponent(props) {
+const PdssSelectMultiComponent = props => {
+	// Destructure the props and the state variables from the "useSelectMulti" hook
 	const { t, control, errors } = props;
 	const {
 		isActive,
@@ -16,6 +17,7 @@ function PdssSelectMultiComponent(props) {
 		checkedValue
 	} = useSelectMulti(props);
 
+	// Render the component
 	return !isActive ? (
 		<div id="ms-list-1" className="value ms-options-wrap ms-has-selections" onClick={handleClick}>
 			<Controller
@@ -53,13 +55,7 @@ function PdssSelectMultiComponent(props) {
 					/>
 				</div>
 
-				<ul
-					style={{
-						columnCount: '1',
-						columnGap: '0px',
-						display: isActive ? 'block' : 'none'
-					}}
-				>
+				<ul style={{ columnCount: '1', columnGap: '0px', display: isActive ? 'block' : 'none' }}>
 					{filteredLanguages &&
 						filteredLanguages.map((language, index) => (
 							<li key={index} className={checkedValue.includes(language.id) ? 'selected' : null}>
@@ -77,6 +73,6 @@ function PdssSelectMultiComponent(props) {
 			</div>
 		</div>
 	);
-}
+};
 
 export default PdssSelectMultiComponent;

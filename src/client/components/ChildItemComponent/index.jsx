@@ -4,9 +4,13 @@ import reactStringReplace from 'react-string-replace';
 import { getAge } from '../../../shared/helpers/properties';
 import moment from 'moment';
 import { NavListContainer } from '../../containers/NavListContainer';
+import { selectSearchStatus, selectSearchText } from '../../../store/reducers/user.reducer';
+import { useSelector } from 'react-redux';
 
 function ChildItemComponent(props) {
-	const { child, t, showPopup, searchValue } = props;
+	const { child, t, showPopup } = props;
+	const searchValue = useSelector(selectSearchText);
+	const searchStatus = useSelector(selectSearchStatus);
 	const handleShowPopup = e => {
 		e.preventDefault();
 		showPopup(child.id);
@@ -50,7 +54,7 @@ function ChildItemComponent(props) {
 					<div className="grid-x">
 						<div className="cell medium-3">
 							<p className="label">{t('child_label_lastName')}</p>
-							{searchValue ? (
+							{searchValue.length > 0 && searchStatus ? (
 								<p className="value">
 									{reactStringReplace(child.lastName, searchValue, (match, i) => (
 										<span className="highlight">{searchValue}</span>
@@ -62,7 +66,7 @@ function ChildItemComponent(props) {
 						</div>
 						<div className="cell medium-3">
 							<p className="label">{t('child_label_firstName')}</p>
-							{searchValue ? (
+							{searchValue.length > 0 && searchStatus ? (
 								<p className="value">
 									{reactStringReplace(child.firstName, searchValue, (match, i) => (
 										<span className="highlight">{searchValue}</span>
@@ -74,7 +78,7 @@ function ChildItemComponent(props) {
 						</div>
 						<div className="cell medium-2">
 							<p className="label">{t('child_label_birthday')}</p>
-							{searchValue ? (
+							{searchValue.length > 0 && searchStatus ? (
 								<p className="value">
 									{reactStringReplace(child.birthdate, searchValue, (match, i) => (
 										<span className="highlight">{searchValue}</span>

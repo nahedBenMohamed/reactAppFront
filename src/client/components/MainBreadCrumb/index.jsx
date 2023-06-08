@@ -1,6 +1,14 @@
+import React, { useMemo } from 'react';
+
 const MainBreadCrumb = ({ t, currentRouter }) => {
-	const pathNames = currentRouter.location.pathname.split('/').filter(x => x);
-	if (currentRouter.location.pathname !== '/dashboard'&& currentRouter.location.pathname !== '/dashboard/' ) {
+	// Memoize the pathNames array using useMemo.
+	const pathNames = useMemo(
+		() => currentRouter.location.pathname.split('/').filter(x => x),
+		[currentRouter.location.pathname]
+	);
+
+	// Render the component if the current location is not the dashboard.
+	if (currentRouter.location.pathname !== '/dashboard' && currentRouter.location.pathname !== '/dashboard/') {
 		return (
 			<div className="breadcrumb">
 				<div className="grid-container">
@@ -10,6 +18,7 @@ const MainBreadCrumb = ({ t, currentRouter }) => {
 							<li key={-1}>
 								<a href="/">{t('home')}</a>
 							</li>
+							{/* Map over the pathNames array and generate breadcrumbs for each item. */}
 							{pathNames.map((name, index) => {
 								const routeTo = `/${pathNames.slice(0, index + 1).join('/')}`;
 								return currentRouter.location.pathname === routeTo ? (
@@ -26,6 +35,9 @@ const MainBreadCrumb = ({ t, currentRouter }) => {
 			</div>
 		);
 	}
+
+	// If the current location is the dashboard, don't render anything.
+	return null;
 };
 
 export default MainBreadCrumb;

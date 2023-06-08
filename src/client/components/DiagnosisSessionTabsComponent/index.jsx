@@ -1,3 +1,5 @@
+/* eslint-disable */
+// Import necessary libraries and components
 import React from 'react';
 import routes from '../../../config/routes';
 import { mapCurrentLocationQueriesToJSON } from '../../../shared/helpers/properties';
@@ -5,22 +7,29 @@ import ContentListContainer from '../../containers/ContentListContainer';
 import EvaluationListContainer from '../../containers/EvaluationListContainer';
 import FullScreenLoaderContainer from '../../containers/FullScreenLoaderContainer';
 import NavItemComponent from '../NavItemComponent';
+import { useSelector } from 'react-redux';
+import { selectCurrentTab } from '../../../store/reducers/evaluation.reducers';
+import GrammarComponent from '../EvaluationGrammerComponent';
 
 function DiagnosisSessionTabsComponent({
 	diagnosisSession,
 	t,
 	diagnosticContents,
 	handleClickTab,
-	tabSelected,
 	analysesResult,
 	loader
 }) {
+	const currentTab = useSelector(selectCurrentTab);
+	// If the loader is active, display the full-screen loader
 	if (loader) return <FullScreenLoaderContainer />;
+
+	// Otherwise, display the content of the tabs
 	return (
 		<div className="results">
 			<h3>{t('session_tabs_details')}</h3>
 			<ul className="tabs">
-				<li className={`tabs-title ${tabSelected == 1 ? ' is-active' : ''}`}>
+				{/* Tab 1: Answers */}
+				<li className={`tabs-title ${currentTab == 1 ? ' is-active' : ''}`}>
 					<NavItemComponent
 						path={
 							routes.account_pages.children.evaluation_page.children.result_page.navigationPath +
@@ -32,7 +41,8 @@ function DiagnosisSessionTabsComponent({
 						action={e => handleClickTab(e, 1)}
 					/>
 				</li>
-				<li className={`tabs-title ${tabSelected == 2 ? ' is-active' : ''}`}>
+				{/* Tab 2: Results */}
+				<li className={`tabs-title ${currentTab == 2 ? ' is-active' : ''}`}>
 					<NavItemComponent
 						path={
 							routes.account_pages.children.evaluation_page.children.result_page.navigationPath +
@@ -44,9 +54,9 @@ function DiagnosisSessionTabsComponent({
 						action={e => handleClickTab(e, 2)}
 					/>
 				</li>
-				{diagnosisSession.diagnostic == 5 && (
-					<li className={`tabs-title ${tabSelected == 3 ? ' is-active' : ''}`}>
-						{' '}
+				{/* Tab 3: Score (only for diagnostic == 5) */}
+				{window.location.search.includes('id=5')&& (
+					<li className={`tabs-title ${currentTab == 3 ? ' is-active' : ''}`}>
 						<NavItemComponent
 							path={
 								routes.account_pages.children.evaluation_page.children.result_page.navigationPath +
@@ -60,19 +70,35 @@ function DiagnosisSessionTabsComponent({
 					</li>
 				)}
 			</ul>
+			{/* Tab content */}
 			{loader ? (
 				<FullScreenLoaderContainer />
 			) : (
 				<div className="tabs-content" data-tabs-content="results-tabs">
-					{tabSelected == 1 && (
+					{/* Content for tab 1: Answers */}
+					{currentTab == 1 && (
 						<ContentListContainer
 							diagnosisSession={diagnosisSession}
 							t={t}
 							diagnosticContents={diagnosticContents}
 						/>
 					)}
-					{tabSelected == 2 && analysesResult && (
-						<EvaluationListContainer t={t} scores={analysesResult} handleClickTab={handleClickTab} />
+					{/* Content for tab 2: Results */}
+					{currentTab == 2 && analysesResult && (
+						<EvaluationListContainer
+							t={t}
+							scores={analysesResult}
+							handleClickTab={handleClickTab}
+							session={diagnosisSession.session}
+						/>
+					)}
+					{currentTab == 3 && analysesResult && (
+						<GrammarComponent
+							t={t}
+							scores={analysesResult}
+							handleClickTab={handleClickTab}
+							diagnosisSession={diagnosisSession}
+						/>
 					)}
 				</div>
 			)}

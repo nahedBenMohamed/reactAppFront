@@ -11,7 +11,7 @@ function PdssConfirmPopup({ show, title, description, closePopup, ConfirmPopup }
 					</div>
 					<div className="grid-x grid-margin-y ">
 						<div className="cell small-6">
-							<button type="button" className="button grey" onClick={() => closePopup && closePopup()}>
+							<button type="button" className="button grey" onClick={closePopup}>
 								close
 							</button>
 						</div>
@@ -19,7 +19,7 @@ function PdssConfirmPopup({ show, title, description, closePopup, ConfirmPopup }
 							<button
 								type="submit"
 								className="button save"
-								onClick={() => ConfirmPopup && ConfirmPopup()}
+								onClick={ConfirmPopup}
 							>
 								ok
 							</button>

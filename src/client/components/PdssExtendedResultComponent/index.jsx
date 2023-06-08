@@ -46,6 +46,7 @@ const PdssExtendedResultComponent = props => {
 	};
 
 	useEffect(() => {
+		if(!articulations)
 		dispatch(action_evaluation_getArticulations());
 		if (questionData.answer_04 !== null) {
 			//modified syllable

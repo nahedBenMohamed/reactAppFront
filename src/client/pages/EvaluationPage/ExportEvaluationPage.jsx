@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import WithRouter from '../../../shared/helpers/hooks/HOC';
-import { useOutletContextHook } from '../../../shared/helpers/hooks/useOutletContextHook';
 import PdssWarningMessageComponent from '../../components/PdssWarningMessageComponent';
 import DiagnosticCheckboxListComponent from '../../components/DiagnosticCheckboxListComponent';
+import WithReduxConnector from '../../../shared/helpers/hooks/WithReduxConnector';
+import { useDispatch } from 'react-redux';
+import { setTemplateHideBox, setTemplateTitle } from '../../../store/reducers/settings.reducer';
 
-function ExportEvaluationPage({ t, analysesList, selectedChild, handleListChange, ids }) {
-	useOutletContextHook(t('evaluation'), false);
+function ExportEvaluationPage({ t, selectedChild }) {
+	
+	const dispatch = useDispatch();
+	useEffect(() => {
+		dispatch(setTemplateTitle(t('evaluation')));
+		dispatch(setTemplateHideBox(false));
+	}, []);
 	return (
 		<div>
 			<p>
@@ -16,13 +23,12 @@ function ExportEvaluationPage({ t, analysesList, selectedChild, handleListChange
 			<DiagnosticCheckboxListComponent
 				t={t}
 				classDesignation={'export-select ids'}
-				analysesList={analysesList}
 				selectedChild={selectedChild}
-				handleListChange={handleListChange}
-				ids={ids}
 			/>
 		</div>
 	);
 }
 
-export default WithRouter(ExportEvaluationPage);
+export default WithReduxConnector(WithRouter(ExportEvaluationPage), state => ({
+	evaluationState: state.GlobalEvaluationState,
+}));

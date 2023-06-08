@@ -1,68 +1,28 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect } from 'react';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { bindActionCreators } from '@reduxjs/toolkit';
 
-import * as Actions from '../../../store/actions';
 import DiagnosisBodyContainer from '../../containers/DiagnosisBodyContainer';
 import useDiagnosis from './useDiagnosis';
-import DiagnosisInfoComponent from '../../components/DiagnosisInfoComponent';
-import { useOutletContextHook } from '../../../shared/helpers/hooks/useOutletContextHook';
 import DiagnosisAsidePage from './DiagnosisAsidePage';
-import PdssConfirmPopup from '../../components/PdssConfirmPopupComponent';
+import { setTemplateHideBox, setTemplateTitle } from '../../../store/reducers/settings.reducer';
 
 function DiagnosisPage(props) {
-	const {
-		childList,
-		diagnosisList,
-		selectChild,
-		handleChange,
-		showInfo,
-		setShowInfo,
-		diagnosisInfo,
-		diagnosisGroups,
-		orderSelected,
-		handleChangeOrder,
-		searchValue,
-		handleSearch,
-		diagnosticSessions,
-		show,
-		showPopup,
-		ConfirmPopup,
-		closePopup
-	} = useDiagnosis(props);
-	useOutletContextHook(props.t('diagnosis'), false);
+	useDiagnosis(props);
+
+	const dispatch = useDispatch();
+	useEffect(() => {
+		dispatch(setTemplateTitle(props.t('diagnosis')));
+		dispatch(setTemplateHideBox(false));
+	}, []);
+
 	return (
 		<div className="padding" id="diagnostics">
-			<PdssConfirmPopup
-				ConfirmPopup={ConfirmPopup}
-				closePopup={closePopup}
-				title={props.t('diagnosis_session_confirm_delete_title')}
-				description={props.t('diagnosis_session_confirm_delete')}
-				show={show}
-			/>
-			<DiagnosisAsidePage
-				childList={childList}
-				selectChild={selectChild}
-				handleChange={handleChange}
-				diagnosisGroups={diagnosisGroups}
-			>
-				<DiagnosisBodyContainer
-					selectedChild={selectChild}
-					diagnosis={diagnosisList}
-					setShowInfo={setShowInfo}
-					all={props.all}
-					orderSelected={orderSelected}
-					handleChangeOrder={handleChangeOrder}
-					searchValue={searchValue}
-					handleSearch={handleSearch}
-					diagnosticSessions={diagnosticSessions}
-					showPopup={showPopup}
-				/>
-			</DiagnosisAsidePage>
-			{showInfo.show && diagnosisInfo?.[0] && (
-				<DiagnosisInfoComponent info={diagnosisInfo[0]} setShowInfo={setShowInfo} />
-			)}
+			{/* change div sections and layout to prevent rerender when children changes */}
+			<div className="grid-x grid-margin-x">
+				<DiagnosisAsidePage />
+				<DiagnosisBodyContainer all={props.all} />
+			</div>
 		</div>
 	);
 }
@@ -77,13 +37,5 @@ DiagnosisPage.prototype = {
 	userState: PropTypes.object,
 	SecuritiesState: PropTypes.object
 };
-const mapStateToProps = state => ({
-	userState: state.GlobalUserState,
-	diagnosisState: state.GlobalDiagnosisState,
-	SecuritiesState: state.GlobalSecuritiesSate
-});
 
-function mapDispatchToProps(dispatch) {
-	return bindActionCreators(Actions, dispatch);
-}
-export default connect(mapStateToProps, mapDispatchToProps)(DiagnosisPage);
+export default DiagnosisPage;

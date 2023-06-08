@@ -54,22 +54,33 @@ export const action_evaluation_getResultScore = createAsyncThunk('evaluation/get
 	const results = await response.data.data;
 	return results;
 });
-export const action_evaluation_getResultGrammarScore = createAsyncThunk('evaluation/getResultGrammarScore', async body => {
-	const queries = mapBodyToQueries({ session: body.session, childAgeInMonths: body.childAgeInMonths });
-	const response = await instance.get(evaluation.basePath + evaluation.getResultGrammarScore + queries);
-	const results = await response.data.data;
-	return results;
-});
 
 export const action_evaluation_getDataToExport = createAsyncThunk('evaluation/getDataToExport', async body => {
-	const queries = mapBodyToQueries( {childId: body.childId, diagnosticId: body.diagnosticId} );
+	const queries = mapBodyToQueries({ childId: body.childId, diagnosticId: body.diagnosticId });
 	const response = await instance.get(evaluation.getEvaluationTestsByChild + queries);
 	const results = await response.data.data;
 	return results;
 });
 
 export const action_evaluation_getArticulations = createAsyncThunk('evaluation/articulations', async () => {
-	const response = await instance.get(evaluation.basePath + evaluation.getArticulations );
+	const response = await instance.get(evaluation.basePath + evaluation.getArticulations);
+	const results = await response.data.data;
+	return results;
+});
+export const action_evaluation_getGrammars = createAsyncThunk('evaluation/grammars', async session => {
+	const params = new URLSearchParams(session);
+	const query = params.toString();
+	const response = await instance.get(evaluation.basePath + evaluation.getResultGrammarScore + '?' + query);
+	const results = await response.data.data;
+	return results;
+});
+export const action_evaluation_setGrammars = createAsyncThunk('evaluation/updateGrammars', async body => {
+	const response = await instance.post(evaluation.basePath + evaluation.setGrammar, body);
+	const results = await response.data.data;
+	return results;
+});
+export const action_evaluation_setQuestions5 = createAsyncThunk('evaluation/updateQuestions', async body => {
+	const response = await instance.post(evaluation.basePath + evaluation.setQuestions, body);
 	const results = await response.data.data;
 	return results;
 });

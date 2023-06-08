@@ -30,14 +30,13 @@ import ExportEvaluationPdfPage from './pages/ExportEvaluationPdfPage';
 import ImprintPage from './pages/ImprintPage';
 const MainPage = props => {
 	const { SecuritiesState } = props;
-	const [title, setTitle] = useState('');
-	const [hideBox, setHideBox] = useState(false);
 	const [toggleMenu, setToggleMenu] = useState(false);
-	const { width } = useWindowSize();
+	//const { width } = useWindowSize();
 	function handleChange(newValue) {
 		setToggleMenu(newValue);
 	}
-	useBodyClass(width);
+	//	useBodyClass(width);
+
 	return (
 		<div
 			className={`page ${SecuritiesState?.hasSession ? (toggleMenu ? ' login move-left' : ' login') : ''}`}
@@ -86,9 +85,9 @@ const MainPage = props => {
 							element={
 								<>
 									<MainBreadCrumb {...props} />
-									<ContainerHeaderLayout title={title} hideWhiteBox={hideBox}>
+									<ContainerHeaderLayout>
 										<PinRedemptionRouteChecker {...props}>
-											<Outlet context={{ setTitle, setHideBox }} />
+											<Outlet />
 										</PinRedemptionRouteChecker>
 									</ContainerHeaderLayout>
 								</>

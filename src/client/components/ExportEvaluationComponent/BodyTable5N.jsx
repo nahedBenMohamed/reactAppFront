@@ -11,9 +11,10 @@ const BodyTable5NSection = ({ val }) => {
 			{Array.from(val[1].columns).map((value, index) => (
 				<View style={index == 1 || index == 3 ? styles.colAccordionSegment2 : styles.colAccordionSegment1}>
 					{(() => {
+						let result = [];
 						for (var i = 0; i < value?.length; i++) {
 							if (index === 0) {
-								return (
+								result.push(
 									<Text style={styles.tableCellContent}>
 										{(Array.from(val[1].columns)
 											[index]?.replace(/(<([^>]+)>)/gi, '')
@@ -22,7 +23,7 @@ const BodyTable5NSection = ({ val }) => {
 									</Text>
 								);
 							} else {
-								return (
+								result.push(
 									<Text style={styles.tableCellContent}>
 										{Array.from(val[1].columns)
 											[index]?.split('</p>')
@@ -32,6 +33,7 @@ const BodyTable5NSection = ({ val }) => {
 								);
 							}
 						}
+						return result[0];
 					})()}
 				</View>
 			))}

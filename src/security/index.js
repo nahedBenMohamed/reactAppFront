@@ -112,7 +112,7 @@ export const GuardRoute = ({ children, location, t }) => {
 			if (AuthService.accountVerified() === undefined) {
 				return <FullScreenLoaderContainer />;
 			} else {
-				<Navigate to={{ pathname: routes.securities_pages.account_verify.path, state: { from: location } }} />;
+				<Navigate to={routes.securities_pages.account_verify.path} state={{ from: location }} />;
 			}
 		}
 	} else

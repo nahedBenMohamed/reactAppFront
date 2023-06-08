@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from '@react-pdf/renderer';
+import { Text, View } from '@react-pdf/renderer';
 import styles from './styleExportPdf';
 import HeaderTable2NSection from './HeaderTable2N';
 import HeaderTable3NSection from './HeaderTable3N';
@@ -29,17 +29,24 @@ const TableAccodionEvaluationSection = ({ t, item }) => {
 						)
 					)}
 				</View>
-				{Object.entries(item[1].values).map(val =>
-					item[1].head.length == 2 ? (
-						<BodyTable2NSection t={t} val={val} />
-					) : item[1].head.length == 3 ? (
-						<BodyTable3NSection t={t} val={val} />
-					) : item[1].head.length == 4 ? (
-						<BodyTable4NSection val={val} />
-					) : (
-						<BodyTable5NSection val={val} />
-					)
-				)}
+				{item[1].values && item[1].values?.length == 0 ?
+					<View style={styles.oneCell}>
+						<Text style={styles.oneCellContent}>
+						  {  t('no_occurence')}
+						</Text>
+					</View>
+					:
+					Object.entries(item[1].values).map(val =>
+						item[1].head.length == 2 ? (
+							<BodyTable2NSection t={t} val={val} />
+						) : item[1].head.length == 3 ? (
+							<BodyTable3NSection t={t} val={val} />
+						) : item[1].head.length == 4 ? (
+							<BodyTable4NSection val={val} />
+						) : (
+							<BodyTable5NSection val={val} />
+						)
+					)}
 			</View>
 		</>
 	);

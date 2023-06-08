@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { action_update_timer } from '../../../store/actions/diagnosis.actions.js';
 import { useSecond } from './useSecond.jsx';
+import { selectSeconds } from '../../../store/reducers/diagnosisExtra.reducer';
 
 export const useTimerV2 = ({ seconds: initialSeconds = 0, running: initiallyRunning = false } = {}) => {
 	const dispatch = useDispatch();
@@ -22,6 +23,7 @@ export const useTimerV2 = ({ seconds: initialSeconds = 0, running: initiallyRunn
 	const pause = () => (running.current = false);
 	const reset = () => {
 		seconds.current = 0;
+		pause();
 		dispatch(action_update_timer(seconds.current));
 	};
 	const initialize = value => {
@@ -31,8 +33,11 @@ export const useTimerV2 = ({ seconds: initialSeconds = 0, running: initiallyRunn
 		pause();
 		reset();
 	};
-
+	const getCurrentTime = () => {
+		
+		return seconds.current;
+	};
 	useSecond(tick);
 
-	return { pause, reset, running, seconds, start, stop, initialize };
+	return { pause, reset, running, seconds: seconds.current, start, stop, initialize, getCurrentTime };
 };

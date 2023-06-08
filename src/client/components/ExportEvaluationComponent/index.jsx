@@ -8,29 +8,34 @@ import styles from './styleExportPdf';
 
 export const ContextResult = createContext({});
 export default function ExportEvaluationComponent(props) {
-
-	const { analysisScores } = props;
-	const { Provider } = ContextResult;
+	const { t, analysisScores, analysesList, selectedChild } = props;
 	return (
-		<Document>
+		<Document title="Export">
 			<Page orientation="portrait" size="A4">
-				<HeaderSection t={props.t} />
-				<ChildSection t={props.t} selectedChild={props.selectedChild} />
-				<BarChartSection t={props.t} diagnosticResult={props.analysesList} />
-				{analysisScores?.evaluations &&
-					analysisScores?.evaluations.length > 0 &&
-					analysisScores?.evaluations.map((data, index) => (
+				<HeaderSection t={t} />
+				<ChildSection t={t} selectedChild={selectedChild} />
+				<View fixed style={styles.footer}></View>
+			</Page>
+			<Page orientation="portrait" size="A4">
+				<HeaderSection t={t} />
+				<BarChartSection t={t} diagnosticResult={analysesList} />
+				<View fixed style={styles.footer}></View>
+			</Page>
+			{analysisScores?.evaluations &&
+				analysisScores?.evaluations.length > 0 &&
+				analysisScores?.evaluations.map((data, index) => (
+					<Page orientation="portrait" size="A4">
+						<HeaderSection t={t} />
 						<TestDetailsComponent
 							{...props}
 							key={index}
 							t={props.t}
 							testDetails={data}
 							child={analysisScores?.child}
-							props={props}
 						/>
-					))}
-				<View fixed style={styles.footer}></View>
-			</Page>
+						<View fixed style={styles.footer}></View>
+					</Page>
+				))}
 		</Document>
 	);
 }

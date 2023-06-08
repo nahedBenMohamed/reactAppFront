@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { getDistance } from '../../../shared/helpers/properties';
+import { selectChildDetails } from '../../../store/reducers/child.reducer';
+import { selectDiagnosisSession } from '../../../store/reducers/diagnosis.reducer';
 import DiagnosisItemDetailsComponent from '../DiagnosisItemDetailsComponent';
 
-function DiagnosisItemComponent({ firstItem, secondItem, setShowInfo, showPopup, selectedChild, diagnosticSessions }) {
+function DiagnosisItemComponent({ firstItem, secondItem }) {
+	const diagnosisSessions = useSelector(selectDiagnosisSession);
+	const selectedChild = useSelector(selectChildDetails);
 	const [itemOptions, setItemOptions] = useState({
 		show: false,
 		selectedItem: ''
@@ -10,7 +15,7 @@ function DiagnosisItemComponent({ firstItem, secondItem, setShowInfo, showPopup,
 	const handleClick = item => e => {
 		e.stopPropagation();
 		setItemOptions({
-			show: itemOptions.selectedItem.id === item.id ? !itemOptions.show: true,
+			show: itemOptions.selectedItem.id === item.id ? !itemOptions.show : true,
 			selectedItem: item
 		});
 	};
@@ -36,14 +41,18 @@ function DiagnosisItemComponent({ firstItem, secondItem, setShowInfo, showPopup,
 					<p className="subtitle">{secondItem.subTitle}</p>
 				</a>
 			</div>
-			<DiagnosisItemDetailsComponent
-				selectedChild={selectedChild}
-				item={itemOptions.selectedItem}
-				show={itemOptions.show}
-				setShowInfo={setShowInfo}
-				diagnosticSessions={diagnosticSessions}
-				showPopup={showPopup}
-			/>
+
+			{itemOptions.show && (
+				<DiagnosisItemDetailsComponent
+					selectedChild={selectedChild}
+					item={itemOptions.selectedItem}
+					show={itemOptions.show}
+					diagnosticSessions={diagnosisSessions.filter(
+						session =>
+							session.diagnostic == itemOptions.selectedItem.id && session.child == selectedChild.id
+					)}
+				/>
+			)}
 		</>
 	);
 }

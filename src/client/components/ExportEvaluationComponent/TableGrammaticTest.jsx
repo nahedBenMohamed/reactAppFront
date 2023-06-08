@@ -1,15 +1,15 @@
 import { View, Text } from '@react-pdf/renderer';
 import styles from './styleExportPdf';
 
-const TableGrammaticTest = ({ props }) => {
+const TableGrammaticTest = ({ analysisGrammarScores}) => {
 	let firstScoreLabel = '';
 	let secondScoreLabel = '';
-	props.analysisGrammarScores?.items &&
-		props.analysisGrammarScores?.items.length &&
-		props.analysisGrammarScores?.items.map(item =>
+	analysisGrammarScores?.items &&
+		analysisGrammarScores?.items.length &&
+		analysisGrammarScores?.items.map(item =>
 			item.belongs_to == 0 ? (firstScoreLabel = item.label_score) : (secondScoreLabel = item.label_score)
 		);
-	const groupByScoreCategory = props.analysisGrammarScores?.items
+	const groupByScoreCategory = analysisGrammarScores?.items
 		.filter(i => i.label_score.includes('Score A'))
 		.reduce((group, item) => {
 			const { group_name } = item;
@@ -20,7 +20,7 @@ const TableGrammaticTest = ({ props }) => {
 
 	return (
 		<>
-			<View style={styles.titleGrammaticTest}>
+			<View break style={styles.titleGrammaticTest}>
 				<View style={styles.titleRowGrammatic}>
 					<View wrap={false} style={styles.colTitleGrammaticTitle1}>
 						<Text style={styles.tableCellDetailsTest}>{firstScoreLabel}</Text>
@@ -33,14 +33,13 @@ const TableGrammaticTest = ({ props }) => {
 					</View>
 				</View>
 			</View>
-			{Object.entries(groupByScoreCategory ? groupByScoreCategory : '')?.map(item => {
-				const scoreGroup = props.analysisGrammarScores?.scores?.groups.find(obj => {
-					return obj.name === item[0];
+			{Object.entries(groupByScoreCategory ? groupByScoreCategory : '')?.map((item) => {
+				const scoreGroup = analysisGrammarScores?.scores?.groups.find(obj => {
+					return obj.name == item[0];
 				});
-
 				return (
 					<View style={styles.tableGrammatic}>
-						<View style={styles.tableRowGrammatic}>
+						 <View style={styles.tableRowGrammatic}>
 							<View wrap={false} style={styles.colHeaderGrammatic1}>
 								<Text style={styles.tableCellDetailsTest}>{item[0]}</Text>
 							</View>
@@ -59,9 +58,9 @@ const TableGrammaticTest = ({ props }) => {
 									</View>
 								</View>
 							</View>
-						</View>
+						</View> 
 						{item[1].map(a_item => {
-							let analysisScoresB = props.analysisGrammarScores?.items.filter(
+							let analysisScoresB = analysisGrammarScores?.items.filter(
 								i => i.label_score.includes('Score B') && i.belongs_to == a_item.ref
 							);
 
@@ -76,7 +75,7 @@ const TableGrammaticTest = ({ props }) => {
 										</Text>
 									</View>
 
-									{!props.analysisGrammarScores?.items
+									{!analysisGrammarScores?.items
 										.filter(i => i.label_score.includes('Score B'))
 										.some(e => e.belongs_to == a_item.ref) ? (
 										<>
@@ -91,7 +90,7 @@ const TableGrammaticTest = ({ props }) => {
 										''
 									)}
 									{analysisScoresB.length < 2 ? (
-										props.analysisGrammarScores?.items
+										analysisGrammarScores?.items
 											.filter(i => i.label_score.includes('Score B'))
 											.map(b_item => {
 												if (b_item.belongs_to == a_item.ref) {

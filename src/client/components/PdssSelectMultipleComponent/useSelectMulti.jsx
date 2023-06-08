@@ -1,89 +1,107 @@
-/* eslint-disable */
 import { useEffect, useState, useRef } from 'react';
-import { useForm } from 'react-hook-form';
 
-const useOutsideClick = callback => {
-	const ref = useRef();
-	useEffect(() => {
-		const handleClick = event => {
-			if (ref.current && !ref.current.contains(event.target)) {
-				callback(ref.current, event.target);
-			}
-		};
-		document.addEventListener('click', handleClick);
-		return () => {
-			document.removeEventListener('click', handleClick);
-		};
-	}, [ref]);
+const useOutsideClick = (callback) => {
+  const ref = useRef();
 
-	return ref;
+  useEffect(() => {
+    const handleClick = (event) => {
+      if (ref.current && !ref.current.contains(event.target)) {
+        callback(ref.current, event.target);
+      }
+    };
+
+    document.addEventListener('click', handleClick);
+    return () => {
+      document.removeEventListener('click', handleClick);
+    };
+  }, [ref, callback]);
+
+  return ref;
 };
 
-export default props => {
-	const { languages, clearErrors, setValue, form_action_edit, child } = props;
-	const [isActive, setIsActive] = useState(false);
-	const [checkedValue, setCheckedValue] = useState([41]);
-	const [searchInput, setSearchInput] = useState();
-	const [list, setList] = useState('Deutsch,');
-	useEffect(() => {
-		setValue('languages', checkedValue);
-	}, [checkedValue]);
+const useLanguageSelector = (props) => {
+  const { languages, clearErrors, setValue, form_action_edit, child } = props;
 
-	useEffect(() => {
-		if (form_action_edit && child?.languages && languages?.length > 0) {
-			let languageId = [];
-			let languageName = '';
-			languages.forEach(language => {
-				if (child.languages.includes(language.id.toString())) {
-					languageId.push(language.id);
-					languageName += language.name + ',';
-				}
-			});
-			setCheckedValue(languageId);
-			setList(languageName);
-		}
-	}, [form_action_edit, child]);
+  // State variables
+  const [isActive, setIsActive] = useState(false);
+  const [checkedValue, setCheckedValue] = useState([41]); // Default value
+  const [searchInput, setSearchInput] = useState('');
+  const [list, setList] = useState('Deutsch,'); // Default value
 
-	const handleClick = () => {
-		setIsActive(current => !current);
-	};
-	const handleChange = e => {
-		setSearchInput(e.target.value);
-	};
+  // Update "languages" value in the form when "checkedValue" changes
+  useEffect(() => {
+    setValue('languages', checkedValue);
+  }, [checkedValue, setValue]);
 
-	const getFilteredLanguages = () => {
-		if (!searchInput) return languages;
-		return languages.filter(patient => patient.name.toLowerCase().includes(searchInput.toLowerCase()));
-	};
-	const filteredLanguages = getFilteredLanguages();
+  // Update state variables when the component props change
+  useEffect(() => {
+    if (form_action_edit && child?.languages && languages?.length > 0) {
+      const languageIds = [];
+      let languageNames = '';
+      languages.forEach((language) => {
+        if (child.languages.includes(language.id.toString())) {
+          languageIds.push(language.id);
+          languageNames += language.name + ',';
+        }
+      });
+      setCheckedValue(languageIds);
+      setList(languageNames);
+    }
+  }, [form_action_edit, child, languages]);
 
-	const handleSelectLanguage = async (e, language) => {
-		e.preventDefault();
-		clearErrors('languages');
-		if (checkedValue.includes(language.id)) {
-			await setCheckedValue(checkedValue.filter(item => item !== language.id));
-			await setList(list.replace(language.name + ',', ''));
-		} else {
-			await setCheckedValue(old => [...old, language.id]);
-			await setList(list + language.name + ',');
-		}
-	};
-	const handleClickOutside = (current, target) => {
-		if (current.id != target.id) setIsActive(current => !current);
-	};
+  // Event handlers
+  const handleClick = () => {
+    setIsActive((current) => !current);
+  };
 
-	const ref = useOutsideClick(handleClickOutside);
+  const handleChange = (e) => {
+    setSearchInput(e.target.value);
+  };
 
-	return {
-		isActive,
-		handleClick,
-		handleSelectLanguage,
-		list,
-		ref,
-		handleChange,
-		searchInput,
-		getFilteredLanguages,
-		filteredLanguages,
-		checkedValue
-	};
+  const handleSelectLanguage = async (e, language) => {
+    e.preventDefault();
+    clearErrors('languages');
+    if (checkedValue.includes(language.id)) {
+      await setCheckedValue(checkedValue.filter((item) => item !== language.id));
+      await setList(list.replace(language.name + ',', ''));
+    } else {
+      await setCheckedValue((old) => [...old, language.id]);
+      await setList(list + language.name + ',');
+    }
+  };
+
+  const handleClickOutside = (current, target) => {
+    // eslint-disable-next-line eqeqeq
+    if (current.id != target.id) setIsActive((current) => !current);
+  };
+
+  // Use the "useOutsideClick" hook to handle clicks outside of the language selector component
+  const ref = useOutsideClick(handleClickOutside);
+
+  // Compute the filtered list of languages based on the search input
+  const getFilteredLanguages = () => {
+    if (!searchInput) return languages;
+    return languages.filter((language) =>
+      language.name.toLowerCase().includes(searchInput.toLowerCase())
+    );
+  };
+
+  // Get the filtered list of languages
+  const filteredLanguages = getFilteredLanguages();
+
+  // Return the state variables and event handlers as an object
+  return {
+    isActive,
+    handleClick,
+    handleSelectLanguage,
+    list,
+    ref,
+    handleChange,
+    searchInput,
+    getFilteredLanguages,
+    filteredLanguages,
+    checkedValue
+  };
 };
+
+export default useLanguageSelector;

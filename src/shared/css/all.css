@@ -41,7 +41,6 @@ abbr[title] {
     border-bottom: none;
     text-decoration: underline;
     -webkit-text-decoration: underline dotted;
-    text-decoration: underline dotted
 }
 
 b,strong {
@@ -167,7 +166,7 @@ template {
 }
 
 .foundation-mq {
-    font-family: "small=0em&medium=40em&large=64em&xlarge=75em&xxlarge=90em"
+    font-family: "small=0em&medium=40em&large=64em&xlarge=75em&xxlarge=90em", sans-serif;
 }
 
 html {
@@ -4018,7 +4017,6 @@ ol.no-bullet,ul.no-bullet {
     border-color: #fefefe transparent transparent;
     position: relative;
     top: .4em;
-    display: inline-block;
     float: right;
     margin-left: 1em
 }
@@ -6121,7 +6119,6 @@ a.thumbnail image {
 }
 
 .drilldown .js-drilldown-back>a::before {
-    display: block;
     width: 0;
     height: 0;
     border: inset 6px;
@@ -7241,9 +7238,6 @@ html.is-reveal-open body {
     display: -webkit-flex;
     display: -ms-flexbox;
     display: flex;
-    -webkit-flex-wrap: nowrap;
-    -ms-flex-wrap: nowrap;
-    flex-wrap: nowrap;
     -webkit-box-pack: justify;
     -webkit-justify-content: space-between;
     -ms-flex-pack: justify;
@@ -11988,7 +11982,7 @@ body .ui-tooltip {
 
 .fa {
     display: inline-block;
-    font: normal normal normal 14px/1 FontAwesome;
+    font: normal normal normal 14px/1 FontAwesome, sans-serif;
     font-size: inherit;
     text-rendering: auto;
     -webkit-font-smoothing: antialiased;
@@ -14988,10 +14982,10 @@ body .ui-tooltip {
     -webkit-border-radius: 100%;
     -moz-background-clip: padding;
     -webkit-background-clip: padding-box;
+    background-color: #fff;
     background-clip: padding-box;
     height: 32px;
     width: 32px;
-    background: #fff;
     color: #1e88e5;
     -webkit-transition: background .2s ease 0s,color .2s ease 0s,transform .2s ease 0s;
     -moz-transition: background .2s ease 0s,color .2s ease 0s,transform .2s ease 0s;
@@ -15143,7 +15137,7 @@ iframe.fr-iframe {
     -webkit-box-shadow: 0 3px 6px rgba(0,0,0,.16),0 2px 2px 1px rgba(0,0,0,.14);
     -moz-box-shadow: 0 3px 6px rgba(0,0,0,.16),0 2px 2px 1px rgba(0,0,0,.14);
     box-shadow: 0 3px 6px rgba(0,0,0,.16),0 2px 2px 1px rgba(0,0,0,.14);
-    background: #222;
+    background-color: #222;
     color: #fff;
     font-size: 11px;
     line-height: 22px;
@@ -15156,7 +15150,6 @@ iframe.fr-iframe {
     -moz-opacity: 0;
     opacity: 0;
     -ms-filter: "alpha(Opacity=0)";
-    left: -3000px;
     user-select: none;
     -o-user-select: none;
     -moz-user-select: none;
@@ -15415,7 +15408,6 @@ iframe.fr-iframe {
     -moz-transition: max-height .2s ease 0s;
     -ms-transition: max-height .2s ease 0s;
     -o-transition: max-height .2s ease 0s;
-    margin-top: 0;
     float: left;
     max-height: 0;
     height: 0;
@@ -15539,7 +15531,7 @@ body.prevent-scroll.fr-mobile {
     background-clip: padding-box;
     margin: 20px auto;
     display: inline-block;
-    background: #fff;
+    background-color: #fff;
     min-width: 300px;
     -webkit-box-shadow: 0 5px 8px rgba(0,0,0,.19),0 4px 3px 1px rgba(0,0,0,.14);
     -moz-box-shadow: 0 5px 8px rgba(0,0,0,.19),0 4px 3px 1px rgba(0,0,0,.14);
@@ -16590,7 +16582,7 @@ textarea.fr-code {
 
 .fr-popup .fr-color-set>span .fr-selected-color {
     color: #fff;
-    font-family: FontAwesome;
+    font-family: FontAwesome, sans-serif;
     font-size: 13px;
     font-weight: 400;
     line-height: 32px;
@@ -16683,7 +16675,7 @@ textarea.fr-code {
     line-height: 1;
     cursor: default;
     font-weight: 400;
-    font-family: "Apple Color Emoji","Segoe UI Emoji",NotoColorEmoji,"Segoe UI Symbol","Android Emoji",EmojiSymbols;
+    font-family: "Apple Color Emoji","Segoe UI Emoji",NotoColorEmoji,"Segoe UI Symbol","Android Emoji",EmojiSymbols, sans-serif;
     -webkit-box-sizing: content-box;
     -moz-box-sizing: content-box;
     box-sizing: content-box
@@ -19028,7 +19020,7 @@ html.is-reveal-open body {
 }
 
 body {
-    font-family: 'NexusSansWebPro';
+    font-family: 'NexusSansWebPro', sans-serif;
     margin: 0;
     padding: 0;
     font-size: 20px;
@@ -19111,7 +19103,7 @@ h2 {
 }
 
 h1,h2,h3,h4 {
-    font-family: 'NexusSansWebPro-Bold'
+    font-family: 'NexusSansWebPro-Bold', sans-serif;
 }
 
 h3 {
@@ -19127,7 +19119,7 @@ h4 {
 }
 
 h1 .light,h2 .light,h3 .light,h4 .light {
-    font-family: 'NexusSansWebPro'
+    font-family: 'NexusSansWebPro', sans-serif;
 }
 
 h2 {
@@ -19265,7 +19257,7 @@ form h3 {
     border-bottom: 1px solid #4d4d4d;
     margin: 20px 0;
     font-weight: 300;
-    font-family: 'NexusSansWebPro';
+    font-family: 'NexusSansWebPro', sans-serif;
     font-size: 20px
 }
 
@@ -20662,7 +20654,6 @@ section.wait {
 #diagnostics .expand ul li .process .bg,#diagnostics .all ul li .process .bg,#analysis .tests ul li .process .bg {
     width: 80px;
     height: 16px;
-    background: #4d4d4d;
     margin: 2px 0 2px 5px;
     position: relative;
     background: rgba(255,130,0,.2)
@@ -22169,7 +22160,7 @@ section.wait {
 .paging li a,.slick-dots li button {
     font-size: 14px;
     color: #4d4d4d;
-    font-family: 'NexusSansWebPro-Bold';
+    font-family: 'NexusSansWebPro-Bold', sans-serif;
     padding: 0 5px;
     line-height: 20px
 }
