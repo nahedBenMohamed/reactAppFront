@@ -17,7 +17,7 @@ const BodyTable5NSection = ({ val }) => {
 								result.push(
 									<Text style={styles.tableCellContent}>
 										{(Array.from(val[1].columns)
-											[index]?.replace(/(<([^>]+)>)/gi, '')
+											[index]?.replace(/(?:<[^>]+>)/g, '')
 											.split('')
 											.join('\n\n'))}
 									</Text>
@@ -28,7 +28,7 @@ const BodyTable5NSection = ({ val }) => {
 										{Array.from(val[1].columns)
 											[index]?.split('</p>')
 											.join('\n\n')
-											.replace(/(<([^>]+)>)/gi, '')}
+											.replace(/(?:<[^>]+>)/g, '')}
 									</Text>
 								);
 							}

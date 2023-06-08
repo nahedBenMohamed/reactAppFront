@@ -32,12 +32,10 @@ export default function DiagnosticCheckboxListComponent({ t, classDesignation, s
 			...prev,
 			[target]: value
 		}));
-		if (checked) {
-			if (!value) {
-				setIds(ids.filter(e => Number(e) !== Number(target)))
-			} else {
-				setIds([...ids, Number(target)])
-			}
+		if (!value) {
+			setIds(ids.filter(e => Number(e) !== Number(target)))
+		} else {
+			setIds([...ids, Number(target)])
 		}
 	};
 
@@ -50,10 +48,10 @@ export default function DiagnosticCheckboxListComponent({ t, classDesignation, s
 		});
 	}, [selectedChild])
 	useEffect(() => {
-			setChecked((prevState) => !prevState);
-			localStorage.removeItem('diagnosticsToExport');
+		setChecked((prevState) => !prevState);
+		localStorage.removeItem('diagnosticsToExport');
 	}, [selectedChild])
-    
+
 	useEffect(() => {
 		localStorage.setItem('diagnosticsToExport', ids);
 	}, [ids])

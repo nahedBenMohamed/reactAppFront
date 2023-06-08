@@ -6,7 +6,7 @@ const BodyTable3NSection = ({ t, val }) => {
 		if (content && content.length >= 0) {
 			const whiteSpacesRemoved = content.replace(/\s/g, '');
 			const newLineAdded = whiteSpacesRemoved.replaceAll('</p>', '\n');
-			return newLineAdded.replace(/(<([^>]+)>)/gi, '');
+			return newLineAdded.replace(/<[^>]+?>/g, '');
 		}
 	}
 	return (

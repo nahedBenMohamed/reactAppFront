@@ -16,7 +16,7 @@ const BodyTable4NSection = ({ val }) => {
 								result.push(
 									<Text style={styles.tableCellContent}>
 										{value
-											?.replace(/(<([^>]+)>)/gi, '')
+											?.replace(/(?:<[^>]+>)/g, '')
 											.split('')
 											.join('\n\n')}
 									</Text>
@@ -27,7 +27,7 @@ const BodyTable4NSection = ({ val }) => {
 										{value
 											?.split('</p>')
 											.join('\n\n')
-											.replace(/(<([^>]+)>)/gi, '')}
+											.replace(/(?:<[^>]+>)/g, '')}
 									</Text>
 								);
 							}
