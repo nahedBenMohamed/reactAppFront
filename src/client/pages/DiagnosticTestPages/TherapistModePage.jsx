@@ -58,6 +58,16 @@ export const TherapistModePage = props => {
 	const [showPopUp, setShowPopUp] = useState({ first: false, second: false });
 
 	if (loader && (!child || !diagnostic)) return <FullScreenLoaderContainer />;
+	const handleRenderClassName = () => {
+		switch (diagnostic?.session.started) {
+			case 'yes':
+				return 'started';
+			case 'training':
+				return 'training';
+			default:
+				return '';
+		}
+	};
 	return (
 		<div
 			ref={MainDivContentReference}
@@ -65,12 +75,7 @@ export const TherapistModePage = props => {
 				diagnostic?.session?.process_percent ? Math.trunc(diagnostic?.session?.process_percent) : 0
 			}
 			data-status={diagnostic?.session?.status}
-			className={`test login  ${
-				diagnostic?.session.started == 'yes'
-					? 'started'
-					: diagnostic?.session.started == 'training'
-					? 'training'
-					: ''
+			className={`test login  ${handleRenderClassName()
 			} ${DataPointer == '0' ? 'first-item' : ''} ${
 				DataPointer == diagnosticTestContent?.length - 1 ? ' last-item' : ''
 			}

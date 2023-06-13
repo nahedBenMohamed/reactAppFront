@@ -1,14 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
 	action_diagnosis_getAll,
+	action_diagnosis_getDiagnosticContent,
+	action_diagnosis_getDiagnosticContentByIdContentForEvaluation,
+	action_diagnosis_getDiagnosticContentEvaluation,
+	action_diagnosis_getGroups,
 	action_diagnosis_getInfo,
 	action_diagnosis_getOneById,
-	action_diagnosis_getGroups,
-	action_diagnosis_getSessions,
-	action_diagnosis_getDiagnosticContent,
-	action_update_timer,
-	action_diagnosis_getDiagnosticContentEvaluation,
-	action_diagnosis_getDiagnosticContentByIdContentForEvaluation
+	action_diagnosis_getSessions
 } from '../actions';
 
 const initialState = {

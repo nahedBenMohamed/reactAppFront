@@ -51,13 +51,13 @@ function DiagnosisSessionListComponent(props) {
 
 						{/* Render a list of diagnosis sessions */}
 						{diagnosticSessions && diagnosticSessions.length ? (
-							diagnosticSessions.map((diagnosisSession, index) => {
+							diagnosticSessions.map((diagnosisSession) => {
 								let useInProfile =
 									diagnosisSession.use_in_profile === 'yes' ? diagnosisSession.session : null;
 								return (
 									<DiagnosisSessionItemComponent
 										openTestPageViewInNewWindow={openTestPageViewInNewWindow}
-										key={index}
+										key={diagnosisSession.session}
 										searchValue={searchValue}
 										diagnosisSession={diagnosisSession}
 										t={t}

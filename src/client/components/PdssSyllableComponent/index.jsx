@@ -1,15 +1,9 @@
-import { useContext, useEffect } from 'react';;
+import { useContext, useEffect } from 'react';
 
 const PdssSyllableComponent = props => {
 	const { ContextExtendedResult } = props;
-	const {
-		setElements,
-		elements,
-		handleExpandKeyboard,
-		expandKeyboard,
-		selected,
-		setUpdate
-	} = useContext(ContextExtendedResult);
+	const { setElements, elements, handleExpandKeyboard, expandKeyboard, selected, setUpdate } =
+		useContext(ContextExtendedResult);
 
 	const handleRemoveWordFromString = (removedWord, word) => {
 		let regex = new RegExp('\\b' + removedWord + '\\b', 'g');
@@ -43,8 +37,7 @@ const PdssSyllableComponent = props => {
 		setUpdate(true);
 	};
 
-	const handleOnKeyUp = (key, index) => event => {
-		// on backspace key pressed remove added char
+	const handleBackSpacePress = ( elements, key, index) => event=> {
 		if (event.keyCode === 8) {
 			// add conditions for api calls performance in case we have multiple backspace press
 			if (event.target.innerText !== '') {
@@ -62,6 +55,10 @@ const PdssSyllableComponent = props => {
 				return;
 			}
 		}
+	};
+	const handleOnKeyUp = (key, index) => event => {
+		// on backspace key pressed remove added char
+		handleBackSpacePress(elements, key, index);
 		// if current char is not the same as original char
 		if (event.target.innerText !== elements[key].letters[index].letter) {
 			if (elements[key].letters[index].replacement !== event.target.innerText) {
@@ -118,7 +115,11 @@ const PdssSyllableComponent = props => {
 		<>
 			{elements?.map((element, key) => {
 				return (
-					<span className={element.hasClass} key={key} data-json={element.dataJson && btoa(encodeURIComponent(JSON.stringify(element?.dataJson)))}>
+					<span
+						className={element.hasClass}
+						key={key}
+						data-json={element.dataJson && btoa(encodeURIComponent(JSON.stringify(element?.dataJson)))}
+					>
 						{element.letters.map((char, index) => {
 							return (
 								<span

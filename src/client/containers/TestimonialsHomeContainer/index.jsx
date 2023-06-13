@@ -63,7 +63,7 @@ export const TestimonialsHomeContainer = ({ t }) => {
                     >
                         <div className="carousel-inner" style={{ transform: `translateX(${-current * 100}%)` }}>
                             {testimonials.map((testimonial, index) => (
-                                <li className="carousel-item" key={index}>
+                                <li className="carousel-item" key={testimonial.author}>
                                     <HomeTestimonialsSliderComponent testimonial={testimonial} />
                                 </li>
                             ))}
@@ -72,8 +72,8 @@ export const TestimonialsHomeContainer = ({ t }) => {
                 </div>
                 <div className="grid-container">
                     <div className="orbit-bullets">
-                        {testimonials.map((testiomonial, index) =>
-                            (<button className={(current === index ? ' is-active' : '')} key={index} onClick={() => setCurrent(index)}></button>)
+                        {testimonials.map((testimonial, index) =>
+                            (<button className={(current === index ? ' is-active' : '')} key={testimonial.author} onClick={() => setCurrent(index)}></button>)
                         )}
                     </div>
                 </div>

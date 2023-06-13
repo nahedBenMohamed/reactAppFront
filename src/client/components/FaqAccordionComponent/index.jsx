@@ -16,7 +16,7 @@ const Accordion = ({ faqs }) => {
 			{/* Loop through the faqs and render an AccordionItem for each */}
 			{faqs.map((faq, index) => (
 				<AccordionItem
-					key={index}
+					key={faq.question}
 					faq={faq}
 					active={activeIndex === index}
 					onToggle={() => handleToggle(index)}

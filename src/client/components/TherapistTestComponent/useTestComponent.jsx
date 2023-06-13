@@ -94,7 +94,19 @@ const useTestComponent = props => {
 	useEffect(() => {
 		if (socketTriggerEffect?.current) sendBackCurrentStateData();
 	}, [data, DataPointer]);
+	useEffect(() => {
+		const handleWindowClose = () => {
+			// Notify the parent window that the child window is closing
+			window.opener.postMessage('Child window closed', window.origin);
+		};
 
+		window.onbeforeunload = handleWindowClose;
+
+		// Cleanup the event listener when the component unmounts
+		return () => {
+			window.onbeforeunload = null;
+		};
+	}, []);
 	// Subscribe to child demand data
 	useEffect(() => {
 		if (socketTriggerEffect?.current && !hideInEvaluation) {

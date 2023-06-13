@@ -25,10 +25,31 @@ function DiagnosisSessionItemComponent(props) {
 		showPopup(diagnosisSession.session);
 	};
 
+	const getClassName = () => {
+		if (diagnosisSession.status !== 'finished') {
+			return 'not-selectable';
+		}
+		if (activeSession?.session === diagnosisSession.session) {
+			return 'active';
+		}
+		return inProfile ? 'highlighted' : '';
+	}
+
+	const getTitle = () => {
+		if (searchValue) {
+			return (
+			<p className="title">
+				{reactStringReplace(diagnosisSession.title, searchValue => (
+					<span className="highlight">{searchValue}</span>
+				))}
+			</p>)
+		} else {
+			return (<p className="title">{diagnosisSession.title}</p>)
+		}
+	}
 	const resumeSession = () => {
 		window.open(
-			`${routes.test_pages.navigationPath}?id=${diagnosisSession.diagnostic}&child=${
-				diagnosisSession.child
+			`${routes.test_pages.navigationPath}?id=${diagnosisSession.diagnostic}&child=${diagnosisSession.child
 			}&token=${CryptoProviders(
 				JSON.stringify({
 					child: diagnosisSession.child,
@@ -38,8 +59,7 @@ function DiagnosisSessionItemComponent(props) {
 				})
 			).hashIt()}&session=${diagnosisSession.session}`,
 			'_blank',
-			`toolbar=0,location=0,menubar=0,width=1025,height=751,left=${(window.screen.width - 1025) / 2},top=${
-				(window.screen.height - 751) / 2
+			`toolbar=0,location=0,menubar=0,width=1025,height=751,left=${(window.screen.width - 1025) / 2},top=${(window.screen.height - 751) / 2
 			}`
 		);
 	};
@@ -49,15 +69,7 @@ function DiagnosisSessionItemComponent(props) {
 			key={diagnosisSession.id}
 			data-ref={diagnosisSession.diagnostic}
 			data-session={diagnosisSession.session}
-			className={
-				inProfile && diagnosisSession.status !== 'finished'
-					? 'not-selectable'
-					: activeSession?.session === diagnosisSession.session
-					? 'active'
-					: inProfile
-					? 'highlighted'
-					: ''
-			}
+			className={getClassName()}
 			onClick={e => diagnosisSession.status === 'finished' && inProfile && handleShowSession(e, diagnosisSession)}
 		>
 			{inProfile ? (
@@ -73,15 +85,9 @@ function DiagnosisSessionItemComponent(props) {
 						className={'checkmark' + (selectedSession === diagnosisSession.session ? ' checked' : '')}
 					></span>
 				</p>
-			) : searchValue ? (
-				<p className="title">
-					{reactStringReplace(diagnosisSession.title, searchValue, (match, i) => (
-						<span className="highlight">{searchValue}</span>
-					))}
-				</p>
-			) : (
-				<p className="title">{diagnosisSession.title}</p>
-			)}
+			) :
+				getTitle()
+			}
 			<p className="datetime">{moment(diagnosisSession.date_initialized).format('DD.MM.YYYY HH:mm')}</p>
 			<p className="duration">{moment.utc(diagnosisSession.seconds_since_start * 1000).format('HH:mm:ss')}</p>
 			<p className="status">

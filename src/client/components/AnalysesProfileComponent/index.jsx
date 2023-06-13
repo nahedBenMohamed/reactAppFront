@@ -16,17 +16,17 @@ function AnalysesProfileComponent({ format }) {
 		<>
 			<ul className={'profile clearfix ' + (format === 'full' ? format : '')}>
 				{analysesList &&
-					analysesList.map((diagnostic, index) => {
+					analysesList.map((diagnostic) => {
 						if (diagnostic.has_sublabel === 'no') {
 							let value = diagnostic.tvalue;
 							let min = 40;
 							let max = 60;
 							let color = '';
 							{
-								value >= min ? (color = 'green') : (color = 'red');
+								color = (value >= min) ?  'green' : 'red';
 							}
 							return (
-								<li className={value ? 'has-profile' : ''} key={index}>
+								<li className={value ? 'has-profile' : ''} key={diagnostic.name}>
 									<div className="container">
 										<div className="ranges">
 											<div className="above" style={{ height: 100 - max + '%' }}></div>

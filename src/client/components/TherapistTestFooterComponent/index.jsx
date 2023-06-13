@@ -77,7 +77,7 @@ const TherapistTestFooterComponent = ({
 										started: trainingSession ? 'no' : 'yes',
 										seconds_since_start: trainingSession ? 0 : seconds
 									};
-									stop();
+									pause();
 									if (trainingSession) Object.assign(bodyToUpdate, { contentIds, current_slide: 0 });
 
 									updateCurrentSession(bodyToUpdate);

@@ -17,13 +17,13 @@ export default props => {
 
 	// Handle tab click events
 	const handleClick = event => {
-		var children = document.getElementById('tabs').childNodes;
-		for (var i = 0; i < children.length; i++) {
-			if (children[i].classList) {
-				children[i].childNodes[0].removeAttribute('aria-selected');
-				children[i].classList.remove('is-active');
+		let children = document.getElementById('tabs').childNodes;
+		for (let child of children) {
+			if (child.classList) {
+				child.childNodes[0].removeAttribute('aria-selected');
+				child.classList.remove('is-active');
 				const parentActive = document.getElementById(
-					children[i].childNodes[0].getAttribute('data-tabs-target')
+					child.childNodes[0].getAttribute('data-tabs-target')
 				);
 				if (parentActive.classList) parentActive.classList.remove('is-active');
 			}

@@ -37,6 +37,22 @@ const TestResultComponent = ({
 		if (questionData.hide_notes == 'no') noteRef.current.value = currentSlide_note;
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [questionData, currentSlide_note]);
+	
+	const handleHideRender = () => {
+		let shouldHide = false;
+		if (selected_answer === 'correct') {
+			shouldHide = true;
+		} else if (questionData?.hide_in_tests) {
+			if (!hideInEvaluation && !questionData?.hide_in_tests?.includes('no')) {
+				shouldHide = true;
+			}
+		} else if (!hideInEvaluation && questionData?.hide_in_tests === null) {
+			shouldHide = true;
+		} else {
+			shouldHide = false;
+		}
+		return shouldHide
+	};
 	return (
 		<div className="results">
 			<div className="container">
@@ -118,12 +134,7 @@ const TestResultComponent = ({
 
 				<ShowExtendedQuestions
 					hide={
-						selected_answer === 'correct' ||
-						(questionData?.hide_in_tests
-							? !hideInEvaluation && !questionData?.hide_in_tests?.includes('no')
-							: !hideInEvaluation && questionData?.hide_in_tests === null
-							? true
-							: false)
+						handleHideRender()
 					}
 				>
 					{questionData?.question_ids?.split(',').map((QID, QID_index) => (
@@ -141,12 +152,15 @@ const TestResultComponent = ({
 							display={
 								hideInEvaluation ? true : questionData?.hide_in_tests?.split(',')[QID_index] === 'no'
 							}
+							key={QID}
 						/>
 					))}
 
 					<MapTheExtraQuestionWithNeededViewPortal
 						extraContent={
-							questionData.diagnostic == 5 || questionData.diagnostic === 10 || questionData.diagnostic === 9
+							questionData.diagnostic == 5 ||
+							questionData.diagnostic === 10 ||
+							questionData.diagnostic === 9
 								? questionData?.extraContent?.slice().sort((a, b) => a.question_id - b.question_id)
 								: []
 						}

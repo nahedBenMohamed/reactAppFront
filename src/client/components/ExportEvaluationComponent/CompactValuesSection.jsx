@@ -12,10 +12,10 @@ const CompactValuesSection = ({  test }) => {
 						testDetails.map((item, index) => {
 							return item.tvalue ? (
 								<>
-									{(decimal = item.decimals ? item.decimals : 0)}
+									{(decimal = item.decimals || 0)}
 
 									<View
-										key={index}
+										key={item.name}
 										style={{
 											borderTop: `2px solid ${item.class == 'green' ? '#5fb157' : '#b13633'}`,
 											width: '25%',

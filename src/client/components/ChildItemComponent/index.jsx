@@ -23,7 +23,8 @@ function ChildItemComponent(props) {
 			path:
 				routes.account_pages.children.diagnosis_page.children.diagnostic_all_page.navigationPath +
 				`?child=${child.id}`,
-			icon: 'target'
+			icon: 'target',
+			key:'child-item-key-'+t('child_option_show_tests')
 		},
 		{
 			className: 'test',
@@ -31,19 +32,22 @@ function ChildItemComponent(props) {
 			path:
 				routes.account_pages.children.diagnosis_page.children.diagnostic_test_child_page.navigationPath +
 				`child=${child.id}`,
-			icon: 'target'
+			icon: 'target',
+			key:'child-item-key-'+t('child_option_test')
 		},
 		{
 			className: 'edit',
 			title: t('child_option_edit'),
 			path: routes.account_pages.children.child_page.children.edit_child_page.path + `?child=${child.id}`,
-			icon: 'pencil'
+			icon: 'pencil',
+			key:'child-item-key-'+t('child_option_edit')
 		},
 		{
 			className: 'remove',
 			title: t('child_option_remove'),
 			icon: 'cancel-circled',
-			action: handleShowPopup
+			action: handleShowPopup,
+			key:'child-item-key-'+t('child_option_remove')
 		}
 	];
 

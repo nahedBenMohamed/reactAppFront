@@ -8,9 +8,9 @@ import OnKeyPressComponent from '../KeyPressComponent';
 
 // Preload the slide images to reduce loading time when they are displayed
 const slideImages = [
-	(new Image().src = 'files/images/landingpage/iStockELS-845915488_with_screeen_and_domain.jpg'),
-	(new Image().src = 'files/images/landingpage/iStockELS-1340561086_with_screen.jpg'),
-	(new Image().src = 'files/images/landingpage/AdobeStockELS_352150617_with_screen.jpg')
+	'files/images/landingpage/iStockELS-845915488_with_screeen_and_domain.jpg',
+	'files/images/landingpage/iStockELS-1340561086_with_screen.jpg',
+	'files/images/landingpage/AdobeStockELS_352150617_with_screen.jpg'
 ];
 
 // Determine if the user is logged in
@@ -63,7 +63,7 @@ function HomePageSliderComponent({ t }) {
 					<div className="carousel">
 						<div className="carousel-inner" style={{ transform: `translateX(${-current * 100}%)` }}>
 							{slideImages.map((slideImage, index) => (
-								<div className="carousel-item" key={index}>
+								<div className="carousel-item" key={slideImage}>
 									<li className="orbit-slide" style={{ backgroundImage: `url(${slideImage})` }} />
 								</div>
 							))}
@@ -104,7 +104,7 @@ function HomePageSliderComponent({ t }) {
 						{slideImages.map((slideImage, index) => (
 							<button
 								className={current === index ? 'is-active' : ''}
-								key={index}
+								key={slideImage}
 								onClick={() => setCurrent(index)}
 							/>
 						))}

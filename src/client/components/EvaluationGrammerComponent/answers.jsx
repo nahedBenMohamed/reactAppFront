@@ -66,7 +66,7 @@ const AnswersComponent = ({
                     <select className="class">
                         <option value="">Bitte wählen</option>
                         {['green', 'red', 'grey'].map(name => (
-                            <option value={name} className={answer.additional[0]?.class === name ? 'selected' : ''}>
+                            <option key={name} value={name} className={answer.additional[0]?.class === name ? 'selected' : ''}>
                                 {t(`classes_${name}`)}
                             </option>
                         ))}
@@ -75,6 +75,7 @@ const AnswersComponent = ({
                     <select className="checks" multiple>
                         {['1', '2'].map(name => (
                             <option
+                                key={name}
                                 value={name}
                                 className={answer.additional[0]?.checks?.includes(name) ? 'selected' : ''}
                             >

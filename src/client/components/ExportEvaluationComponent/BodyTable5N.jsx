@@ -13,22 +13,24 @@ const BodyTable5NSection = ({ val }) => {
 				<View style={index == 1 || index == 3 ? styles.colAccordionSegment2 : styles.colAccordionSegment1}>
 					{(() => {
 						let result = [];
-						for (var i = 0; i < value?.length; i++) {
+						for (let i = 0; i < value?.length; i++) {
 							if (index === 0) {
+								let content = (replaceLine(Array.from(val[1].columns)
+								[index]))
+									.split('')
+									.join('\n\n')
 								result.push(
-									<Text style={styles.tableCellContent}>
-										{((replaceLine(Array.from(val[1].columns)
-											[index]))
-											.split('')
-											.join('\n\n'))}
+									<Text key={content} style={styles.tableCellContent}>
+										{content}
 									</Text>
 								);
 							} else {
+								let content = replaceLine(Array.from(val[1].columns)
+								[index]?.split('</p>')
+									.join('\n\n'))
 								result.push(
-									<Text style={styles.tableCellContent}>
-										{replaceLine(Array.from(val[1].columns)
-											[index]?.split('</p>')
-											.join('\n\n'))}
+									<Text key={content} style={styles.tableCellContent}>
+										{content}
 									</Text>
 								);
 							}

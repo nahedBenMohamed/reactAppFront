@@ -12,7 +12,7 @@ export const NavListContainer = ({ navList, additionalClass, event, handleChange
 	return (
 		<ul className={additionalClass ? additionalClass : 'clearfix'}>
 			{navList?.map((item, index) => (
-				<li key={index} className={item?.extraClasses + ' ' + navLinkIsActive(item)} onClick={closeMenu}>
+				<li key={item.key} className={item?.extraClasses + ' ' + navLinkIsActive(item)} onClick={closeMenu}>
 					<NavItemComponent {...item} />
 				</li>
 			))}

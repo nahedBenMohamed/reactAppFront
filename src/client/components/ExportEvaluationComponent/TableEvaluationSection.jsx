@@ -3,6 +3,11 @@ import { View, Text } from '@react-pdf/renderer';
 import styles from './styleExportPdf';
 const TableEvaluationSection = ({ t, data }) => {
 	let evalData = Object.values(data);
+	const evalDataStyle = {
+		0: styles.colDetailauswertung1,
+		1: styles.colDetailauswertung2,
+		default: styles.colDetailauswertung3,
+	  };
 	return (
 		<>
 			<View style={styles.table}>
@@ -11,13 +16,7 @@ const TableEvaluationSection = ({ t, data }) => {
 						evalData[0].length == 3 ? (
 							<View
 								wrap={false}
-								style={
-									index == 0
-										? styles.colDetailauswertung1
-										: index == 1
-										? styles.colDetailauswertung2
-										: styles.colDetailauswertung3
-								}
+								style={evalDataStyle[index] || evalDataStyle.default}
 							>
 								<Text
 									wrap={false}

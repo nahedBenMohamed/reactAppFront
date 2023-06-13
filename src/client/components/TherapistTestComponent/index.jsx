@@ -22,6 +22,12 @@ const TherapistTestComponent = props => {
 
 	if (data?.length == 0) return <FullScreenLoaderContainer />;
 
+	const handelRenderClassName = () => {
+		if (data[DataPointer]?.selected_answer) {
+			if (data[DataPointer]?.selected_answer == 'correct') return 'answered correct';
+			else return 'answered incorrect';
+		} else return '';
+	};
 	return (
 		<Fragment>
 			<OnKeyPressComponent next={skipToTheNextPage} previous={skipToThePreviousPage}>
@@ -37,15 +43,7 @@ const TherapistTestComponent = props => {
 					<div className="orbit">
 						<div className="orbit-wrapper">
 							<ul className="orbit-container">
-								<li
-									className={` is-active orbit-slide ${
-										data[DataPointer]?.selected_answer
-											? data[DataPointer]?.selected_answer == 'correct'
-												? 'answered correct'
-												: 'answered incorrect'
-											: ''
-									}`}
-								>
+								<li className={` is-active orbit-slide ${handelRenderClassName()}`}>
 									<div className="grid-x">
 										<div className="cell small-4">
 											<aside>

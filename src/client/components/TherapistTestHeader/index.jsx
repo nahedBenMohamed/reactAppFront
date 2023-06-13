@@ -69,8 +69,8 @@ const TherapistTestHeaderComponent = React.memo(props => {
 	// Using useMemo to memoize slides array for better performance
 	const slides = useMemo(
 		() =>
-			data?.map(({ name, instruction, selected_answer }, indexDiag) => (
-				<li key={indexDiag} onClick={() => updateSession('jump_slide', indexDiag)}>
+			data?.map(({ name, instruction, selected_answer,id }, indexDiag) => (
+				<li key={id} onClick={() => updateSession('jump_slide', indexDiag)}>
 					<a className="go-to-slide clearfix">
 						<span className="num">{indexDiag + 1}</span>
 						<span className="name">{name || instruction}</span>

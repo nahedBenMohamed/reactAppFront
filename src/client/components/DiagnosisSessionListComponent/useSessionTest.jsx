@@ -9,7 +9,6 @@ export default props => {
 	const {
 		action_diagnosis_getDiagnosticContent,
 		action_evaluation_getResultScore,
-		SecuritiesState,
 		evaluationState,
 		diagnosisState
 	} = props;
@@ -23,15 +22,19 @@ export default props => {
 	const [LocalData, setLocalData] = useState({
 		analysesResult: null,
 		diagnosticContents: [],
-		activeSession: { session: localParams.session.value ? localParams.session.value : ''},
+		activeSession: { session: localParams.session.value || ''},
 		tabSelected: 1,
 		error: null,
 		loader: true
 	});
+	const childIdValue = localParams?.childId?.value;
+	const diagnosticIdValue = localParams?.diagnosticId?.value;
+	const sessionValue = localParams?.session?.value;
+	const diagnosticTestContentValue = diagnosisState?.diagnosticTestContent;
     const dispatch = useDispatch()
 	const handleClickTab = (e, id, goTo = false) => {
 		e.preventDefault();
-		if (goTo) scrollToTop();
+		if (goTo) { scrollToTop(); }
 		setLocalData(prev => ({
 			...prev,
 			tabSelected: id
@@ -56,13 +59,14 @@ export default props => {
 	};
 
 	useEffect(() => {
-		if (localParams?.childId.value && localParams?.diagnosticId?.value&& localParams.session.value)
+		if (childIdValue && diagnosticIdValue && sessionValue) {
 			setSearchParams({
 				child: localParams.childId.value,
 				id: localParams.diagnosticId.value,
 				session: localParams.session.value
 			});
-	}, [localParams?.diagnosticId?.value]);
+		}
+	}, [diagnosticIdValue]);
 
 	useEffect(() => {
 		setLocalData(prev => ({
@@ -72,30 +76,32 @@ export default props => {
 	}, [LocalData.activeSession]);
 
 	useEffect(() => {
-		if (localParams?.diagnosticId?.value && localParams?.session?.value)
+		if (diagnosticIdValue && sessionValue) {
 			action_diagnosis_getDiagnosticContent({
 				id: localParams.diagnosticId.value,
 				session: localParams.session.value
 			});
-		if (localParams?.session?.value) {
+		}
+		if (sessionValue) {
 			action_evaluation_getResultScore(localParams.session.value);
 		}
-	}, [localParams?.diagnosticId?.value, localParams?.session?.value]);
+	}, [diagnosticIdValue, sessionValue]);
 	useEffect(() => {
-		if (evaluationState?.analysisResult)
+		if (evaluationState?.analysisResult) {
 			setLocalData(prev => ({
 				...prev,
 				analysesResult: evaluationState?.analysisResult?.scores,
 				loader: false,
 				error: null
 			}));
-
-		if (diagnosisState?.diagnosticTestContent)
+		}
+		if (diagnosticTestContentValue) {
 			setLocalData(prev => ({
 				...prev,
 				diagnosticContents: diagnosisState.diagnosticTestContent
 			}));
-	}, [evaluationState?.analysisResult, diagnosisState?.diagnosticTestContent]);
+		}
+	}, [evaluationState?.analysisResult, diagnosticTestContentValue]);
 	return {
 		handleShowSession,
 		handleClickTab,

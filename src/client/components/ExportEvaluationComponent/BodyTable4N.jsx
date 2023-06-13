@@ -13,20 +13,22 @@ const BodyTable4NSection = ({ val }) => {
 					{(() => {
 						let result = [];
 						for (let i = 0; i < value?.length; i++) {
+							let content = replaceLine(value)
+								.split('')
+								.join('\n\n')
 							if (index == 0) {
 								result.push(
-									<Text style={styles.tableCellContent}>
-										{replaceLine(value)
-											.split('')
-											.join('\n\n')}
+									<Text key={content} style={styles.tableCellContent}>
+										{content}
 									</Text>
 								);
 							} else {
+								let content = replaceLine(value
+									?.split('</p>')
+									.join('\n\n'))
 								result.push(
-									<Text style={styles.tableCellContent}>
-										{replaceLine(value
-											?.split('</p>')
-											.join('\n\n'))}
+									<Text key={content} style={styles.tableCellContent}>
+										{content}
 									</Text>
 								);
 							}

@@ -11,7 +11,12 @@ function ContentItemComponent(props) {
 	const { diagnosisSession } = props;
 	// selector for list of diagnosis content evaluation page
 	const diagnosis = useSelector(selectDiagnosticContentEvaluation);
-
+	const getSelectedAnswer = (selectAnswer) => {
+		if (!selectAnswer) {
+			return "-";
+		}
+		return selectAnswer === 'correct' ? "Richtig" : "Falsch";
+	}
 	const {
 		storeFinalResultAnswerAndNotes,
 		handleExpandAccordionTest,
@@ -30,7 +35,7 @@ function ContentItemComponent(props) {
 				<span className="inline name">{content.name ? content.name : content.instruction}</span>
 				{diagnosisSession.diagnostic !== 10 && diagnosisSession.diagnostic !== 5 && (
 					<span className="inline answer">
-						{content.selected_answer ? (content.selected_answer === 'correct' ? 'Richtig' : 'Falsch') : '-'}
+						{getSelectedAnswer(content.selected_answer)}
 					</span>
 				)}
 			</div>
@@ -47,7 +52,7 @@ function ContentItemComponent(props) {
 													{...props}
 													diagnosticId={parseInt(localParams?.diagnosticId?.value)}
 													hideInEvaluation={true}
-													selectAnswer={() => {}}
+													selectAnswer={() => { }}
 													questionData={selectedDiagnosisContent[0]}
 													childSelectedImage={childSelectedImage}
 												/>

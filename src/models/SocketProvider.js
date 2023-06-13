@@ -12,16 +12,23 @@ const socketConnection = {
 	}
 };
 export default class SocketProvider {
-	constructor() {}
+	constructor() { }
 	on(event, action, selector, session) {
 		socketConnection.instance.on(event, data => {
-			return session
-				? session?.includes(data?.data?.otherDetails?.session?.session || data?.data?.otherDetails?.session)
-					? action && data
-						? action(selector ? data[selector] : data)
-						: action()
-					: null
-				: false;
+			if (session) {
+				const sessionData = data?.data?.otherDetails?.session?.session || data?.data?.otherDetails?.session;
+				if (session.includes(sessionData)) {
+					if (action && data) {
+						return action(selector ? data[selector] : data);
+					} else {
+						return action();
+					}
+				} else {
+					return null;
+				}
+			} else {
+				return false;
+			}
 		});
 	}
 	emit(event, data) {

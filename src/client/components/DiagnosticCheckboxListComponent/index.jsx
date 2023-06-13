@@ -1,5 +1,4 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import PdssCheckBoxListComponent from '../../components/PdssCheckBoxListComponent';
 import PdssOptionCheckBoxComponent from '../../components/PdssOptionCheckBoxComponent';
 import { Link } from 'react-router-dom';
@@ -60,19 +59,23 @@ export default function DiagnosticCheckboxListComponent({ t, classDesignation, s
 			<ul className={classDesignation}>
 				{analysesList &&
 					analysesList.map((item, index) => {
+						exportStatus =
+							Object.keys(checked).length == 0
+								? !isOneTestEnded
+								: !isOnechecked && !allUnchecked && Object.keys(checked).length == countChecked
 						if (item.type === 'label') {
 							let checkBoxStatus =
 								item.tvalue || (item.has_sublabel == 'yes' && analysesList[index + 1].tvalue)
 									? true
 									: false;
 
-							if (checkBoxStatus == true) {
+							if (checkBoxStatus) {
 								countChecked++;
 							}
 							let checkBoxId = `${item.diagnostic}`;
 							return (
 								<PdssCheckBoxListComponent
-									key={index + selectedChild}
+									key={`${checkBoxId}-${selectedChild}`}
 									id={checkBoxId}
 									label={checkBoxId}
 									status={checkBoxStatus}
@@ -87,12 +90,6 @@ export default function DiagnosticCheckboxListComponent({ t, classDesignation, s
 						}
 					})}
 			</ul>
-			{
-				(exportStatus =
-					Object.keys(checked).length == 0
-						? !isOneTestEnded
-						: !isOnechecked && allUnchecked == false && Object.keys(checked).length == countChecked)
-			}
 			{!exportStatus ? (
 				<>
 					<p>{t('label_options')}</p>
@@ -114,7 +111,7 @@ export default function DiagnosticCheckboxListComponent({ t, classDesignation, s
 				className="button export-pdf"
 				target="_blank"
 				to={routes.account_pages.children.evaluation_page.children.export_eval_page.navigationPath}
-				onClick={()=>handleClick()}
+				onClick={() => handleClick()}
 			>
 				{t('btn_export')}{' '}
 			</Link>

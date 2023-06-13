@@ -24,7 +24,6 @@ instance.interceptors.response.use(
 		return res;
 	},
 	async err => {
-		const originalConfig = err.config;
 		return Promise.reject(err);
 	}
 );

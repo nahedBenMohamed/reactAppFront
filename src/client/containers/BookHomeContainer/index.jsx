@@ -17,8 +17,8 @@ export default function BookHomeContainer(props) {
 								<h2>{t('book_title')}</h2>
 								<hr />
 							</div>
-							{dataHome.books.map((item, index) => (
-								<React.Fragment key={index}>
+							{dataHome.books.map((item) => (
+								<React.Fragment key={item.title}>
 									<PdssImageComponent path={item.path} alt={t('alt_book')} />
 									<PdssCheckListComponent
 										title={t(item.title)}

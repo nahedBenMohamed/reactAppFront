@@ -1,47 +1,46 @@
-import React, { useState } from 'react';
-import routes from '../config/routes';
-import { Routes, Route, Outlet } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+import { Outlet, Route, Routes } from 'react-router-dom';
+import routes from '../config/routes';
 
-import WithRouter from '../shared/helpers/hooks/HOC';
-import DefaultLayout from './layouts/DefaultLayout';
-import HomePage from './pages/HomePage';
-import AboutPage from './pages/AboutPage';
-import DashboardPage from './pages/DashboardPage';
-import BuyPage from './pages/BuyPage';
-import FAQPage from './pages/FAQPage';
-import LoginPage from './pages/LoginPage';
-import ChildPage from './pages/ChildPage';
-import DiagnosisPage from './pages/DiagnosisPage';
-import EvaluationPage from './pages/EvaluationPage';
-import DownloadPage from './pages/DownloadPage';
-import ContainerHeaderLayout from './layouts/ContainerHeaderLayout';
-import CreateChildPage from './pages/CreateChildPage';
-import CompleteProfileFormContainer from './containers/CompleteProfileFormContainer';
-import WithReduxConnector from '../shared/helpers/hooks/WithReduxConnector';
 import { CallBackAuthCheck, GuardRoute, InjectApprovedSession, PinRedemptionRouteChecker } from '../security';
-import DiagnosticTestPages from './pages/DiagnosticTestPages';
-import NotFoundPage from './pages/NotFoundPage';
-import AccountVerify from './pages/AccountVerify';
+import WithRouter from '../shared/helpers/hooks/HOC';
+import WithReduxConnector from '../shared/helpers/hooks/WithReduxConnector';
 import MainBreadCrumb from './components/MainBreadCrumb';
-import useWindowSize from '../shared/helpers/hooks/useWindowSize';
-import useBodyClass from '../shared/helpers/hooks/useBodyClass';
+import CompleteProfileFormContainer from './containers/CompleteProfileFormContainer';
+import ContainerHeaderLayout from './layouts/ContainerHeaderLayout';
+import DefaultLayout from './layouts/DefaultLayout';
+import AboutPage from './pages/AboutPage';
+import AccountVerify from './pages/AccountVerify';
+import BuyPage from './pages/BuyPage';
+import ChildPage from './pages/ChildPage';
+import CreateChildPage from './pages/CreateChildPage';
+import DashboardPage from './pages/DashboardPage';
+import DiagnosisPage from './pages/DiagnosisPage';
+import DiagnosticTestPages from './pages/DiagnosticTestPages';
+import DownloadPage from './pages/DownloadPage';
+import EvaluationPage from './pages/EvaluationPage';
 import ExportEvaluationPdfPage from './pages/ExportEvaluationPdfPage';
+import FAQPage from './pages/FAQPage';
+import HomePage from './pages/HomePage';
 import ImprintPage from './pages/ImprintPage';
+import LoginPage from './pages/LoginPage';
+import NotFoundPage from './pages/NotFoundPage';
 const MainPage = props => {
 	const { SecuritiesState } = props;
 	const [toggleMenu, setToggleMenu] = useState(false);
-	//const { width } = useWindowSize();
+
 	function handleChange(newValue) {
 		setToggleMenu(newValue);
 	}
-	//	useBodyClass(width);
-
+	const handleRenderClassName = () => {
+		if (SecuritiesState?.hasSession)
+			if (toggleMenu) return ' login move-left';
+			else return ' login';
+		else return '';
+	};
 	return (
-		<div
-			className={`page ${SecuritiesState?.hasSession ? (toggleMenu ? ' login move-left' : ' login') : ''}`}
-			data-request={window.location.pathname}
-		>
+		<div className={`page ${handleRenderClassName()}`} data-request={window.location.pathname}>
 			<Routes>
 				<Route exact path={routes.securities_pages.login.path} element={<LoginPage />} />
 				<Route exact path={routes.securities_pages.login_check.path} element={<LoginPage />} />

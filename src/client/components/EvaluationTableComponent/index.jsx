@@ -6,15 +6,16 @@ import React from 'react';
 
 // EvaluationTableComponent displays a table based on the provided score data
 function EvaluationTableComponent({ score, t }) {
-	const hiddenElements = ["replaced_letters", "has_replacement", "has_all_correct", "has_all_replaced"]
+	const hiddenElements = ["replaced_letters", "has_replacement", "has_all_correct", "has_all_replaced"];
+	let i = 0;
 	return (
 		<div className="cell">
 			<table>
 				<thead>
 					<tr>
 						{/* Render table headers */}
-						{score.head.map((item, index) => (
-							<th key={index}>{t(`table_head_${item}`)}</th>
+						{score.head.map((item) => (
+							<th key={`table_head_${item}`}>{t(`table_head_${item}`)}</th>
 						))}
 					</tr>
 				</thead>
@@ -22,15 +23,15 @@ function EvaluationTableComponent({ score, t }) {
 				<tbody>
 					{/* Render table rows */}
 					{(score.values && score.values.length > 0) ? (
-						score.values.map((valueScore, index) => (
-							<tr key={`row-${index}`} className={valueScore.class ? valueScore.class : ''}>
+						score.values.map((valueScore) => (
+							<tr key={`row-${valueScore.name}`} className={valueScore.class || ''}>
 								{/* Render table cells */}
 								{Object.entries(valueScore)
 									.filter(([key]) => key !== 'class')
 									.flatMap(([key, value]) => {
 										if (key === 'columns') {
-											return value.map((v, idx) => (
-												<td key={`${idx}-${v}`} dangerouslySetInnerHTML={{ __html: v }} />
+											return value.map((v) => (
+												<td key={`${valueScore.name}-${v}`} dangerouslySetInnerHTML={{ __html: v }} />
 											));
 										}
 										if (hiddenElements.includes(key)) {
@@ -39,16 +40,17 @@ function EvaluationTableComponent({ score, t }) {
 										const cellValue = t(`table_head_${value}`).includes('table_head_')
 											? value
 											: t(`table_head_${value}`);
+										i += 1;
 										return (
 											<td
-												key={`${index}-${key}`}
+												key={`${valueScore.name}-v-${i}`}
 												dangerouslySetInnerHTML={
-													key === 'affection' || key === 'target' || key === 'realized_as'
+													['target','realized_as','affection'].includes(key)
 														? { __html: value }
 														: undefined
 												}
 											>
-												{key !== 'target' && key !== 'realized_as' && key !== 'affection' ? cellValue : null}
+												{!['target','realized_as','affection'].includes(key) ? cellValue : null}
 											</td>
 										);
 									})}

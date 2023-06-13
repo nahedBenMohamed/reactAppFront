@@ -15,7 +15,7 @@ const BarChartSection = ({t, diagnosticResult }) => {
 						.filter(d => d.has_sublabel === 'no')
 						.map((item, index) => {
 							return (
-								<React.Fragment key={index}>
+								<React.Fragment key={item.tvalue}>
 									<Line
 										x1={index * 25 + 85}
 										y1="0"
@@ -111,7 +111,7 @@ const BarChartSection = ({t, diagnosticResult }) => {
 						.map((diagnostic, index) => {
 							let prefix = '';
 							return (
-								<React.Fragment key={index}>
+								<React.Fragment key={diagnostic.diagnostic}>
 									{diagnosticResult
 										.filter(t => t.has_sublabel === 'yes' && t.diagnostic === diagnostic.diagnostic)
 										.map(test => {

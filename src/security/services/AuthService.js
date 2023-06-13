@@ -105,7 +105,11 @@ const isLoggedIn = () => {
 		localStorage.getItem(ID_TOKEN_KEY) &&
 		localStorage.getItem(ACCESS_TOKEN_KEY)
 	)
-		return dateExpires ? (parseInt(dateExpires) < currentDate.getTime() ? false : true) : false;
+		if (dateExpires) {
+			return parseInt(dateExpires) < currentDate.getTime() ? false : true;
+		} else {
+			return false;
+		}
 	return false;
 };
 

@@ -13,7 +13,7 @@ function CardsHomeContainer(props) {
 
 					{dataHome.cards.map((image, index) => (
 						<PdssCardComponent
-							key={index}
+							key={image.title}
 							backgroundImage={'/files/images/landingpage/' + image.path}
 							title={t(image.title)}
 							description={t(image.description)}

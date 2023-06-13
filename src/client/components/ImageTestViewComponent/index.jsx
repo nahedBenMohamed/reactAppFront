@@ -41,14 +41,6 @@ function ImageTestViewComponent({
 				)}
 				</div>
 			);
-		case 2:
-			return (
-				<div className="grid-y align-center">
-					<div className="cell small-10">
-						<img src={`/${questionData?.image}`} alt="" />
-					</div>
-				</div>
-			);
 		case 3:
 			return (
 				<div className="grid-y align-center">

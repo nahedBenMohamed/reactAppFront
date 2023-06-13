@@ -7,13 +7,13 @@ function DiagnosisGroupListComponent({ diagnosisGroup }) {
 		<div className="cell diagnostics">
 			<div className="grid-x">
 				{diagnosisGroup &&
-					diagnosisGroup.diagnostics.map((diagnostic, index) => {
+					diagnosisGroup.diagnostics.map((diagnostic) => {
 						// Calculate the progress ring properties for each diagnostic
 						let percent = diagnostic?.process_percent || 0;
 						const { strokeDasharray, strokeDashoffset } = progressRing(percent, 5);
 
 						return (
-							<Fragment key={index}>
+							<Fragment key={`${diagnostic.title}-${percent}`}>
 								{/* Renders the progress ring */}
 								<div className="cell small-2">
 									<span className="progress-ring" data-percent={percent}>

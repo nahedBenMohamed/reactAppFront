@@ -58,7 +58,7 @@ const PdssSelectMultiComponent = props => {
 				<ul style={{ columnCount: '1', columnGap: '0px', display: isActive ? 'block' : 'none' }}>
 					{filteredLanguages &&
 						filteredLanguages.map((language, index) => (
-							<li key={index} className={checkedValue.includes(language.id) ? 'selected' : null}>
+							<li key={language.id} className={checkedValue.includes(language.id) ? 'selected' : null}>
 								<label>
 									<input
 										type="checkbox"

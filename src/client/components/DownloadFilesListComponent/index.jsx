@@ -3,8 +3,8 @@ import React from 'react';
 function DownloadFilesListComponent({ t, files }) {
 	// Function to render table rows for each file
 	const renderTableRows = () => {
-		return files.map((file, i) => (
-			<tr key={i}>
+		return files.map((file) => (
+			<tr key={file.name}>
 				<td>{file.name}</td>
 				<td>
 					{/* Download link for the file */}

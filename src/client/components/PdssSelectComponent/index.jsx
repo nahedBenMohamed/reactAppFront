@@ -6,7 +6,7 @@ function PdssSelectComponent({ label, selectOption, selectedValue, clickToAction
 			<select id={idToAdd ? idToAdd : 'child_sort'} value={selectedValue ? selectedValue : ''} onChange={clickToAction}>
 				{selectOption.map((item, index) => {
 					return (
-						<option key={index} value={item?.value}>
+						<option key={item?.label} value={item?.value}>
 							{item?.label}
 						</option>
 					);

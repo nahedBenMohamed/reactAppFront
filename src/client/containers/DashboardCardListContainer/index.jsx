@@ -19,7 +19,8 @@ function DashboardCardListContainer({ t }) {
 				}
 			],
 			path: routes.account_pages.children.child_page.navigationPath,
-			title: t('btn_go_to_children')
+			title: t('btn_go_to_children'),
+			key:"dashboard-card-key"+t('btn_go_to_children')
 		},
 		{
 			icon: 'target',
@@ -36,7 +37,8 @@ function DashboardCardListContainer({ t }) {
 				}
 			],
 			path: routes.account_pages.children.diagnosis_page.navigationPath,
-			title: t('btn_go_to_diagnostics')
+			title: t('btn_go_to_diagnostics'),
+			key:"dashboard-card-key"+t('btn_go_to_children')
 		},
 		{
 			icon: 'chart-area',
@@ -53,7 +55,8 @@ function DashboardCardListContainer({ t }) {
 				}
 			],
 			path: routes.account_pages.children.evaluation_page.navigationPath,
-			title: t('btn_go_to_analysis')
+			title: t('btn_go_to_analysis'),
+			key:"dashboard-card-key"+t('btn_go_to_children')
 		}
 	];
 	return (

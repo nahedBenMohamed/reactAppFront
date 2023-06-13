@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from 'react';
 
-const ScoreComponent = ({ grammar, grammar_scores, score_a_label, score_b_label }) => {
+const ScoreComponent = ({ grammar_scores }) => {
 	let score_a = 0;
 	let score_b = 0;
 	let group_name = null;
@@ -32,20 +32,21 @@ const ScoreComponent = ({ grammar, grammar_scores, score_a_label, score_b_label 
 							.filter(i => i.label_score?.includes('Score A'))
 							.map((item, index) => {
 								let new_group = false;
-								if (group_name !== item?.group_name) {
-									group_name = item?.group_name;
+								let itemGroupName = item?.group_name;
+								if (group_name !== itemGroupName) {
+									group_name = itemGroupName;
 									new_group = true;
 								}
 
 								if (item?.has_score && item?.belongs_to === 0) {
 									score_a = score_a + item?.score;
 								}
-
+                                let isActive = isOpen[index] ? " is-active" : ""
 								return (
-									<React.Fragment key={index}>
+									<React.Fragment key={item.id}>
 										{new_group && (
 											<li
-												className={`accordion-item data-accordion-item${isOpen[index] ? " is-active" : ""}`}
+												className={`accordion-item data-accordion-item${isActive}`}
 												onClick={() => toggleAccordion(index)}
 											>
 												<a className="accordion-title">
@@ -91,7 +92,7 @@ const ScoreComponent = ({ grammar, grammar_scores, score_a_label, score_b_label 
 														</div>
 														{grammar_scores
 															.filter(b_item => b_item?.label_score?.includes('Score B'))
-															.map((b_item, b_index) => {
+															.map((b_item) => {
 																if (b_item.belongs_to === item.ref) {
 																	let num_matches_in_ref = 0;
 																	num_matches_in_ref += 1;
@@ -101,7 +102,7 @@ const ScoreComponent = ({ grammar, grammar_scores, score_a_label, score_b_label 
 																	}
 
 																	return (
-																		<React.Fragment key={b_index}>
+																		<React.Fragment key={b_item.id}>
 																			<div
 																				className={`cell small-5${
 																					num_matches_in_ref > 1

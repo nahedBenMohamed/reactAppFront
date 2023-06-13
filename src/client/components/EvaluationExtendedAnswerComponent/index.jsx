@@ -5,13 +5,13 @@ function EvaluationExtendedAnswerComponent({ answers, t }) {
 	const renderAnswerItems = () => {
 		return answers.map(answer => {
 			let additional_class = answer.additional[0]?.class;
-
 			return (
 				<li
 					className={`${additional_class !== '' ? additional_class : ''}`}
 					data-id={answer.question_id}
 					data-belonging={answer.belonging_id}
 					id={answer.id}
+					key={answer.id}
 				>
 					<p>
 						<span className="num">{answer.question_num}</span>
@@ -22,7 +22,7 @@ function EvaluationExtendedAnswerComponent({ answers, t }) {
 						<option value="">Bitte wählen</option>
 						{['green', 'red', 'grey'].map(name => {
 							return (
-								<option value={name} className={answer.additional[0]?.class === name ? 'selected' : ''}>
+								<option key={name} value={name} className={answer.additional[0]?.class === name ? 'selected' : ''}>
 									{t(`classes_${name}`)}
 								</option>
 							);
@@ -33,6 +33,7 @@ function EvaluationExtendedAnswerComponent({ answers, t }) {
 						{['1', '2'].map(name => {
 							return (
 								<option
+								    key={name}
 									value={name}
 									className={answer.additional[0]?.checks?.includes(name) ? 'selected' : ''}
 								>

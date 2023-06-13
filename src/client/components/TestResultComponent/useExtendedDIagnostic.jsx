@@ -1,5 +1,5 @@
 /* eslint-disable  */
-import { createRef, useRef, useState } from 'react';
+import { useState } from 'react';
 import PdssExtendedResultComponent from '../PdssExtendedResultComponent';
 
 export default props => {
@@ -8,7 +8,6 @@ export default props => {
 		questionData,
 		t,
 		selectExtendedAnswer,
-		hideInEvaluation,
 		selectClassificationAdditionalOptionAnswer,
 		selectExtrasQuestionsAnswer
 	} = props;
@@ -17,28 +16,18 @@ export default props => {
 	const [classificationsResults, setClassificationsResults] = useState([]);
 	const ShowExtendedQuestions = ({ children, hide }) => {
 		if (questionData.diagnostic === 10 && !hide) {
-			return (
-				<div className="diagnostic-content-extended always-show">
-					{children[1]}
-				</div>
-			);
+			return <div className="diagnostic-content-extended always-show">{children[1]}</div>;
 		}
 		if (questionData.diagnostic === 5)
-			return (
-				<div className="diagnostic-content-extended always-show">
-					{children[1]}
-				</div>
-			);
-		if (questionData.diagnostic == 9  && !hide)
+			return <div className="diagnostic-content-extended always-show">{children[1]}</div>;
+		if (questionData.diagnostic == 9 && !hide)
 			return (
 				<>
 					<div className="extended">
 						<h3>{t('subheadline_results_extended')}</h3>
 						{children[0]}
 					</div>
-					<div className="diagnostic-content-extended">
-						{children[1]}
-					</div>
+					<div className="diagnostic-content-extended">{children[1]}</div>
 				</>
 			);
 		if (
@@ -74,8 +63,9 @@ export default props => {
 								<div className="cell small-6">
 									{/* Render a button to select "correct" answer */}
 									<a
-										className={`button correct ${defaultAnswers[answer_id] === 'correct' ? ' selected ' : ''
-											}`}
+										className={`button correct ${
+											defaultAnswers[answer_id] === 'correct' ? ' selected ' : ''
+										}`}
 										onClick={() => setCheckMarksValues('correct')}
 									>
 										<span className="entypo-check"></span>
@@ -84,10 +74,11 @@ export default props => {
 								<div className="cell small-6">
 									{/* Render a button to select "incorrect" answer */}
 									<a
-										className={`button incorrect  ${!defaultAnswers[answer_id] || defaultAnswers[answer_id] === 'incorrect'
-											? ' selected'
-											: ''
-											}`}
+										className={`button incorrect  ${
+											!defaultAnswers[answer_id] || defaultAnswers[answer_id] === 'incorrect'
+												? ' selected'
+												: ''
+										}`}
 										onClick={() => setCheckMarksValues('incorrect')}
 									>
 										<span className="entypo-cancel"></span>
@@ -131,7 +122,6 @@ export default props => {
 		if (!extraContent || extraContent.length === 0) return null;
 
 		const setAdditionalOptionsContent = (qValue, cId) =>
-		
 			selectClassificationAdditionalOptionAnswer({ id: cId, value: qValue });
 
 		const setTextContent = (qValue, qId, questionNumber) =>
@@ -163,6 +153,16 @@ export default props => {
 			}
 		};
 
+		const handleRenderClassificationSpanContent = data => {
+			switch (data.length) {
+				case 1:
+					return ['Obligatorisches Satzglied fehlt', 'Funktionales Element fehlt'][+data[0] - 1];
+				case 2:
+					return '2 ausgewählt';
+				default:
+					return 'Bitte wählen';
+			}
+		};
 		const pickQuestionViewByType = (
 			{ type, label, answer, id, label_detail, question_id, questionAnswer, classificationResults },
 			{ loopIndex }
@@ -272,8 +272,9 @@ export default props => {
 													{selectedClass == 'red' && (
 														<div
 															id="ms-list-2"
-															className={`ms-options-wrap ms-active ${checksContent.length > 0 ? 'ms-has-selections' : ' '
-																} `}
+															className={`ms-options-wrap ms-active ${
+																checksContent.length > 0 ? 'ms-has-selections' : ' '
+															} `}
 														>
 															<button
 																type="button"
@@ -287,14 +288,7 @@ export default props => {
 																}}
 															>
 																<span>
-																	{checksContent.length == 1
-																		? [
-																			'Obligatorisches Satzglied fehlt',
-																			'Funktionales Element fehlt'
-																		][+checksContent[0] - 1]
-																		: checksContent.length == 2
-																			? '2 ausgewählt'
-																			: 'Bitte wählen'}
+																	{handleRenderClassificationSpanContent(checksContent)}
 																</span>
 															</button>
 
@@ -387,7 +381,9 @@ export default props => {
 		};
 
 		return extraContent?.map((qContent, loopIndex) => (
-			<div className={`grid-x ${qContent.type}`}>{pickQuestionViewByType(qContent, { loopIndex })}</div>
+			<div className={`grid-x ${qContent.type}`} key={qContent.id}>
+				{pickQuestionViewByType(qContent, { loopIndex })}
+			</div>
 		));
 	};
 	return { ShowExtendedQuestions, MapDataToExtendedQuestionView, MapTheExtraQuestionWithNeededViewPortal };

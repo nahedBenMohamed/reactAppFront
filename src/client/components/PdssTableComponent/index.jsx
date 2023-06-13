@@ -1,12 +1,11 @@
-import moment from 'moment';
 import { memo, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import reactStringReplace from 'react-string-replace';
 import routes from '../../../config/routes';
 import { CryptoProviders, getItemsFromCookies } from '../../../shared/helpers/properties';
 import { selectSearchStatus, selectSearchText } from '../../../store/reducers/diagnosis.reducer';
-import NavItemComponent from '../NavItemComponent';
 import PdssConfirmPopup from '../PdssConfirmPopupComponent';
+import PdssTableCellComponent from '../PdssTableCell';
+import PdssTableHeaderComponent from '../PdssTableHeaderComponent';
 
 const PdssTableComponent = props => {
 	const { data, t, headers, handleDelete, handleCancel, handleConfirm, showDeletePopup } = props;
@@ -31,50 +30,6 @@ const PdssTableComponent = props => {
 		);
 	};
 
-	const CustomRenderCell = (data, header) => {
-		switch (header.className) {
-			case 'title':
-				return (
-					<p className={header.className}>
-						{searchText.length > 0 && searchStatus
-							? reactStringReplace(data[header.id], searchText, (match, i) => {
-									return <span className="highlight">{data[header.id]}</span>;
-							  })
-							: data[header.id]}
-					</p>
-				);
-			case 'datetime':
-				return <p className={header.className}>{moment(data[header.id]).format('DD.MM.YYYY HH:mm')}</p>;
-			case 'duration':
-				return <p className={header.className}>{moment.utc(data[header.id] * 1000).format('HH:mm:ss')}</p>;
-			case 'status':
-				return (
-					<p className={header.className}>
-						{t(`diagnosis_Expand_status_${data[header.id]}`)}
-						{data[header.id] === 'training' ? ' (Training)' : null}
-					</p>
-				);
-			case 'bar':
-				return (
-					<p className="process">
-						<span className="percent">{data[header.id]}%</span>
-						<span className="bg">
-							<span className="bar" style={{ width: `${data[header.id]}%` }}></span>
-						</span>
-					</p>
-				);
-			case 'options':
-				return (
-					<p className="options text-right">
-						<NavItemComponent className="resume-test" icon="video" action={handleResume(data)} />
-						<NavItemComponent className="remove-test" icon="trash" action={handleDelete(data)} />
-					</p>
-				);
-		}
-	};
-	const CustomRenderHeader = header => {
-		return <p className={`${header.className} ${header.extendedClassName}`}>{t(header.title)}</p>;
-	};
 
 	return (
 		<>
@@ -83,9 +38,9 @@ const PdssTableComponent = props => {
 					<div className="tests">
 						<div>
 							<ul>
-								<li className="headline" key='headline'>
+								<li className="headline" key="headline">
 									{headers.map(element => {
-										return CustomRenderHeader(element);
+										return <PdssTableHeaderComponent header={element} t={t} />;
 									})}
 								</li>
 								{data && data.length ? (
@@ -93,7 +48,17 @@ const PdssTableComponent = props => {
 										return (
 											<li key={row.id}>
 												{headers.map(header => {
-													return CustomRenderCell(row, header);
+													return (
+														<PdssTableCellComponent
+															t={t}
+															data={row}
+															header={header}
+															searchText={searchText}
+															searchStatus={searchStatus}
+															handleResume={handleResume}
+															handleDelete={handleDelete}
+														/>
+													);
 												})}
 											</li>
 										);

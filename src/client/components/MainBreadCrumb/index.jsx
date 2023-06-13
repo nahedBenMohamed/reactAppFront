@@ -22,9 +22,9 @@ const MainBreadCrumb = ({ t, currentRouter }) => {
 							{pathNames.map((name, index) => {
 								const routeTo = `/${pathNames.slice(0, index + 1).join('/')}`;
 								return currentRouter.location.pathname === routeTo ? (
-									<li key={index}>{t(name)}</li>
+									<li key={name}>{t(name)}</li>
 								) : (
-									<li key={index}>
+									<li key={name}>
 										<a href={routeTo}>{t(name)}</a>
 									</li>
 								);

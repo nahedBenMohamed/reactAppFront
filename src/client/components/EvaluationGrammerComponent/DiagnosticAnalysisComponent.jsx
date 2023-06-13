@@ -6,15 +6,14 @@ const DiagnosticAnalysisComponent = ({ diagnostic_analysis }) => {
 			{diagnostic_analysis &&
 				diagnostic_analysis
 					.filter(score => score?.type === 'compact_values')
-					.map((score, index) =>
+					.map((score) =>
 						score.values
 							.filter(value => value?.width)
-							.map((value, valueIndex) => {
+							.map((value) => {
 								let decimals = value.decimals ? value.decimals : 0;
 								let raw_value = value.decimals ? Number(value.raw_value).toFixed(decimals) : value.raw_value;
-
 								return (
-									<div key={`score-${index}-value-${valueIndex}`} className="cell small-3">
+									<div key={`${value.name}-${value.tvalue}`} className="cell small-3">
 										<div className={`container ${value.class}`}>
 											<p className="value">
 												<strong>

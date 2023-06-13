@@ -12,12 +12,11 @@ import diagnosisExtraReducer from './reducers/diagnosisExtra.reducer';
 
 const middlewares = [];
 
-// if (process.env && process.env.REACT_APP_ENVIRONMENT?.trim() !== 'local ') console.log = function () {};
 
 if (process.env.NODE_ENV === 'development') {
 	const { createLogger } = require(`redux-logger`);
 	const logger = createLogger({ collapsed: (getState, action, logEntry) => !logEntry.error });
-	// middlewares.push(logger);
+	middlewares.push(logger);
 }
 export const store = configureStore({
 	reducer: {

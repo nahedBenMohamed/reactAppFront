@@ -11,41 +11,48 @@ import BodyTable4NSection from './BodyTable4N';
 import BodyTable5NSection from './BodyTable5N';
 
 const TableAccodionEvaluationSection = ({ t, item }) => {
+	const headLength = item[1].head.length;
+	const headerTableSection = (title, indexTitle) => {
+		if (headLength === 2) {
+			return <HeaderTable2NSection t={t} title={title} indexTitle={indexTitle} />;
+		} else if (headLength === 3) {
+			return <HeaderTable3NSection t={t} title={title} indexTitle={indexTitle} />;
+		} else if (headLength === 4) {
+			return <HeaderTable4NSection t={t} title={title} indexTitle={indexTitle} />;
+		} else if (headLength === 5) {
+			return <HeaderTable5NSection t={t} title={title} indexTitle={indexTitle} />;
+		} else {
+			return '';
+		}
+	};
+	const bodyTableSection = (val) => {
+		if (headLength === 2) {
+			return <BodyTable2NSection t={t} val={val} />;
+		} else if (headLength === 3) {
+			return <BodyTable3NSection t={t} val={val} />;
+		} else if (headLength === 4) {
+			return <BodyTable4NSection val={val} />;
+		} else {
+			return <BodyTable5NSection val={val} />;
+		}
+	};
 	return (
 		<>
 			<View style={styles.table}>
 				<View style={styles.tableRow}>
 					{item[1].head.map((title, indexTitle) =>
-						item[1].head.length == 2 ? (
-							<HeaderTable2NSection t={t} title={title} indexTitle={indexTitle} />
-						) : item[1].head.length == 3 ? (
-							<HeaderTable3NSection t={t} title={title} indexTitle={indexTitle} />
-						) : item[1].head.length == 4 ? (
-							<HeaderTable4NSection t={t} title={title} indexTitle={indexTitle} />
-						) : item[1].head.length == 5 ? (
-							<HeaderTable5NSection t={t} title={title} indexTitle={indexTitle} />
-						) : (
-							''
-						)
+						headerTableSection(title, indexTitle)
 					)}
 				</View>
 				{item[1].values && item[1].values?.length == 0 ?
 					<View style={styles.oneCell}>
 						<Text style={styles.oneCellContent}>
-						  {  t('no_occurence')}
+							{t('no_occurence')}
 						</Text>
 					</View>
 					:
 					Object.entries(item[1].values).map(val =>
-						item[1].head.length == 2 ? (
-							<BodyTable2NSection t={t} val={val} />
-						) : item[1].head.length == 3 ? (
-							<BodyTable3NSection t={t} val={val} />
-						) : item[1].head.length == 4 ? (
-							<BodyTable4NSection val={val} />
-						) : (
-							<BodyTable5NSection val={val} />
-						)
+						bodyTableSection(val)
 					)}
 			</View>
 		</>

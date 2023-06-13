@@ -152,7 +152,7 @@ export const getPercent = diagnostic_group => {
 	{
 		diagnostic_group &&
 			diagnostic_group.diagnostics.map(diagnostic => {
-				return diagnostic.process_percent == 100 ? (count = count + 1) : null;
+				return count = diagnostic.process_percent == 100 ? (count + 1) : null;
 			});
 	}
 
@@ -160,18 +160,21 @@ export const getPercent = diagnostic_group => {
 };
 
 export const linkIsActive = path => (window.location.pathname === path ? 'active' : ' ');
-export const navLinkIsActive = item =>
-	item.parent
-		? window.location.pathname.includes(item.path.slice(0, item.path.lastIndexOf('?')))
-			? 'active'
-			: ' '
-		: linkIsActive(item.path);
+export const navLinkIsActive = item => {
+	if (item.parent) {
+		if (window.location.pathname.includes(item.path.slice(0, item.path.lastIndexOf('?'))))
+			return 'active'
+	}
+	else {
+		linkIsActive(item.path)
+	}
+}
+
 
 export const progressRing = (percent, radius) => {
 	let circumference = radius * 2 * Math.PI;
 	let strokeDasharray = circumference + ' ' + circumference;
-	let strokeDashoffset = circumference;
-	strokeDashoffset = circumference - (percent / 100) * circumference;
+	let strokeDashoffset = circumference - (percent / 100) * circumference;
 	return { strokeDasharray: strokeDasharray, strokeDashoffset: strokeDashoffset };
 };
 export const scrollToTop = () =>

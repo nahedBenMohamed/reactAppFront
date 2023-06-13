@@ -7,7 +7,7 @@ export default function PdssCheckListComponent({ title, list }) {
 			<h3>{title}</h3>
 			<ul className="checklist">
 				{list.map((item, index) => (
-					<PdssListComponent key={index} item={item} />
+					<PdssListComponent key={item} item={item} />
 				))}
 			</ul>
 		</div>

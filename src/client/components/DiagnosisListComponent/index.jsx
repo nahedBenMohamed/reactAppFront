@@ -15,10 +15,11 @@ function DiagnosisListComponent() {
 	return (
 		<div className="grid-x grid-margin-x">
 			{diagnosisList &&
-				diagnosisList.map((items, index) => {
+				diagnosisList.map((items) => {
+					let keyValue = `${items[0].id}-${items[1].id}`
 					return (
 						<DiagnosisItemComponent
-							key={index}
+							key={keyValue}
 							firstItem={items[0]}
 							secondItem={items[1]}
 						/>

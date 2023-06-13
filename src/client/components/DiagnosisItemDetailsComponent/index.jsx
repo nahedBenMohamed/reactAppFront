@@ -11,7 +11,11 @@ import { t } from 'i18next';
 
 import WithReduxConnector from '../../../shared/helpers/hooks/WithReduxConnector';
 import PdssTableComponent from '../PdssTableComponent';
-import { action_diagnosis_deleteSession, action_diagnosis_getInfo } from '../../../store/actions';
+import {
+	action_diagnosis_deleteSession,
+	action_diagnosis_getInfo,
+	action_diagnosis_getSessions
+} from '../../../store/actions';
 import { selectDiagnosisInfo } from '../../../store/reducers/diagnosis.reducer';
 import DiagnosisInfoComponent from '../DiagnosisInfoComponent';
 import { selectCurrentUserId } from '../../../store/reducers/securities.reducers';
@@ -79,7 +83,7 @@ function DiagnosisItemDetailsComponent({
 		}
 	];
 
-	// remove scroll 
+	// remove scroll
 	useEffect(() => {
 		if (showInformation) {
 			document.documentElement.classList.add('zf-has-scroll', 'is-reveal-open');
@@ -117,7 +121,6 @@ function DiagnosisItemDetailsComponent({
 	}, []);
 	const itemsToShow = useMemo(() => diagnosticSessions.slice(0, displayCount), [diagnosticSessions, displayCount]);
 
-	
 	// show delete modal
 	const handleShowDeletePopup = data => event => {
 		event.preventDefault();
@@ -134,7 +137,40 @@ function DiagnosisItemDetailsComponent({
 			data: ''
 		});
 	};
-	// dispatch delete session on confirm
+	useEffect(() => {
+		const handleWindowClose = () => {
+			// Notify the parent window that the child window has been closed
+			window.opener.postMessage('Child window closed', window.origin);
+		};
+
+		window.onbeforeunload = handleWindowClose;
+
+		// Cleanup the event listener when the component unmounts
+		return () => {
+			window.onbeforeunload = null;
+		};
+	}, []);
+
+	useEffect(() => {
+		const handleMessage = event => {
+			if (event.origin !== window.origin) return; // Ignore messages from other origins
+
+			if (event.data === 'Child window closed') {
+				dispatch(
+					action_diagnosis_getSessions({ userId: GlobalSecuritiesSate?.userId, childId: selectedChild.id })
+				);
+			}
+		};
+
+		// Add event listener to listen for messages from child window
+		window.addEventListener('message', handleMessage);
+
+		// Cleanup the event listener when the component unmounts
+		return () => {
+			window.removeEventListener('message', handleMessage);
+		};
+	}, []);
+
 	const handleConfirm = event => {
 		event.preventDefault();
 		dispatch(

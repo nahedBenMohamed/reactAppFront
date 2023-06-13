@@ -55,8 +55,8 @@ function ChildListContainer() {
 						show={deleteChild.show}
 					/>
 
-					{childList.data?.map((child, childIndex) => {
-						return <ChildItemComponent key={childIndex} child={child} showPopup={showPopup} t={t} />;
+					{childList.data?.map((child) => {
+						return <ChildItemComponent key={child.id} child={child} showPopup={showPopup} t={t} />;
 					})}
 				</ul>
 			)}

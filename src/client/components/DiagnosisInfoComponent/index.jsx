@@ -1,8 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
 import { progressRing } from '../../../shared/helpers/properties';
-import { selectDiagnosisInfo } from '../../../store/reducers/diagnosis.reducer';
-
 import DiagnosisInfoGalleryComponent from '../DiagnosisInfoGalleryComponent';
 import useDiagnosisInfo from './useDiagnosisInfo';
 
@@ -51,7 +48,7 @@ function DiagnosisInfoComponent(props) {
 									images &&
 									images.map((image, index) => {
 										return (
-											<li key={index}>
+											<li key={image}>
 												<a
 													onClick={() => handleShowGallery(image)}
 													className="fancybox"

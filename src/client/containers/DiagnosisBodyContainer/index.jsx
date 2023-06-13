@@ -61,7 +61,7 @@ function DiagnosisBodyContainer(props) {
 			title: 'diagnosis_details_option'
 		}
 	];
-	const dispatch = useDispatch()
+	const dispatch = useDispatch();
 	const handleShowDeletePopup = data => event => {
 		event.preventDefault();
 		setShowDeletePopup({
@@ -93,27 +93,35 @@ function DiagnosisBodyContainer(props) {
 		});
 	};
 
+	const handleRenderView = () => {
+		if (typeof selectedChild === 'undefined' || selectedChild === null)
+			return <PdssWarningMessageComponent message={t('call_out_no_child_selected')} />;
+		else {
+			if (all)
+				return (
+					<PdssTableComponent
+						t={t}
+						showDeletePopup={showDeletePopup}
+						data={diagnosticSessions}
+						headers={headers}
+						handleDelete={handleShowDeletePopup}
+						handleCancel={handleCancel}
+						handleConfirm={handleConfirm}
+					/>
+				);
+				else {
+					return <DiagnosisListComponent />
+				}
+		}
+	};
+
 	return (
 		<div className={'cell medium-8 ' + (all ? 'all' : '')}>
 			<p>
 				<strong>{all ? t('sub_headline_all_tests') : t('sub_headline_start')}</strong>
 			</p>
 			{all && <DiagnosisTestHeaderContainer t={t} />}
-			{typeof selectedChild === 'undefined' || selectedChild === null ? (
-				<PdssWarningMessageComponent message={t('call_out_no_child_selected')} />
-			) : all ? (
-				<PdssTableComponent
-					t={t}
-					showDeletePopup={showDeletePopup}
-					data={diagnosticSessions}
-					headers={headers}
-					handleDelete={handleShowDeletePopup}
-					handleCancel={handleCancel}
-					handleConfirm={handleConfirm}
-				/>
-			) : (
-				<DiagnosisListComponent  />
-			)}
+			{handleRenderView()}
 		</div>
 	);
 }

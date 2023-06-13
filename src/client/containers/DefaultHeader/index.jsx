@@ -72,13 +72,15 @@ const DefaultHeader = props => {
 												{
 													title: t('dashboard'),
 													path: routes.account_pages.navigationPath,
-													icon: 'address'
+													icon: 'address',
+													key:"default-header-key-"+t('dashboard')
 												},
 												{
 													title: t('child'),
 													path: routes.account_pages.children.child_page.navigationPath,
 													icon: 'vcard',
-													parent: true
+													parent: true,
+													key:"default-header-key-"+t('child')
 												},
 												{
 													title: t('diagnosis'),
@@ -86,7 +88,8 @@ const DefaultHeader = props => {
 														routes.account_pages.children.diagnosis_page.navigationPath +
 														mapCurrentLocationQueriesToJSON(),
 													icon: 'target',
-													parent: true
+													parent: true,
+													key:"default-header-key-"+t('diagnosis')
 												},
 												{
 													title: t('evaluation'),
@@ -94,12 +97,14 @@ const DefaultHeader = props => {
 														routes.account_pages.children.evaluation_page.navigationPath +
 														mapCurrentLocationQueriesToJSON(),
 													icon: 'chart-area',
-													parent: true
+													parent: true,
+													key:"default-header-key-"+t('evaluation')
 												},
 												{
 													title: t('downloads'),
 													path: routes.account_pages.children.downloads_page.navigationPath,
-													icon: 'download'
+													icon: 'download',
+													key:"default-header-key-"+t('downloads')
 												}
 											]}
 										/>

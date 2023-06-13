@@ -5,7 +5,6 @@ const ScoreSection = ({ t, test, id }) => {
 	const testDetails = test?.values;
 	const interpretation = test?.interpretation;
 	const color = interpretation < 0 ? '#b13633' : '#5fb157';
-	const text = interpretation == 0 ? '#b13633' : '#5fb157';
 	const testTypes = [
 		{
 			title: t('score_label_raw_value'),
@@ -37,7 +36,7 @@ const ScoreSection = ({ t, test, id }) => {
 							return (
 								<>
 									<View
-										key={index}
+										key={item.title}
 										style={{
 											borderTop: `2px solid ${item.label == 'tvalue' ? color : '#4d4d4d'}`,
 											width: '25%',

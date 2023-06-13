@@ -11,8 +11,8 @@ function DiagnosisStatisticContainer() {
 			{diagnosisGroups &&
 				diagnosisGroups.map((diagnostic_group, index) => {
 					return (
-						<Fragment key={index}>
-							<DiagnosisGroupComponent key={index} diagnosisGroup={diagnostic_group} />
+						<Fragment key={diagnostic_group.name+'-'+diagnostic_group.id}>
+							<DiagnosisGroupComponent key={diagnostic_group.name} diagnosisGroup={diagnostic_group} />
 							<DiagnosisGroupListComponent key={diagnostic_group.id} diagnosisGroup={diagnostic_group} />
 						</Fragment>
 					);

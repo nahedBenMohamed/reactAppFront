@@ -36,6 +36,11 @@ function EvaluationAsideContainer(props) {
 	selectOption.unshift({ value: '', label: t('evaluation_placeholder_please_select_child') });
 	const selectedChild = mapWindowsParamsQueriesToObject('child');
 
+	const handleRenderRingPercent= (diagnostic,index)=>{
+		if(diagnostic.tvalue) return 100
+		else if(diagnostic.has_sublabel === 'yes' && analysesList[index + 1].tvalue) return 100
+		else return 0
+	}
 	return (
 		<aside>
 			<p>
@@ -89,14 +94,10 @@ function EvaluationAsideContainer(props) {
 								{analysesList &&
 									analysesList.map((diagnostic, index) => {
 										const label = diagnostic.type === 'sublabel' ? ' sublabel' : '';
-										let percent = diagnostic.tvalue
-											? 100
-											: diagnostic.has_sublabel === 'yes' && analysesList[index + 1].tvalue
-												? 100
-												: 0;
+										const percent =handleRenderRingPercent(diagnostic,index)
 										const { strokeDasharray, strokeDashoffset } = progressRing(percent, 5);
 										return (
-											<div className={`cell ${label}`} key={index} onClick={HandleLabelClick}>
+											<div className={`cell ${label}`} key={diagnostic.id} onClick={HandleLabelClick}>
 												{diagnostic.type === 'label' ? (
 													<p>
 														<Link

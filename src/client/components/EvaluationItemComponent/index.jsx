@@ -22,7 +22,7 @@ function EvaluationItemComponent({ score, t, index, handleClickTab, session }) {
 		}
 	};
 	const handleQuestion = async (value, answer) => {
-		var question = { ...value };
+		let question = { ...value };
 		question.answer = answer;
 
 		setFragen(prevFragen => {
@@ -69,7 +69,7 @@ function EvaluationItemComponent({ score, t, index, handleClickTab, session }) {
 							let raw_value = value;
 							let decimals = 0;
 							if (key === 'raw_value') {
-								decimals = score.decimals ? score.decimals : 0;
+								decimals = score.decimals || 0;
 								raw_value = Math.trunc(value);
 							}
 							return (
@@ -128,13 +128,11 @@ function EvaluationItemComponent({ score, t, index, handleClickTab, session }) {
 				<>
 					{score.values.map(value => {
 						let raw_value;
-						let decimals;
 						if (value.decimals !== undefined) {
-							decimals = value.decimals ? value.decimals : 0;
 							raw_value = value.raw_value || '0,0';
 						} else raw_value = value.raw_value;
 						return (
-							<div className={'cell ' + (value.width ? value.width : 'auto')} data-title={value.name}>
+							<div key={value.name} className={'cell ' + (value.width ? value.width : 'auto')} data-title={value.name}>
 								<div className={'container ' + value.class}>
 									<p className="value">
 										<strong>
@@ -161,7 +159,7 @@ function EvaluationItemComponent({ score, t, index, handleClickTab, session }) {
 					{fragen &&
 						fragen?.map(value => {
 							return (
-								<div className={`grid-x enum ${value.answer ? ' answered' : ''}`}>
+								<div key={value.answer} className={`grid-x enum ${value.answer ? ' answered' : ''}`}>
 									<div className="cell small-10">
 										<p className="question">{t(`questions_analysis_${value.label}`)}</p>
 									</div>

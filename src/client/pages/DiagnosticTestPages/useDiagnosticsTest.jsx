@@ -110,12 +110,7 @@ export const useDiagnosticsTherapistMode = props => {
 			...additionalQueries
 		})}`;
 	};
-	const abortTest = additionalQueries => {
-		return `${routes.test_pages.navigationPath}${mapCurrentLocationQueriesToJSON({
-			child_mode: 'true',
-			...additionalQueries
-		})}`;
-	};
+
 	const generateTherapistDynamicLink = additionalQueries => {
 		return `${routes.test_pages.navigationPath}${mapCurrentLocationQueriesToJSON({
 			...additionalQueries
@@ -238,7 +233,6 @@ export const useDiagnosticsTherapistMode = props => {
 		openIntroductionPopUp,
 		openTestPageViewInNewWindow,
 		generateChildDynamicLink,
-		abortTest,
 		DataPointer,
 		setDataPointer,
 		generateTherapistDynamicLink,

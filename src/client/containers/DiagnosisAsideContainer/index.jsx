@@ -14,7 +14,7 @@ function DiagnosisAsideContainer(props) {
 	const { t } = props;
 	const selectedChild = useSelector(selectChildDetails);
 	const childList = useSelector(selectChildList);
-	const [searchParams, setSearchParams] = useSearchParams();
+	const [,setSearchParams] = useSearchParams();
 	const dispatch = useDispatch()
 	const handleChangeSelect = e => {
 		setSearchParams({ child: e.target.value });

@@ -83,8 +83,8 @@ const PDSSResultAudioComponent = ({ records, handleShowDelete }) => {
 
 	return (
 		<ul>
-			{memoizedRecords.map((element, index) => (
-				<li key={index}>
+			{memoizedRecords.map((element) => (
+				<li key={element.id}>
 					<div className="grid-x">
 						<div className="cell small-4">
 							<p>{moment(element.created).format('DD.MM.YYYY HH:mm')}</p>
